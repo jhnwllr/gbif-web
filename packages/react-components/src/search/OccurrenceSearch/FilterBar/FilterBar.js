@@ -7,7 +7,7 @@ import { VocabularyFilter } from '../../../widgets/Filter/types/vocabulary/Vocab
 import { Button as SuggestButton } from '../../../widgets/Filter/types/SuggestFilter';
 import { suggestConfigs } from '../filters/suggest/suggestConfigs';
 import displayValue from '../displayNames/displayValue';
-import taxonFilter from '../filters/taxonFilter';
+import taxonFilter from '../filters/TaxonFilter';
 const ScientificName = displayValue('scientificName').component;
 const DatasetTitle = displayValue('datasetTitle').component;
 
