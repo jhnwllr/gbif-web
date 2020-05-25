@@ -49,6 +49,7 @@ export const GalleryTileSkeleton = ({ height=150, ...props }) => {
 }
 
 export const GalleryCaption = props => {
+  const test = styles.caption({ theme })
   const theme = useContext(ThemeContext);
   return <div css={styles.caption({ theme })} {...props} />
 };

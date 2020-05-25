@@ -1,6 +1,7 @@
 import React from 'react';
 import get from 'lodash/get';
 import { Gallery, GalleryCaption } from '../../../../components';
+import ItemDetails from './ItemDetails'
 
 export const GalleryPresentation = ({ first, prev, next, size, from, result, loading, error }) => {
   const total = get(result, 'hits.total', 0);
@@ -15,7 +16,8 @@ export const GalleryPresentation = ({ first, prev, next, size, from, result, loa
     </GalleryCaption>}
     title={item => item._source.gbifClassification.usage.name}
     subtitle={item => item.description}
-    details={item => <pre>{JSON.stringify(item, null, 2)}</pre>}
+   // details={item => <pre>{JSON.stringify(item, null, 2)}</pre>}
+    details={item => <ItemDetails item={item} />}
     loading={loading || error}
     items={hits}
     loadMore={from + size < total ? () => next() : null}
