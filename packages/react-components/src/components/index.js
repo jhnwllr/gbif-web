@@ -17,10 +17,6 @@ export { ZoomableImage } from './ZoomableImage/ZoomableImage';
 // export { Popper } from './Popper/Popper';
 // export { Performance } from './Performance/Performance';
 export { Properties } from './Properties/Properties';
-<<<<<<< HEAD
-export { Tooltip } from './Tooltip/Tooltip';
-=======
 export { Tooltip } from './Tooltip/Tooltip';
 export { Radio } from './Radio/Radio';
->>>>>>> filters
 // -- Add imports above this line (required by plopfile.js) --

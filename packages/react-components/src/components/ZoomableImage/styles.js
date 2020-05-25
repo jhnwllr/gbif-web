@@ -2,6 +2,8 @@ import { css } from '@emotion/core';
 // import { focusStyle } from '../../style/shared';
 
 export const zoomableImage = ({src}) => css`
+  height: 100vh;
+  overflow: hidden; 
   /* background: url(${src});
   background-position: center;
   background-size: contain;
@@ -19,8 +21,17 @@ export const image = ({src, blur}) => css`
   background-repeat: no-repeat;
   position: relative;
   text-align: center;
+  transition: all 0.5s ease;
+  &:hover {
+  transform: scale(2);
+  cursor: zoom-in;
+   }
   ${blur ? 'filter: blur(8px)' : ''};
 `;
+
+/* &:hover {
+  transform: scale(1.6);
+   } */
 
 export const toolBar = () => css`
   position: absolute;

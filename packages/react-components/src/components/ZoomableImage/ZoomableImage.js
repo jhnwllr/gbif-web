@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 // import { oneOfMany } from '../../utils/util';
 import { Button } from '../Button/Button';
 import styles from './styles';
+import get from "lodash/get";
 
 export const ZoomableImage = React.forwardRef(({
   src,
@@ -17,8 +18,33 @@ export const ZoomableImage = React.forwardRef(({
   const theme = useContext(ThemeContext);
   const [isFullscreen, setFullscreen] = useState();
   const [imageSrc, setImageSrc] = useState(thumbnail);
-  const wrapperRef = useRef(null);
+  const imgEl = useRef(null)
 
+  const wrapperRef = useRef(null);
+  
+  let mouseTimer;
+  const onMouseMove = e => {
+    const offsetX = get(e, 'nativeEvent.offsetX');
+    const offsetY = get(e, 'nativeEvent.offsetY');
+    if(mouseTimer){
+      clearTimeout(mouseTimer)
+    }
+    mouseTimer = setTimeout(() => {
+      if(get(imgEl, 'current.style')) {
+        imgEl.current.style.backgroundPositionX = (imgEl.current.clientWidth / 2) - offsetX + "px";
+        imgEl.current.style.backgroundPositionY = (imgEl.current.clientHeight / 2) - offsetY + "px";
+      }
+    }, 150)   
+  }
+  const resetZoom = () => {
+    if(mouseTimer){
+      clearTimeout(mouseTimer)
+    }
+    if(get(imgEl, 'current.style')) {
+      imgEl.current.style.backgroundPositionX = "0px";
+      imgEl.current.style.backgroundPositionY = "0px";
+    }
+  }
   useEffect(() => {
     setImageSrc(thumbnail);
     if (Image) {
@@ -31,7 +57,7 @@ export const ZoomableImage = React.forwardRef(({
   },[src, thumbnail]);
 
   return <div ref={wrapperRef} css={styles.zoomableImage({ theme })} {...props}>
-    <div css={styles.image({theme, src: imageSrc, blur: imageSrc === thumbnail})}></div>
+    <div ref={imgEl} onMouseMove={onMouseMove} onMouseLeave={resetZoom} css={styles.image({theme, src: imageSrc, blur: imageSrc === thumbnail})}></div>
     <div css={styles.toolBar({ theme, src })}>
       <Button appearance="text" ref={ref} onClick={() => {
         if (isFullscreen) document.exitFullscreen();
