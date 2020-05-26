@@ -41,8 +41,9 @@ export const ZoomableImage = React.forwardRef(({
       clearTimeout(mouseTimer)
     }
     if(get(imgEl, 'current.style')) {
-      imgEl.current.style.backgroundPositionX = "0px";
-      imgEl.current.style.backgroundPositionY = "0px";
+      imgEl.current.style.backgroundPositionX = undefined;
+      imgEl.current.style.backgroundPositionY = undefined;
+      imgEl.current.style.backgroundPosition = "center";
     }
   }
   useEffect(() => {

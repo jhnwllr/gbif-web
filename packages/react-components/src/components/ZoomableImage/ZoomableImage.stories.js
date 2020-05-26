@@ -10,7 +10,9 @@ export default {
 };
 
 export const Example = () => <>
-  <ZoomableImage>
+  <ZoomableImage 
+    src="https://static.inaturalist.org/photos/48537908/original.jpeg?1566109574" 
+    thumbnail="https://api.gbif.org/v1/image/unsafe/https%3A%2F%2Fstatic.inaturalist.org%2Fphotos%2F48537908%2Foriginal.jpeg%3F1566109574">
     ZoomableImage - not implemented yet. But we need one. We miss it on the current portal
   </ZoomableImage>
   {/* <StyledProse source={readme}></StyledProse> */}
