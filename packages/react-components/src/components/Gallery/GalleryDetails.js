@@ -28,23 +28,40 @@ export const GalleryDetails = ({
   ...props
 }) => {
   const [activeId, setTab] = useState('details');
+  const [activeImage, setActiveImage] = useState(0)
   const theme = useContext(ThemeContext);
+
+  const nextImg = () => {
+    if(imageSrc(item).length -1 > activeImage){
+      setActiveImage(activeImage+1)
+    }
+  }
+  const prevImg = () => {
+    if(activeImage > 0){
+      setActiveImage(activeImage-1)
+    }
+  }
 
   useEffect(() => {
     function handleKeypress(e) {
       switch (e.which) {
         case keyCodes.LEFT_ARROW: previous(); return;
         case keyCodes.RIGHT_ARROW: next(); return;
+        case keyCodes.DOWN_ARROW: nextImg(); return;
+        case keyCodes.UP_ARROW: prevImg(); return;
         default: return;
       }
     }
     if (document) document.addEventListener("keydown", handleKeypress, false);
-
     return function cleanup() {
       if (document) document.removeEventListener("keydown", handleKeypress, false);
     }
-  }, [next, previous]);
+  }, [next, previous, activeImage]);
 
+  useEffect(()=> {
+    setActiveImage(0)
+  }, [item])
+  
   return <Root>
     <Tabs activeId={activeId} onChange={id => setTab(id === activeId ? undefined : id)}>
       <Row as="section" direction="column" wrap="nowrap" {...props} css={detailPage({ theme })}>
@@ -64,7 +81,7 @@ export const GalleryDetails = ({
         <Row css={detailMainWrapper} wrap="nowrap">
           <Col css={detailMain} shrink={true} basis="100%">
             <div css={detailPrev} onClick={() => previous()}><MdChevronLeft /></div>
-            {item && <ZoomableImage src={imageSrc(item)} thumbnail={getThumbnail(imageSrc(item))}/>}
+            {item && <ZoomableImage src={imageSrc(item)[activeImage]} thumbnail={getThumbnail(imageSrc(item)[activeImage])}/>}
             <div css={detailNext} onClick={() => next()}><MdChevronRight /></div>
           </Col>
           {details && <>

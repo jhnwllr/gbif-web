@@ -22,6 +22,6 @@ export const GalleryPresentation = ({ first, prev, next, size, from, result, loa
     items={hits}
     loadMore={from + size < total ? () => next() : null}
     size={loaderCount}
-    imageSrc={item => item._source._galleryImages[0].identifier}
+    imageSrc={item => item._source._galleryImages.map(i => i.identifier)}
   />
 }

@@ -69,20 +69,19 @@ export const Gallery = ({
 }) => {
   const theme = useContext(ThemeContext);
   const dialog = useDialogState();
-  const [activeId, setActive] = useState();
   const [activeItem, setActiveItem] = useState();
-  
-  useEffect(() => {
-    setActiveItem(items[activeId]);
-  }, [activeId, items]);
 
   const next = useCallback(() => {
-    setActive(Math.min(items.length - 1, activeId + 1));
-  }, [items, activeId]);
+    const idx = items.indexOf(activeItem) +1;
+    const nextItem = idx < items.length - 1 ? items[idx] : items[items.length - 1];
+    setActiveItem(nextItem);
+  }, [items, activeItem]);
 
   const prev = useCallback(() => {
-    setActive(Math.max(0, activeId - 1));
-  }, [activeId]);
+    const idx = items.indexOf(activeItem) -1;
+    const prevItem = idx > 0 ? items[idx] : items[0];
+    setActiveItem(prevItem);
+  }, [items, activeItem]);
 
   return <>
     {!onSelect && <Dialog {...dialog} tabIndex={0} aria-label="Welcome">
@@ -101,7 +100,7 @@ export const Gallery = ({
       {items.map((e, i) => {
         return <GalleryTile key={i} 
           src={imageSrc(e)} 
-          onSelect={onSelect ? () => onSelect({item: e}) : () => {setActive(i); dialog.show()}}>
+          onSelect={onSelect ? () => onSelect({item: e}) : () => {setActiveItem(e); dialog.show()}}>
           {caption && caption({item: e, index: i})}
         </GalleryTile>
       })}
