@@ -24,32 +24,47 @@ const ItemDetals = ({ item }) => {
         <Properties>
           {get(item, "_source.gbifClassification.classification").map((t) => (
             <React.Fragment key={t.name}>
-              <Term>{t.rank}</Term>
+              <Term>{t.rank.toLowerCase()}</Term>
               <Value>{t.name}</Value>
             </React.Fragment>
           ))}
         </Properties>
       </Accordion>
       <Properties>
-        <Term>eventDate</Term>
-        <Value>
-          {get(item, `_source.eventDateSingle`)
-            ? new Date(get(item, `_source.eventDateSingle`)).toDateString()
-            : ""}
-        </Value>
-        <Term>location</Term>
+        {get(item, `_source.eventDateSingle`) && (
+          <>
+            <Term>Event Date</Term>
+            <Value>
+              {new Date(get(item, `_source.eventDateSingle`)).toDateString()}
+            </Value>
+          </>
+        )}
+
+        <Term>Location</Term>
         <Value>
           {get(item, `_source.stateProvince`)
             ? get(item, `_source.stateProvince`) + ", "
             : ""}
           {get(item, `_source.country`)}
         </Value>
-        {["recordedBy", "datasetTitle", "publisherTitle"].map((i) => (
-          <React.Fragment key={i}>
-            <Term>{i}</Term>
-            <Value>{get(item, `_source.${i}`)}</Value>
-          </React.Fragment>
-        ))}
+        {get(item, `_source.recordedBy`) && (
+          <>
+            <Term>Recorded by</Term>
+            <Value>{get(item, `_source.recordedBy`)}</Value>
+          </>
+        )}
+        {get(item, `_source.datasetTitle`) && (
+          <>
+            <Term>Dataset</Term>
+            <Value>{get(item, `_source.datasetTitle`)}</Value>
+          </>
+        )}
+        {get(item, `_source.publisherTitle`) && (
+          <>
+            <Term>Publisher</Term>
+            <Value>{get(item, `_source.publisherTitle`)}</Value>
+          </>
+        )}
       </Properties>
     </ItemDetailsContainer>
   );
