@@ -1,0 +1,62 @@
+/** @jsx jsx */
+import { jsx } from "@emotion/core";
+import React from "react";
+import { FormattedMessage, FormattedDate } from "react-intl";
+import { Properties, Accordion } from "../../../components";
+import { Map } from "./Map";
+const { Term: T, Value: V } = Properties;
+
+export function Location({ data = {}, loading, error, ...props }) {
+
+  const { organization } = data;
+
+  return (
+    <Accordion summary="Location" defaultOpen={true}>
+      <Properties horizontal={true}>
+        {organization?.address && (
+          <>
+            <T>
+              <FormattedMessage id={`address`} defaultMessage={"Address"} />
+            </T>
+            <V>{organization?.address}</V>
+          </>
+        )}
+        {organization?.city && (
+          <>
+            <T>
+              <FormattedMessage id={`city`} defaultMessage={"City"} />
+            </T>
+            <V>{organization?.postalCode ? `${organization?.postalCode} - ` : ''}{organization?.city}</V>
+          </>
+        )}
+         {organization?.province && (
+          <>
+            <T>
+              <FormattedMessage id={`province`} defaultMessage={"Province"} />
+            </T>
+            <V>{organization?.province}</V>
+          </>
+        )}
+         {organization?.country && (
+          <>
+            <T>
+              <FormattedMessage id={`country`} defaultMessage={"Country"} />
+            </T>
+            <V>{organization?.country}</V>
+          </>
+        )}
+        <T></T>
+        <V>
+          {organization?.latitude && organization?.longitude && (
+            <Map
+              latitude={organization?.latitude}
+              longitude={organization?.longitude}
+            />
+          )}
+        </V>
+      </Properties>
+    </Accordion>
+  );
+}
+
+

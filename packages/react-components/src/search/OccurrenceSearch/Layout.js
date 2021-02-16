@@ -11,6 +11,7 @@ import Map from './views/Map';
 import Table from './views/Table';
 import Gallery from './views/Gallery';
 import Datasets from './views/Datasets';
+import Publishers from './views/Publishers';
 
 import { FilterBar } from '../FilterBar';
 import { useUrlState } from '../../dataManagement/state/useUrlState';
@@ -41,7 +42,8 @@ const Layout = ({
             <Tab tabId="gallery">Gallery</Tab>
             <TapSeperator />
             <Tab tabId="dataset">Datasets</Tab>
-            {/* <Tab tabId="publisher">Publishers</Tab> */}
+            <TapSeperator />
+           <Tab tabId="publisher">Publishers</Tab>
             {/* <TapSpacer />
             <TapSeperator />
             <Tab tabId="test">Test</Tab> */}
@@ -60,6 +62,9 @@ const Layout = ({
       </TabPanel>
       <TabPanel lazy tabId="dataset" className={`${prefix}-${elementName}-views`} css={cssViewArea({ theme })}>
         <Datasets />
+      </TabPanel>
+      <TabPanel lazy tabId="publisher" className={`${prefix}-${elementName}-views`} css={cssViewArea({ theme })}>
+        <Publishers />
       </TabPanel>
       {/* <div className={`${prefix}-${elementName}-footer`} css={cssFooter({ theme })}>
         <div>Footer content</div>
