@@ -56,9 +56,11 @@ export function Header({
 const getHighlightedContributors = (dataset, theme) =>{
   if(!dataset) return null;
   const highlighted = dataset.contributors?.length > 0 ?  dataset.contributors.filter(c => c._highlighted) : null;
-  if(!highlighted || highlighted.length === 0) return null;
-  return <p style={{fontSize: '14px'}} >{highlighted.map(p => `${p.firstName ? p.firstName+" ":""}${p.lastName}`).join(" • ")}</p>
-     
+  if(!highlighted || highlighted.length === 0) {
+    return dataset.contributors?.length > 0 ? <p style={{fontSize: '14px'}} >{dataset.contributors.map(p => `${p.firstName ? p.firstName+" ":""}${p.lastName}`).join(" • ")}</p> : null;
+  } else {
+    return <p style={{fontSize: '14px'}} >{highlighted.map(p => `${p.firstName ? p.firstName+" ":""}${p.lastName}`).join(" • ")}</p>
+  }     
 }
 
 const getPublisher = (dataset, theme) => {
