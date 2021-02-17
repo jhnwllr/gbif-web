@@ -14,16 +14,22 @@ export function Header({ data, loading, error, ...props }) {
     <>
       <Row>
         <div css={css.breadcrumb({ theme })}>
-          Publisher
+          <FormattedMessage id="publisher.publisher" defaultMessage="Publisher" />
           <span css={css.breadcrumbSeperator({ theme })}>
-            {" "}
-            Since{" "}
-            <FormattedDate
-              value={item?.created}
-              year="numeric"
-              month="long"
-              day="2-digit"
-            />
+              <FormattedMessage 
+              id="publisher.publisherSince" 
+              values={{formattedDate: <FormattedDate
+                value={item?.created}
+                year="numeric"
+                month="long"
+                day="2-digit"
+              />}}
+              defaultMessage={<span>Since <FormattedDate
+                value={item?.created}
+                year="numeric"
+                month="long"
+                day="2-digit"
+              /></span>} />
           </span>
         </div>
       </Row>

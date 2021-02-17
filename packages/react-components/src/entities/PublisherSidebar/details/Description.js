@@ -2,6 +2,8 @@
 import { jsx } from "@emotion/core";
 import React from "react";
 import { Properties, Accordion, HyperText } from "../../../components";
+import { FormattedMessage, FormattedDate } from "react-intl";
+
 const { Term: T, Value: V } = Properties;
 
 export function Description({ data = {}, loading, error, ...props }) {
@@ -20,7 +22,7 @@ export function Description({ data = {}, loading, error, ...props }) {
         )}
         {organization?.endorsingNode && (
           <>
-            <T>Endorsing node</T>
+            <T><FormattedMessage id="publisher.endorsingNode" defaultMessage="Endorsing node"/></T>
             <V>
               <a
                 href={`https://www.gbif.org/node/${organization?.endorsingNode?.key}`}

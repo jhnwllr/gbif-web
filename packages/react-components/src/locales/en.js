@@ -40,6 +40,10 @@ export const en = {
       methodSteps: 'Method steps'
     }
   },
+  publisher: {
+    endorsingNode: 'Endorsing node',
+    publisherSince: 'Since {formattedDate}'
+  },
   filter: {
     taxonKey: {
       name: 'Scientific name',
