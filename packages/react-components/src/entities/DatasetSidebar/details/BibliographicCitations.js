@@ -3,6 +3,7 @@ import { jsx } from "@emotion/core";
 import React from "react";
 import { Properties, Accordion } from "../../../components";
 import { HyperText } from "../../../components";
+import { FormattedMessage } from 'react-intl';
 
 const { Term: T, Value: V } = Properties;
 
@@ -16,7 +17,7 @@ export function BibliographicCitations({
   const { dataset } = data;
 
   return dataset?.bibliographicCitations?.length > 0 ? (
-    <Accordion summary="Bibliography" defaultOpen={true}>
+    <Accordion summary={<FormattedMessage id="dataset.bibliography" defaultMessage="Bibliography"/>} defaultOpen={true}>
       {dataset.bibliographicCitations.map(bibiliographicCitation)}
     </Accordion>
   ) : null;

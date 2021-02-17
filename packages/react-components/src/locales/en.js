@@ -38,11 +38,19 @@ export const en = {
       studyExtent: 'Study extent',
       qualityControl: 'Quality control',
       methodSteps: 'Method steps'
-    }
+    },
+    citation: "Citation",
+    bibliography: "Bibliography",
+    contacts: "Contacts"
   },
   publisher: {
     endorsingNode: 'Endorsing node',
-    publisherSince: 'Since {formattedDate}'
+    publisherSince: 'Since {formattedDate}',
+    description: 'Description',
+    location: 'Location',
+    address: 'Address',
+    city: 'City',
+    province: 'Province'
   },
   filter: {
     taxonKey: {

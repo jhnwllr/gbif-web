@@ -15,7 +15,7 @@ export function Contacts({ data = {}, loading, error, ...props }) {
   const { dataset } = data;
 
   return dataset?.contributors?.length > 0 ? (
-    <Accordion summary="Contacts" defaultOpen={true}>
+    <Accordion summary={<FormattedMessage id="dataset.contacts" defaultMessage="Contacts"/>} defaultOpen={true}>
       {dataset.contributors.map(Contact)}
     </Accordion>
   ) : null;

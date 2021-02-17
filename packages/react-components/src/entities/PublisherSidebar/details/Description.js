@@ -2,7 +2,7 @@
 import { jsx } from "@emotion/core";
 import React from "react";
 import { Properties, Accordion, HyperText } from "../../../components";
-import { FormattedMessage, FormattedDate } from "react-intl";
+import { FormattedMessage } from "react-intl";
 
 const { Term: T, Value: V } = Properties;
 
@@ -10,7 +10,7 @@ export function Description({ data = {}, loading, error, ...props }) {
   const { organization } = data;
 
   return organization?.description || organization?.endorsingNode ? (
-    <Accordion summary="Description" defaultOpen={true}>
+    <Accordion summary={<FormattedMessage id="publisher.description" defaultMessage="Description" />} defaultOpen={true}>
       <Properties horizontal={true}>
         {organization?.description && (
           <>

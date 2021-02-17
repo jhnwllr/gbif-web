@@ -11,12 +11,12 @@ export function Location({ data = {}, loading, error, ...props }) {
   const { organization } = data;
 
   return (
-    <Accordion summary="Location" defaultOpen={true}>
+    <Accordion summary={<FormattedMessage id="publisher.location" defaultMessage="Location"/>} defaultOpen={true}>
       <Properties horizontal={true}>
         {organization?.address && organization?.address?.length > 0 && (
           <>
             <T>
-              <FormattedMessage id={`address`} defaultMessage={"Address"} />
+              <FormattedMessage id={`publisher.address`} defaultMessage={"Address"} />
             </T>
             <V>{organization.address.map(line => <div>{line}</div>)}</V>
           </>
@@ -24,7 +24,7 @@ export function Location({ data = {}, loading, error, ...props }) {
         {organization?.city && (
           <>
             <T>
-              <FormattedMessage id={`city`} defaultMessage={"City"} />
+              <FormattedMessage id={`publisher.city`} defaultMessage={"City"} />
             </T>
             <V>{organization?.postalCode ? `${organization?.postalCode} - ` : ''}{organization?.city}</V>
           </>
@@ -32,7 +32,7 @@ export function Location({ data = {}, loading, error, ...props }) {
          {organization?.province && (
           <>
             <T>
-              <FormattedMessage id={`province`} defaultMessage={"Province"} />
+              <FormattedMessage id={`publisher.province`} defaultMessage={"Province"} />
             </T>
             <V>{organization?.province}</V>
           </>
@@ -40,7 +40,7 @@ export function Location({ data = {}, loading, error, ...props }) {
          {organization?.country && (
           <>
             <T>
-              <FormattedMessage id={`country`} defaultMessage={"Country"} />
+              <FormattedMessage id={`publisher.country`} defaultMessage={"Country"} />
             </T>
             <V><FormattedMessage id={`enums.countryCode.${organization?.country}`} defaultMessage={organization?.country} />
             </V>

@@ -3,6 +3,7 @@ import { jsx } from "@emotion/core";
 import React from "react";
 import { Properties, Accordion } from "../../../components";
 import { HyperText } from "../../../components";
+import { FormattedMessage } from 'react-intl';
 
 const { Term: T, Value: V } = Properties;
 
@@ -16,7 +17,7 @@ export function Citation({
   const { dataset } = data;
 
   return dataset?.citation?.text ? (
-    <Accordion summary="Citation" defaultOpen={true}>
+    <Accordion summary={<FormattedMessage id="dataset.citation" defaultMessage="Citation"/>} defaultOpen={true}>
       <Properties
       style={{ fontSize: 13, marginBottom: 12 }}
       horizontal={true}
