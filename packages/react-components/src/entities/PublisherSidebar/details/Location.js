@@ -13,12 +13,12 @@ export function Location({ data = {}, loading, error, ...props }) {
   return (
     <Accordion summary="Location" defaultOpen={true}>
       <Properties horizontal={true}>
-        {organization?.address && (
+        {organization?.address && organization?.address?.length > 0 && (
           <>
             <T>
               <FormattedMessage id={`address`} defaultMessage={"Address"} />
             </T>
-            <V>{organization?.address}</V>
+            <V>{organization.address.map(line => <div>{line}</div>)}</V>
           </>
         )}
         {organization?.city && (
@@ -42,7 +42,8 @@ export function Location({ data = {}, loading, error, ...props }) {
             <T>
               <FormattedMessage id={`country`} defaultMessage={"Country"} />
             </T>
-            <V>{organization?.country}</V>
+            <V><FormattedMessage id={`enums.countryCode.${organization?.country}`} defaultMessage={organization?.country} />
+            </V>
           </>
         )}
         <T></T>

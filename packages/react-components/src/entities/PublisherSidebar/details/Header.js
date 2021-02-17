@@ -33,7 +33,7 @@ export function Header({ data, loading, error, ...props }) {
             <h3>{item?.title}</h3>
           </div>
         </Col>
-        {<Col>{item?.logoUrl && <Logo url={item.logoUrl} />}</Col>}
+        {<Col style={{textAlign: 'right'}}>{item?.logoUrl && <Logo url={item.logoUrl} />}</Col>}
       </Row>
       <Row></Row>
     </>
