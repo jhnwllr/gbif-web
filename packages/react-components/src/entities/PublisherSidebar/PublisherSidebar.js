@@ -38,7 +38,7 @@ export function PublisherSidebar({
     <Tabs activeId={activeId} onChange={(id) => setTab(id)}>
       <Row wrap="nowrap" style={style} css={css.sideBar({ theme })}>
         <Col shrink={false} grow={false} css={css.detailDrawerBar({ theme })}>
-          <TabList style={{ paddingTop: "12px" }} vertical>
+          <TabList style={{ paddingTop: "12px" }} vertical aria-label="views">
             <Tab tabId="details" direction="left">
               <MdInfo />
             </Tab>
