@@ -9,10 +9,10 @@ const PUBLISHERS = `
 query table($predicate: Predicate, $size: Int = 100){
   occurrenceSearch(predicate: $predicate, size: 0, from: 0) {
     cardinality {
-      datasetKey
+      publishingOrgKey
     }
     facet {
-        publishingOrganizationKey(size: $size) {
+      publishingOrgKey(size: $size) {
         count
         publisher {
           key
