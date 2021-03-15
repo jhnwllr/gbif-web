@@ -14,13 +14,12 @@ import * as styles from '../Datasets/datasetPresentation.styles';
 
 export const PublishersPresentation = ({ more, size, data, total, loading }) => {
   const { labelMap } = useContext(OccurrenceContext);
-    console.log(data)
   const [activeId, setActive] = useState();
   const [activeItem, setActiveItem] = useState();
   const dialog = useDialogState({ animated: true });
 
-  const items = data?.occurrenceSearch?.facet?.publishingOrganizationKey || [];
-  const cardinality = data?.occurrenceSearch?.cardinality?.publishingOrganizationKey;
+  const items = data?.occurrenceSearch?.facet?.publishingOrgKey || [];
+  const cardinality = data?.occurrenceSearch?.cardinality?.publishingOrgKey;
 
   useEffect(() => {
     setActiveItem(items[activeId]);
@@ -45,8 +44,8 @@ export const PublishersPresentation = ({ more, size, data, total, loading }) => 
       </Row> */}
       <div>
         <ul style={{ padding: 0, margin: 0 }}>
-          {items.length > 0 && items.map((item, index) => <li>
-            <PublisherResult setActive={setActive} index={index} dialog={dialog} key={item.key} item={item} largest={items[0].count} />
+          {items.length > 0 && items.map((item, index) => <li key={item.publisher.key}>
+            <PublisherResult setActive={setActive} index={index} dialog={dialog} item={item} largest={items[0].count} />
           </li>)}
         </ul>
       </div>
