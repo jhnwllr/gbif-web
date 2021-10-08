@@ -11,11 +11,9 @@ import * as css from "../styles";
 
 const { Term: T, Value: V } = Properties;
 
-export function Groups({ occurrence, showAll, setActiveImage }) {
-  const { terms } = occurrence;
-  const termMap = terms.reduce((map, term) => { map[term.simpleName] = term; return map; }, {});
-
+export function Groups({ occurrence, showAll, setActiveImage, termMap }) {
   return <>
+    <ImageMap             {...{ showAll, termMap, occurrence, setActiveImage }} />
     <Summary              {...{ showAll, termMap, occurrence, setActiveImage }} />
     <Record               {...{ showAll, termMap, occurrence, setActiveImage }} />
     <Taxon                {...{ showAll, termMap, occurrence, setActiveImage }} />
@@ -48,9 +46,15 @@ export function Group({ label, children, ...props }) {
     </div>
   </section>
 }
-function Summary({ showAll, termMap, occurrence, setActiveImage }) {
-  return <Group _label="occurrenceDetails.groups.summary">
+function ImageMap({ showAll, termMap, occurrence, setActiveImage }) {
+  return <Group>
     <MediaSummary occurrence={occurrence} />
+  </Group>
+
+}
+
+function Summary({ showAll, termMap, occurrence, setActiveImage }) {
+  return <Group label="occurrenceDetails.groups.summary">
     <Properties css={css.properties} breakpoint={800}>
 
       {/* <Images {...{ showAll, termMap, occurrence, setActiveImage }} /> */}
@@ -813,15 +817,38 @@ function Agents({ label, value }) {
 
 function MediaSummary({ occurrence, ...props }) {
   const [activeImage, setActiveImage] = useState(0);
-  return <div style={{ position: 'relative', background: '#eee', borderBottom: '1px solid #ddd', marginBottom: 24 }}>
-    <div style={{ display: 'flex', background: 'white', padding: 8, justifyContent: 'flex-end' }}>
+  const [view, setView] = useState(occurrence.stillImages.length > 0 ? 'IMAGE' : 'MAP');
+
+  if (!occurrence.stillImages && !occurrence?.coordinates?.lon) return null;
+  
+  return <div style={{ position: 'relative', background: '#eee' }}>
+    {/* <div style={{ display: 'flex', background: 'white', padding: 8, justifyContent: 'flex-end' }}> */}
+    <div style={{ position: 'absolute', margin: 12, top: 0, right: 0, zIndex: 2 }}>
       <ButtonGroup style={{ fontSize: 14 }}>
-        <Button appearance="ink" truncate>Media</Button>
-        <Button appearance="inkOutline">Map</Button>
+        <Button appearance={view === 'IMAGE' ? 'ink' : 'inkOutline'} truncate onClick={e => setView('IMAGE')}>Media</Button>
+        <Button appearance={view !== 'IMAGE' ? 'ink' : 'inkOutline'} onClick={e => setView('MAP')}>Map</Button>
       </ButtonGroup>
     </div>
-    <Image src={occurrence.stillImages[activeImage].identifier} style={{ maxWidth: '100%', maxHeight: 400, display: 'block', margin: 'auto' }} />
-    <button onClick={e => setActiveImage(activeImage - 1)}>prev</button>
-    <button onClick={e => setActiveImage(activeImage + 1)}>next</button>
+    {view === 'IMAGE' && <Image src={occurrence.stillImages[activeImage].identifier} style={{ maxWidth: '100%', height: 400, display: 'block', margin: 'auto' }} />}
+
+    {view === 'MAP' && <div style={{ maxWidth: '100%', height: 400, display: 'block', margin: 'auto', position: 'relative' }}>
+      <img
+        style={{ display: "block", maxWidth: "100%" }}
+        src={`https://api.mapbox.com/styles/v1/mapbox/light-v9/static/pin-s-circle+285A98(${occurrence.coordinates.lon},${occurrence.coordinates.lat})/${occurrence.coordinates.lon},${occurrence.coordinates.lat},13,0/738x400@2x?access_token=pk.eyJ1IjoiaG9mZnQiLCJhIjoiY2llaGNtaGRiMDAxeHNxbThnNDV6MG95OSJ9.p6Dj5S7iN-Mmxic6Z03BEA`}
+      />
+      <img
+        style={{
+          border: "1px solid #aaa",
+          width: "30%",
+          position: "absolute",
+          bottom: 0,
+          right: 0,
+        }}
+        src={`https://api.mapbox.com/styles/v1/mapbox/light-v9/static/pin-s-circle+dedede(${occurrence.coordinates.lon},${occurrence.coordinates.lat})/${occurrence.coordinates.lon},${occurrence.coordinates.lat},4,0/200x100@2x?access_token=pk.eyJ1IjoiaG9mZnQiLCJhIjoiY2llaGNtaGRiMDAxeHNxbThnNDV6MG95OSJ9.p6Dj5S7iN-Mmxic6Z03BEA`}
+      />
+    </div>}
+
+    {/* <button onClick={e => setActiveImage(activeImage - 1)}>prev</button>
+    <button onClick={e => setActiveImage(activeImage + 1)}>next</button> */}
   </div>
 }

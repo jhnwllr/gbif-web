@@ -2,13 +2,13 @@
 import { jsx } from '@emotion/react';
 import { FormattedDate, FormattedMessage } from 'react-intl';
 import ThemeContext from '../../style/themes/ThemeContext';
-import { MdGridOn, MdVideocam, MdLocationOn, MdEvent, MdInsertDriveFile, MdLabel, MdImage, MdPhotoLibrary, MdStar, MdTranslate } from 'react-icons/md';
+import { MdGridOn, MdVideocam, MdLocationOn, MdEvent, MdInsertDriveFile, MdLabel, MdImage, MdPhotoLibrary, MdStar, MdTranslate, MdLink } from 'react-icons/md';
 import { GiDna1 } from 'react-icons/gi';
 import { FaGlobeAfrica } from 'react-icons/fa';
 import { ClusterIcon } from '../Icons/Icons';
 import { BsLightningFill } from 'react-icons/bs';
 import { AiFillAudio } from 'react-icons/ai';
-
+import { HostnameLink } from '../HostnameLink/HostnameLink';
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import * as css from './styles';
@@ -30,6 +30,7 @@ export function IconFeatures({
   locality,
   issueCount,
   vernacularName,
+  link,
   children,
   iconsOnly,
   ...props
@@ -82,6 +83,7 @@ export function IconFeatures({
     {isClustered && <div><ClusterIcon />{!iconsOnly && <span><FormattedMessage id="occurrenceDetails.features.isClustered" /></span>}</div>}
     {issueCount > 0 && <div><BsLightningFill style={{ color: 'orange' }} />{!iconsOnly && <span><FormattedMessage id="counts.nQualityFlags" values={{ total: issueCount }} /></span>}</div>}
     {vernacularName && <div><MdTranslate/><span>{vernacularName}</span></div>}
+    {link && <div><MdLink/><span><HostnameLink href={link} /></span></div>}
   </div>
 };
 

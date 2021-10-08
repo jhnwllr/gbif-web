@@ -5,11 +5,12 @@ import ThemeContext from '../../../../style/themes/ThemeContext';
 import { FormattedMessage } from 'react-intl';
 import * as css from '../../styles';
 import * as sharedCss from '../../../shared/styles';
-import { Row, Col, Switch } from "../../../../components";
+import { Row, Col, Switch, Tag } from "../../../../components";
 import { Groups } from '../Groups';
 
 export function Core({
   data = {},
+  termMap,
   isSpecimen,
   loading,
   fieldGroups,
@@ -26,6 +27,10 @@ export function Core({
 
   return <Row direction="row" wrap="nowrap" style={{ maxHeight: '100%' }}>
     <div css={sharedCss.sideNavWrapper()}>
+      {occurrence?.coordinates && <img
+        style={{ display: "block", maxWidth: "100%", marginBottom: 12 }}
+        src={`https://api.mapbox.com/styles/v1/mapbox/light-v9/static/pin-s-circle+285A98(${occurrence.coordinates.lon},${occurrence.coordinates.lat})/${occurrence.coordinates.lon},${occurrence.coordinates.lat},11,0/250x180@2x?access_token=pk.eyJ1IjoiaG9mZnQiLCJhIjoiY2llaGNtaGRiMDAxeHNxbThnNDV6MG95OSJ9.p6Dj5S7iN-Mmxic6Z03BEA`}
+      />}
       <nav css={sharedCss.sideNav()}>
         <ul>
           <Li>Summary</Li>
@@ -38,12 +43,17 @@ export function Core({
           <Li>Identification</Li>
           <Li>Other</Li>
           <li style={{borderBottom: '1px solid #eee'}}></li>
+          <Li style={{color: '#888', fontSize: '85%'}}>Extensions</Li>
+          <Li>Identification</Li>
+          <Li>Gel Image</Li>
+          <Li>Loan <Tag type="light">3</Tag></Li>
+          <li style={{borderBottom: '1px solid #eee'}}></li>
           <Li>Citation</Li>
         </ul>
       </nav>
     </div>
     <div>
-      <Groups occurrence={occurrence} showAll={showAll} setActiveImage={setActiveImage} />
+      <Groups termMap={termMap} occurrence={occurrence} showAll={showAll} setActiveImage={setActiveImage} />
     </div>
   </Row>
 };

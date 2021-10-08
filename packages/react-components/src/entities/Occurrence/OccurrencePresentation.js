@@ -29,6 +29,8 @@ export function OccurrencePresentation({
 
   if (loading) return <div>loading</div>
   const { occurrence } = data;
+  const { terms } = occurrence;
+  const termMap = terms.reduce((map, term) => { map[term.simpleName] = term; return map; }, {});
 
   if (error || !occurrence) {
     // TODO a generic component for failures is needed
@@ -36,7 +38,7 @@ export function OccurrencePresentation({
   }
 
   return <div style={{background: '#F0F4F8'}}>
-    <Header {...{ data, error, loading }}>
+    <Header {...{ data, error, loading, termMap }}>
       <TabList style={{ marginTop: '12px', borderTop: '1px solid #ddd' }}>
         <RouterTab to={url} exact label="Core" />
         <RouterTab to={join(url, 'people')} css={sharedCss.tab({ theme })} label="People" />
@@ -60,7 +62,7 @@ export function OccurrencePresentation({
         </Route>
         <Route path={path}>
           <div css={sharedCss.proseWrapper({ theme })}>
-            <Core {...{data, loading, error}}/>
+            <Core {...{data, loading, error, termMap}}/>
           </div>
         </Route>
       </Switch>

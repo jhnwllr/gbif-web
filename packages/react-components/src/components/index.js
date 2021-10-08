@@ -35,4 +35,5 @@ export { Toc } from './Toc/Toc'
 export { AltmetricDonut } from './AltmetricDonut/AltmetricDonut';
 export { Message } from './Message/Message';
 export { ResourceLink, PublisherKeyLink, DatasetKeyLink } from './resourceLinks/resourceLinks';
+export { HostnameLink } from './HostnameLink/HostnameLink';
 // -- Add imports above this line (required by plopfile.js) --
