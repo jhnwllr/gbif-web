@@ -22,5 +22,44 @@ export const proseWrapper = ({ ...props }) => css`
 `;
 
 export const tab = ({ noData, ...props }) => css`
-  color: ${noData ? '#888' : null}
+  color: ${noData ? '#888' : null};
+`;
+
+export const sideNavWrapper = ({ ...props }) => css`
+  flex: 0 0 250px;
+  padding-top: 12px;
+  margin: 0;
+  margin-right: 12px;
+  font-size: 14px;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100%;
+`;
+
+export const sideNav = ({ ...props }) => css`
+  background: white;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  overflow: hidden;
+  padding: 4px;
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+`;
+
+export const sideNnvItem = ({ ...props }) => css`
+  padding: 8px 12px;
+  line-height: 1em;
+  display: block;
+  color: inherit;
+  width: 100%;
+  text-align: left;
+  text-decoration: none;
+  &.isActive {
+    background: #e0e7ee;
+    font-weight: 500;
+  }
 `;

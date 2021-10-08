@@ -1,9 +1,9 @@
 import { jsx } from '@emotion/react';
-import React from 'react';
+import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import equal from 'fast-deep-equal/react';
 import intersection from 'lodash/intersection';
-import { ResourceLink, Accordion, Properties, GadmClassification, GalleryTiles, GalleryTile, DatasetKeyLink, PublisherKeyLink } from "../../../components";
+import { ButtonGroup, Button, Image, ResourceLink, Accordion, Properties, GadmClassification, GalleryTiles, GalleryTile, DatasetKeyLink, PublisherKeyLink } from "../../../components";
 import { CustomValueField, BasicField, PlainTextField, EnumField, HtmlField, LicenseField, Chips } from './properties';
 import { TaxonClassification } from './TaxonClassification/TaxonClassification';
 import { AgentSummary } from './AgentSummary'
@@ -31,19 +31,29 @@ export function Groups({ occurrence, showAll, setActiveImage }) {
   </>
 }
 
-export function Group({ label, ...props }) {
-  return <Accordion
-    summary={<FormattedMessage id={label} />}
-    defaultOpen={true}
+export function Group({ label, children, ...props }) {
+  // return <Accordion
+  //   summary={<FormattedMessage id={label} />}
+  //   defaultOpen={true}
+  //   css={css.group()}
+  //   {...props}
+  // />
+  return <section
     css={css.group()}
     {...props}
-  />
+  >
+    {label && <h2><FormattedMessage id={label} /></h2>}
+    <div>
+      {children}
+    </div>
+  </section>
 }
 function Summary({ showAll, termMap, occurrence, setActiveImage }) {
-  return <Group label="occurrenceDetails.groups.summary">
+  return <Group _label="occurrenceDetails.groups.summary">
+    <MediaSummary occurrence={occurrence} />
     <Properties css={css.properties} breakpoint={800}>
 
-      <Images {...{ showAll, termMap, occurrence, setActiveImage }} />
+      {/* <Images {...{ showAll, termMap, occurrence, setActiveImage }} /> */}
       <ScientificName {...{ showAll, termMap, occurrence }} />
       <AcceptedScientificName {...{ showAll, termMap, occurrence }} />
 
@@ -801,3 +811,17 @@ function Agents({ label, value }) {
   </BasicField>
 }
 
+function MediaSummary({ occurrence, ...props }) {
+  const [activeImage, setActiveImage] = useState(0);
+  return <div style={{ position: 'relative', background: '#eee', borderBottom: '1px solid #ddd', marginBottom: 24 }}>
+    <div style={{ display: 'flex', background: 'white', padding: 8, justifyContent: 'flex-end' }}>
+      <ButtonGroup style={{ fontSize: 14 }}>
+        <Button appearance="ink" truncate>Media</Button>
+        <Button appearance="inkOutline">Map</Button>
+      </ButtonGroup>
+    </div>
+    <Image src={occurrence.stillImages[activeImage].identifier} style={{ maxWidth: '100%', maxHeight: 400, display: 'block', margin: 'auto' }} />
+    <button onClick={e => setActiveImage(activeImage - 1)}>prev</button>
+    <button onClick={e => setActiveImage(activeImage + 1)}>next</button>
+  </div>
+}

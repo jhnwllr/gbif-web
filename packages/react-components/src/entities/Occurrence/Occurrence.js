@@ -8,6 +8,7 @@ import get from 'lodash/get';
 import * as css from './styles';
 import { useQuery } from '../../dataManagement/api';
 import { OccurrencePresentation } from './OccurrencePresentation';
+import { MemoryRouter } from 'react-router-dom';
 
 export function Occurrence({
   id,
@@ -20,8 +21,10 @@ export function Occurrence({
     }
   }, [id]);
 
+  // return <MemoryRouter initialEntries={['/']}>
+  //   <OccurrencePresentation {...{ data, error, loading: loading || !data, id }} />
+  // </MemoryRouter>
   return <OccurrencePresentation {...{ data, error, loading: loading || !data, id }} />
-  // return <h1>occ sdkfjhlksjdfhlhj </h1>
 };
 
 

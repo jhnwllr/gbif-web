@@ -84,6 +84,10 @@ export function About({
         </div> */}
       </div>
     </div>
+    <BibliographicCitations bibliographicCitations={dataset?.bibliographicCitations} />
+        <BibliographicCitations bibliographicCitations={dataset?.bibliographicCitations} />
+        <BibliographicCitations bibliographicCitations={dataset?.bibliographicCitations} />
+        <BibliographicCitations bibliographicCitations={dataset?.bibliographicCitations} />
   </>
 };
 

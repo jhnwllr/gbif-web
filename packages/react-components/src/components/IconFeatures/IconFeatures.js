@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/react';
 import { FormattedDate, FormattedMessage } from 'react-intl';
 import ThemeContext from '../../style/themes/ThemeContext';
-import { MdGridOn, MdVideocam, MdLocationOn, MdEvent, MdInsertDriveFile, MdLabel, MdImage, MdPhotoLibrary, MdStar } from 'react-icons/md';
+import { MdGridOn, MdVideocam, MdLocationOn, MdEvent, MdInsertDriveFile, MdLabel, MdImage, MdPhotoLibrary, MdStar, MdTranslate } from 'react-icons/md';
 import { GiDna1 } from 'react-icons/gi';
 import { FaGlobeAfrica } from 'react-icons/fa';
 import { ClusterIcon } from '../Icons/Icons';
@@ -29,6 +29,7 @@ export function IconFeatures({
   countryCode,
   locality,
   issueCount,
+  vernacularName,
   children,
   iconsOnly,
   ...props
@@ -80,6 +81,7 @@ export function IconFeatures({
     {isSamplingEvent && <div><MdGridOn />{!iconsOnly && <span><FormattedMessage id="occurrenceDetails.features.isSamplingEvent" /></span>}</div>}
     {isClustered && <div><ClusterIcon />{!iconsOnly && <span><FormattedMessage id="occurrenceDetails.features.isClustered" /></span>}</div>}
     {issueCount > 0 && <div><BsLightningFill style={{ color: 'orange' }} />{!iconsOnly && <span><FormattedMessage id="counts.nQualityFlags" values={{ total: issueCount }} /></span>}</div>}
+    {vernacularName && <div><MdTranslate/><span>{vernacularName}</span></div>}
   </div>
 };
 

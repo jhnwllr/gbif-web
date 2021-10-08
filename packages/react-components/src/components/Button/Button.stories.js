@@ -15,6 +15,8 @@ const options = {
   primaryOutline: 'primaryOutline',
   outline: 'outline',
   danger: 'danger',
+  ink: 'ink',
+  inkOutline: 'inkOutline',
 };
 
 export const Default = () => <Button

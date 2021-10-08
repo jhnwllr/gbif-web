@@ -163,16 +163,16 @@ export const properties = css`
 `;
 
 export const group = () => css`
-  summary {
-    background: #f5f5f5;
-    padding-left: 16px;
-    padding-right: 16px;
-    border-width: 1px 0;
-    border: 1px solid #eee;
-    border-width: 1px 0;
+  margin-top: 12px;
+  background: white;
+  border-radius: 4px;
+  h2 {
+    padding: 24px 24px 0 24px;
+    margin-top: 0;
   }
-  >div {
-    margin: 0 16px 32px 16px;
+  >div>dl {
+    padding: 0 24px;
+    padding-bottom: 24px;
   }
 `;
 

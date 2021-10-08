@@ -35,7 +35,7 @@ export function OccurrencePresentation({
     return <div>Failed to retrieve item</div>
   }
 
-  return <>
+  return <div style={{background: '#F0F4F8'}}>
     <Header {...{ data, error, loading }}>
       <TabList style={{ marginTop: '12px', borderTop: '1px solid #ddd' }}>
         <RouterTab to={url} exact label="Core" />
@@ -60,11 +60,10 @@ export function OccurrencePresentation({
         </Route>
         <Route path={path}>
           <div css={sharedCss.proseWrapper({ theme })}>
-            <h1>core</h1>
             <Core {...{data, loading, error}}/>
           </div>
         </Route>
       </Switch>
     </section>
-  </>
+  </div>
 };

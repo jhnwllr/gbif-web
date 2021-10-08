@@ -36,6 +36,7 @@ export function Header({
               month="long"
               day="2-digit" />} />
           <h1 dangerouslySetInnerHTML={{ __html: data?.occurrence?.gbifClassification?.usage?.formattedName }}></h1>
+          {/* <div style={{color: '#787878', marginTop: -4}}>Common name: Saptree</div> */}
           {/* <div style={{color: 'orange', marginTop: 4}}>Published as: Polycauliona polycarpa hoffman</div> */}
           {/* <div style={{fontSize: 13}}><MajorRanks taxon={data?.occurrence?.gbifClassification} rank={data?.occurrence?.gbifClassification?.usage?.rank}/></div> */}
         </div>

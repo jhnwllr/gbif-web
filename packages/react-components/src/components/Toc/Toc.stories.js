@@ -29,12 +29,12 @@ const offsetTop = number('Offset top', 50);
 
   let tocRefs = {};
   return (
-      <Router initialEntries={[`/`]}>
+      <Router initialEntries={[`/#no-soleat`]}>
             <AddressBar style={{position: 'sticky', top: 0}}/>
 
     <div >
     <div css={withSideBar}>
-      <div css={sideBar}>
+      <div css={sideBar({offsetTop})}>
         <Toc refs={tocRefs} offsetTop={offsetTop}></Toc>
       </div>
       <div>
@@ -62,13 +62,13 @@ Default.story = {
   name: "Toc",
 };
 
-const sideBar = ({ ...props }) => css`
+const sideBar = ({ offsetTop = 0, ...props }) => css`
   flex: 0 0 250px;
   padding-top: 12px;
   margin: 0;
   font-size: 14px;
   position: sticky;
-  top: 0;
+  top: ${offsetTop}px;
   align-self: flex-start;
   height: 100%;
 `;

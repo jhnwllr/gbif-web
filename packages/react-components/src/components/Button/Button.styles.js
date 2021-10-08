@@ -78,6 +78,31 @@ export const primaryOutline = (theme) => css`
   color: ${theme.primary700};
 `;
 
+export const ink = theme => css`
+  background-color: ${theme.color500};
+  border-color: ${theme.color600};
+  color: white;
+  &:not([aria-disabled="true"]) {
+    &:hover {
+      color: white;
+      border-color: ${theme.color500};
+      background-color: ${theme.color600};
+    }
+    &:active,
+    &[aria-expanded="true"] {
+      color: white;
+      border-color: ${theme.color600};
+      background-color: ${theme.color700};
+    }
+  }
+`;
+
+export const inkOutline = (theme) => css`
+  border-color: ${theme.color600};
+  background: none;
+  color: ${theme.color700};
+`;
+
 export const outline = (theme) => css`
   border-color: ${theme.transparentInk40};
   background: none;
@@ -161,6 +186,8 @@ export default {
   ghost,
   danger,
   link,
+  ink,
+  inkOutline,
   loading,
   isFullWidth,
   text,
