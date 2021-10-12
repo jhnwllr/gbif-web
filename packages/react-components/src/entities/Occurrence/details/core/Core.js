@@ -63,6 +63,7 @@ export function Core({
       </nav>
     </div>
     <div>
+      <Sequence sequence={occurrence?.extensions?.['http://rs.gbif.org/terms/1.0/DNADerivedData']?.[0]?.['http://rs.gbif.org/terms/dna_sequence']} />
       <Groups termMap={termMap} occurrence={occurrence} setActiveImage={setActiveImage} />
     </div>
   </Row>
@@ -79,4 +80,14 @@ function Li({to, children, ...props}) {
 
 function Separator(props) {
   return <li style={{ borderBottom: '1px solid #eee' }}></li>
+}
+
+function Sequence({sequence, ...props}) {
+  if (!sequence) return null;
+  const parts = sequence.split('');
+  return <div style={{display: 'flex'}}>
+    {parts.map(x => {
+      <div style={{flex: '0 0 10px', background: 'tomato', margin: 1}}>&nbsp;</div>
+    })}
+  </div>
 }

@@ -88,6 +88,7 @@ query occurrence($key: ID!){
       }
     }
 
+    extensions
     gadm
 
     stillImageCount
