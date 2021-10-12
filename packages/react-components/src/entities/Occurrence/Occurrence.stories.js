@@ -37,7 +37,7 @@ export const Example = () => <Router initialEntries={[`/`]}>
   {/* DNA derived */}
   {/* <Occurrence id={text('id', '2250301288')} /> */}
 
-  {/* amplification with sequence 2633841312 1208901618 1563183804 1949672676 2633254982 2238434252 2979629271 */}
+  {/* amplification with sequence 2238150290 2633841312 1208901618 1563183804 1949672676 2633254982 2238434252 2979629271 */}
   <Occurrence id={text('id', '2633841312')} />
 
   {/* 2633841312 sequences, clustered, imaged, coordinates*/}

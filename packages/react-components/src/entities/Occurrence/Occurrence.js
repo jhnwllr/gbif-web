@@ -21,10 +21,10 @@ export function Occurrence({
     }
   }, [id]);
 
-  // return <MemoryRouter initialEntries={['/']}>
-  //   <OccurrencePresentation {...{ data, error, loading: loading || !data, id }} />
-  // </MemoryRouter>
-  return <OccurrencePresentation {...{ data, error, loading: loading || !data, id }} />
+  return <MemoryRouter initialEntries={['/']}>
+    <OccurrencePresentation {...{ data, error, loading: loading || !data, id }} />
+  </MemoryRouter>
+  // return <OccurrencePresentation {...{ data, error, loading: loading || !data, id }} />
 };
 
 

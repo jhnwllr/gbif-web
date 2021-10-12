@@ -52,9 +52,6 @@ export function Header({
               </Tooltip>
             </>}
           </h1>
-          {/* <div style={{color: '#787878', marginTop: -4}}>Common name: Saptree</div> */}
-          {/* <div style={{color: 'orange', marginTop: 4}}>Published as: Polycauliona polycarpa hoffman</div> */}
-          {/* <div style={{fontSize: 13}}><MajorRanks taxon={data?.occurrence?.gbifClassification} rank={data?.occurrence?.gbifClassification?.usage?.rank}/></div> */}
 
           <div css={iconFeature()} style={{ marginBottom: 8 }}>
             <AiFillTag />
@@ -69,13 +66,13 @@ export function Header({
             </div>
           </div>}
 
-          <div css={iconFeature()} style={{ marginBottom: 8 }}>
+          {(termMap.recordedBy || termMap.identifiedBy) && <div css={iconFeature()} style={{ marginBottom: 8 }}>
             <MdPeople />
             <div>
               {termMap.recordedBy && <div><span>Recorded by</span> {termMap.recordedBy.value}</div>}
               {termMap.identifiedBy && <div style={{ marginTop: 4 }}><span>Identified by</span> {termMap.identifiedBy.value}</div>}
             </div>
-          </div>
+          </div>}
 
         </div>
         {/* <div>Engkabelej</div> */}
