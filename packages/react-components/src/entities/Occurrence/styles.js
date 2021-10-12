@@ -205,10 +205,28 @@ export const issuePill = ({ severity, ...props }) => css`
   margin-right: 4px;
 `;
 
-export const visibleOnHover = css`
-opacity: .001;
-transition: opacity 300ms ease;
+export const mapThumb = props => css`
+  position: relative;
+  .gb-on-hover {
+    position: absolute;
+    opacity: .001;
+    transition: opacity 300ms ease;
+  }
   &:hover {
-    opacity: 1;
+    .gb-on-hover {
+      opacity: 1;
+    }
+  }
+  
+  img, a {
+    top: 0;
+    width: 100%;
+    margin-bottom: 12px;
+    display: block;
+  }
+  a {
+    position: absolute;
+    height: 100%;
   }
 `;
+

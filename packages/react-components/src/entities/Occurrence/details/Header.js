@@ -45,33 +45,35 @@ export function Header({
 
           <h1>
             {!data.occurrence.issues.includes('TAXON_MATCH_HIGHERRANK') && <span dangerouslySetInnerHTML={{ __html: data?.occurrence?.gbifClassification?.usage?.formattedName }} />}
-            {data.occurrence.issues.includes('TAXON_MATCH_HIGHERRANK') && <span>{termMap.scientificName.verbatim}</span>}
-            <Tooltip title={<div style={{ width: 200, fontSize: 15 }}>This name could not be matched confidently to the GBIF backbone. The clostest match is <span dangerouslySetInnerHTML={{ __html: data?.occurrence?.gbifClassification?.usage?.formattedName }} /></div>} placement="bottom">
-              <span style={{marginLeft: 8}}><BsLightningFill style={{color: 'orange'}}/></span>
-            </Tooltip>
+            {data.occurrence.issues.includes('TAXON_MATCH_HIGHERRANK') && <>
+              <span>{termMap.scientificName.verbatim}</span>
+              <Tooltip title={<div style={{ width: 200, fontSize: 15 }}>This name could not be matched confidently to the GBIF backbone. The clostest match is <span dangerouslySetInnerHTML={{ __html: data?.occurrence?.gbifClassification?.usage?.formattedName }} /></div>} placement="bottom">
+                <span style={{ marginLeft: 8 }}><BsLightningFill style={{ color: 'orange' }} /></span>
+              </Tooltip>
+            </>}
           </h1>
           {/* <div style={{color: '#787878', marginTop: -4}}>Common name: Saptree</div> */}
           {/* <div style={{color: 'orange', marginTop: 4}}>Published as: Polycauliona polycarpa hoffman</div> */}
           {/* <div style={{fontSize: 13}}><MajorRanks taxon={data?.occurrence?.gbifClassification} rank={data?.occurrence?.gbifClassification?.usage?.rank}/></div> */}
 
-          <div css={iconFeature()} style={{marginBottom: 8}}>
+          <div css={iconFeature()} style={{ marginBottom: 8 }}>
             <AiFillTag />
             <div>
-              <TaxonClassification ranks={item.gbifClassification.classification}/>
+              <TaxonClassification ranks={item.gbifClassification.classification} />
             </div>
           </div>
-          <div css={iconFeature()} style={{marginBottom: 8}}>
+          {Object.keys(item.gadm).length > 0 && <div css={iconFeature()} style={{ marginBottom: 8 }}>
             <FaGlobeAfrica />
             <div>
               <GadmClassification gadm={item.gadm} />
             </div>
-          </div>
+          </div>}
 
-          <div css={iconFeature()} style={{marginBottom: 8}}>
+          <div css={iconFeature()} style={{ marginBottom: 8 }}>
             <MdPeople />
             <div>
               {termMap.recordedBy && <div><span>Recorded by</span> {termMap.recordedBy.value}</div>}
-              {termMap.identifiedBy && <div style={{marginTop: 4}}><span>Identified by</span> {termMap.identifiedBy.value}</div>}
+              {termMap.identifiedBy && <div style={{ marginTop: 4 }}><span>Identified by</span> {termMap.identifiedBy.value}</div>}
             </div>
           </div>
 

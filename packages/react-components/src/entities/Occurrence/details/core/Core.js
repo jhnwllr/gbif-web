@@ -28,20 +28,18 @@ export function Core({
 
   return <Row direction="row" wrap="nowrap" style={{ maxHeight: '100%', paddingBottom: 24 }}>
     <div css={sharedCss.sideNavWrapper({offset: stickyOffset})}>
-      {occurrence?.coordinates && <div style={{position: 'relative'}}>
+      {occurrence?.coordinates && <div css={css.mapThumb()}>
         <img
-          style={{ display: "block", maxWidth: "100%", marginBottom: 12 }}
           src={`https://api.mapbox.com/styles/v1/mapbox/light-v9/static/pin-s-circle+285A98(${occurrence.coordinates.lon},${occurrence.coordinates.lat})/${occurrence.coordinates.lon},${occurrence.coordinates.lat},6,0/250x180@2x?access_token=pk.eyJ1IjoiaG9mZnQiLCJhIjoiY2llaGNtaGRiMDAxeHNxbThnNDV6MG95OSJ9.p6Dj5S7iN-Mmxic6Z03BEA`}
         />
         {/* <img
           style={{ display: "block", maxWidth: "100%", marginBottom: 12, position: 'absolute', top: 0 }}
           src={`https://api.mapbox.com/styles/v1/mapbox/light-v9/static/pin-s-circle+285A98(${occurrence.coordinates.lon},${occurrence.coordinates.lat})/${occurrence.coordinates.lon},${occurrence.coordinates.lat},9,0/250x180@2x?access_token=pk.eyJ1IjoiaG9mZnQiLCJhIjoiY2llaGNtaGRiMDAxeHNxbThnNDV6MG95OSJ9.p6Dj5S7iN-Mmxic6Z03BEA`}
         /> */}
-        <img
-          css={css.visibleOnHover}
-          style={{ maxWidth: "100%", marginBottom: 12, position: 'absolute', top: 0 }}
+        <img className="gb-on-hover"
           src={`https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-s-circle+285A98(${occurrence.coordinates.lon},${occurrence.coordinates.lat})/${occurrence.coordinates.lon},${occurrence.coordinates.lat},12,0/250x180@2x?access_token=pk.eyJ1IjoiaG9mZnQiLCJhIjoiY2llaGNtaGRiMDAxeHNxbThnNDV6MG95OSJ9.p6Dj5S7iN-Mmxic6Z03BEA`}
         />
+        <HashLink to="#location" replace></HashLink>
       </div>}
       <nav css={sharedCss.sideNav()}>
         <ul>

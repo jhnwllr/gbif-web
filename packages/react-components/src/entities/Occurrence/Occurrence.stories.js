@@ -32,8 +32,10 @@ export const Example = () => <Router initialEntries={[`/`]}>
   {/* <Occurrence id={text('id', '3004320174')} /> */}
 
   {/* taonMatch higher rank */}
-  <Occurrence id={text('id', '1632784175')} />
-  1632784175
+  {/* <Occurrence id={text('id', '1632784175')} /> */}
+
+  {/* DNA derived */}
+  <Occurrence id={text('id', '2632907392')} />
 </Router>;
 
 Example.story = {
