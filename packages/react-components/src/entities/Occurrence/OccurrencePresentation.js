@@ -59,23 +59,19 @@ export function OccurrencePresentation({
     <Header {...{ data, error, loading, termMap }}>
       <TabList style={{ marginTop: '12px', borderTop: '1px solid #ddd' }}>
         <RouterTab to={url} exact label="Core" />
-        <RouterTab to={join(url, 'people')} css={sharedCss.tab({ theme })} label="People" />
+        <RouterTab to={join(url, 'media')} css={sharedCss.tab({ theme })} label="Media" />
+        <RouterTab to={join(url, 'cluster')} css={sharedCss.tab({ theme })} label="Cluster" />
+        {/* <RouterTab to={join(url, 'people')} css={sharedCss.tab({ theme })} label="People" />
         <RouterTab to={join(url, 'literature')} css={sharedCss.tab({ theme })} label="Literature" />
         <RouterTab to={join(url, 'related')} css={sharedCss.tab({ theme })} label="Related" />
-        <RouterTab to={join(url, 'media')} css={sharedCss.tab({ theme })} label="Media" />
-        <RouterTab to={join(url, 'sequences')} css={sharedCss.tab({ theme })} label="Sequences" />
+        <RouterTab to={join(url, 'sequences')} css={sharedCss.tab({ theme })} label="Sequences" /> */}
       </TabList>
     </Header>
     <section style={{ borderTop: '1px solid #dedede' }}>
       <Switch>
-        <Route path={join(path, 'people')}>
+        <Route path={join(path, 'cluster')}>
           <div css={sharedCss.proseWrapper({ theme })}>
-            <h1>people</h1>
-          </div>
-        </Route>
-        <Route path={join(path, 'literature')}>
-          <div css={sharedCss.proseWrapper({ theme })}>
-            <h1>Literature</h1>
+            <h1>Cluster</h1>
           </div>
         </Route>
         <Route path={join(path, 'media')}>

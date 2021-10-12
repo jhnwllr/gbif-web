@@ -43,7 +43,7 @@ function Images({ occurrence, ...props }) {
     {occurrence.stillImages?.map(media => <li>
       <div css={css.mediaCard}>
         <figure css={css.mediaArea}>
-          <a target="_blank" href={`https://www.gbif.org/tools/zoom/simple.html?src=${media.identifier}`}>
+          <a target="_blank" href={`https://www.gbif.org/tools/zoom/simple.html?src=${encodeURIComponent(media.identifier)}`}>
             <img src={media.identifier} />
           </a>
         </figure>

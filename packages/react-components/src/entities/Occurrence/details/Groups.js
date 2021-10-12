@@ -7,6 +7,7 @@ import { ButtonGroup, Button, Image, ResourceLink, Accordion, Properties, GadmCl
 import { CustomValueField, BasicField, PlainTextField, EnumField, HtmlField, LicenseField, Chips } from './properties';
 import { TaxonClassification } from './TaxonClassification/TaxonClassification';
 import { AgentSummary } from './AgentSummary'
+import { Sequence } from './Sequence';
 import * as css from "../styles";
 
 const { Term: T, Value: V } = Properties;
@@ -14,6 +15,7 @@ const { Term: T, Value: V } = Properties;
 export function Groups({ occurrence, showAll, setActiveImage, termMap }) {
   return <>
     <ImageMap             {...{ showAll, termMap, occurrence, setActiveImage }} />
+    <SequenceTeaser       {...{ showAll, termMap, occurrence, setActiveImage }} />
     <Summary              {...{ showAll, termMap, occurrence, setActiveImage }} />
     <Record               {...{ showAll, termMap, occurrence, setActiveImage }} />
     <Taxon                {...{ showAll, termMap, occurrence, setActiveImage }} />
@@ -50,7 +52,15 @@ function ImageMap({ showAll, termMap, occurrence, setActiveImage }) {
   return <Group>
     <MediaSummary occurrence={occurrence} />
   </Group>
+}
 
+function SequenceTeaser({ occurrence }) {
+  const dnaDerivedSequence = occurrence?.extensions?.['http://rs.gbif.org/terms/1.0/DNADerivedData']?.[0]?.['http://rs.gbif.org/terms/dna_sequence'];
+  const amplificationSequence = occurrence?.extensions?.['http://data.ggbn.org/schemas/ggbn/terms/Amplification']?.[0]?.['http://data.ggbn.org/schemas/ggbn/terms/consensusSequence'];
+  const seq = dnaDerivedSequence || amplificationSequence;
+  return <Group>
+    <Sequence sequence={seq} />
+  </Group>;
 }
 
 function Summary({ showAll, termMap, occurrence, setActiveImage }) {

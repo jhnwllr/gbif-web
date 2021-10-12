@@ -5,9 +5,9 @@ import ThemeContext from '../../../../style/themes/ThemeContext';
 import { FormattedMessage } from 'react-intl';
 import * as css from '../../styles';
 import * as sharedCss from '../../../shared/styles';
-import { Row, Col, Switch, Tag } from "../../../../components";
+import { Row, Col, Switch, Tag } from '../../../../components';
 import { Groups } from '../Groups';
-import { HashLink } from "react-router-hash-link";
+import { HashLink } from 'react-router-hash-link';
 
 export function Core({
   data = {},
@@ -29,9 +29,7 @@ export function Core({
   return <Row direction="row" wrap="nowrap" style={{ maxHeight: '100%', paddingBottom: 24 }}>
     <div css={sharedCss.sideNavWrapper({offset: stickyOffset})}>
       {occurrence?.coordinates && <div css={css.mapThumb()}>
-        <img
-          src={`https://api.mapbox.com/styles/v1/mapbox/light-v9/static/pin-s-circle+285A98(${occurrence.coordinates.lon},${occurrence.coordinates.lat})/${occurrence.coordinates.lon},${occurrence.coordinates.lat},6,0/250x180@2x?access_token=pk.eyJ1IjoiaG9mZnQiLCJhIjoiY2llaGNtaGRiMDAxeHNxbThnNDV6MG95OSJ9.p6Dj5S7iN-Mmxic6Z03BEA`}
-        />
+        <img src={`https://api.mapbox.com/styles/v1/mapbox/light-v9/static/pin-s-circle+285A98(${occurrence.coordinates.lon},${occurrence.coordinates.lat})/${occurrence.coordinates.lon},${occurrence.coordinates.lat},5,0/250x180@2x?access_token=pk.eyJ1IjoiaG9mZnQiLCJhIjoiY2llaGNtaGRiMDAxeHNxbThnNDV6MG95OSJ9.p6Dj5S7iN-Mmxic6Z03BEA`} />
         {/* <img
           style={{ display: "block", maxWidth: "100%", marginBottom: 12, position: 'absolute', top: 0 }}
           src={`https://api.mapbox.com/styles/v1/mapbox/light-v9/static/pin-s-circle+285A98(${occurrence.coordinates.lon},${occurrence.coordinates.lat})/${occurrence.coordinates.lon},${occurrence.coordinates.lat},9,0/250x180@2x?access_token=pk.eyJ1IjoiaG9mZnQiLCJhIjoiY2llaGNtaGRiMDAxeHNxbThnNDV6MG95OSJ9.p6Dj5S7iN-Mmxic6Z03BEA`}
@@ -63,7 +61,6 @@ export function Core({
       </nav>
     </div>
     <div>
-      <Sequence sequence={occurrence?.extensions?.['http://rs.gbif.org/terms/1.0/DNADerivedData']?.[0]?.['http://rs.gbif.org/terms/dna_sequence']} />
       <Groups termMap={termMap} occurrence={occurrence} setActiveImage={setActiveImage} />
     </div>
   </Row>
@@ -80,14 +77,4 @@ function Li({to, children, ...props}) {
 
 function Separator(props) {
   return <li style={{ borderBottom: '1px solid #eee' }}></li>
-}
-
-function Sequence({sequence, ...props}) {
-  if (!sequence) return null;
-  const parts = sequence.split('');
-  return <div style={{display: 'flex'}}>
-    {parts.map(x => {
-      <div style={{flex: '0 0 10px', background: 'tomato', margin: 1}}>&nbsp;</div>
-    })}
-  </div>
 }
