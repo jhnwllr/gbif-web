@@ -1,6 +1,6 @@
 
 import { jsx } from '@emotion/react';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ThemeContext from '../../style/themes/ThemeContext';
 import { Header } from './details/Header';
 import { Tabs } from '../../components';
@@ -13,9 +13,28 @@ import { join } from '../../utils/util';
 // import get from 'lodash/get';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import { Core } from './details/core/Core';
+import { Media } from './details/Media';
 import * as sharedCss from '../shared/styles';
 
 const { TabList, RouterTab } = Tabs;
+
+// function useStickyReference() {
+//   const [ref, setRef] = useState();
+//   const [offset, setOffset] = useState();
+//   useEffect(() => {
+//     if (ref) {
+//       const rect = ref.getBoundingClientRect();
+//       setOffset(rect.y);
+//     }
+//   }, [ref]);
+
+//   function setReference(node) {
+//     if (node && !ref) {
+//       setRef(node);
+//     }
+//   }
+//   return [offset, setReference];
+// }
 
 export function OccurrencePresentation({
   id,
@@ -26,7 +45,6 @@ export function OccurrencePresentation({
 }) {
   let { url, path } = useRouteMatch();
   const theme = useContext(ThemeContext);
-
   if (loading) return <div>loading</div>
   const { occurrence } = data;
   const { terms } = occurrence;
@@ -58,6 +76,11 @@ export function OccurrencePresentation({
         <Route path={join(path, 'literature')}>
           <div css={sharedCss.proseWrapper({ theme })}>
             <h1>Literature</h1>
+          </div>
+        </Route>
+        <Route path={join(path, 'media')}>
+          <div css={sharedCss.proseWrapper({ theme })}>
+            <Media {...{data, loading, error, termMap}}/>
           </div>
         </Route>
         <Route path={path}>

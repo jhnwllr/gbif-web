@@ -2,6 +2,7 @@ import React from 'react';
 import { text } from '@storybook/addon-knobs';
 import { Occurrence } from './Occurrence';
 import { MemoryRouter as Router } from "react-router-dom";
+import Standalone from './Standalone';
 import readme from './README.md';
 import { StyledProse } from '../../components/typography/StyledProse';
 import AddressBar from "../../StorybookAddressBar"
@@ -20,13 +21,26 @@ export const Example = () => <Router initialEntries={[`/`]}>
   {/* <Occurrence id={text('id', '1702253346')} style={{maxWidth: '100%', width: 700, height: 'calc(100vh - 20px)', flex: '0 0 auto'}} /> */}
   {/* <Occurrence id={text('id', '2565007305')} /> */}
   {/* <Occurrence id={text('id', '3095291314')} /> */}
-  <Occurrence id={text('id', '2563424903')} />
+  
+  {/* type images */}
+  {/* <Occurrence id={text('id', '2563424903')} /> */}
+
+  {/* audio */}
+  {/* <Occurrence id={text('id', '3015568527')} /> */}
+  
+  {/* movie */}
+  {/* <Occurrence id={text('id', '3004320174')} /> */}
+
+  {/* taonMatch higher rank */}
+  <Occurrence id={text('id', '1632784175')} />
+  1632784175
 </Router>;
 
 Example.story = {
   name: 'Occurrence',
 };
 
+export const StandaloneExample = () => <Standalone id="2563424903"></Standalone>;
 
 // // OPTIONS
 // const options = {

@@ -13,6 +13,7 @@ import { Header as HeaderWrapper } from '../../shared/Header';
 import { TaxonClassification } from './TaxonClassification/TaxonClassification';
 import { FaGlobeAfrica, FaTag } from 'react-icons/fa';
 import { AiFillTag } from 'react-icons/ai';
+import { BsLightningFill } from 'react-icons/bs';
 
 export function Header({
   data,
@@ -42,9 +43,11 @@ export function Header({
               month="long"
               day="2-digit" />} />
 
-          <h1><span dangerouslySetInnerHTML={{ __html: data?.occurrence?.gbifClassification?.usage?.formattedName }} />
-            <Tooltip title={<div style={{ width: 200 }}>This name could not be matched confidently to the GBIF backbone. The clostest match is "skdfjhlskjdhf lkjh "</div>} placement="bottom">
-              <span> <Tag type="warning">!</Tag></span>
+          <h1>
+            {!data.occurrence.issues.includes('TAXON_MATCH_HIGHERRANK') && <span dangerouslySetInnerHTML={{ __html: data?.occurrence?.gbifClassification?.usage?.formattedName }} />}
+            {data.occurrence.issues.includes('TAXON_MATCH_HIGHERRANK') && <span>{termMap.scientificName.verbatim}</span>}
+            <Tooltip title={<div style={{ width: 200, fontSize: 15 }}>This name could not be matched confidently to the GBIF backbone. The clostest match is <span dangerouslySetInnerHTML={{ __html: data?.occurrence?.gbifClassification?.usage?.formattedName }} /></div>} placement="bottom">
+              <span style={{marginLeft: 8}}><BsLightningFill style={{color: 'orange'}}/></span>
             </Tooltip>
           </h1>
           {/* <div style={{color: '#787878', marginTop: -4}}>Common name: Saptree</div> */}

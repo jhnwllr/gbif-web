@@ -204,3 +204,11 @@ export const issuePill = ({ severity, ...props }) => css`
   padding: 0 4px;
   margin-right: 4px;
 `;
+
+export const visibleOnHover = css`
+opacity: .001;
+transition: opacity 300ms ease;
+  &:hover {
+    opacity: 1;
+  }
+`;

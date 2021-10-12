@@ -25,14 +25,14 @@ export const tab = ({ noData, ...props }) => css`
   color: ${noData ? '#888' : null};
 `;
 
-export const sideNavWrapper = ({ ...props }) => css`
+export const sideNavWrapper = ({ offset = 0, ...props }) => css`
   flex: 0 0 250px;
   padding-top: 12px;
   margin: 0;
   margin-right: 12px;
   font-size: 14px;
   position: sticky;
-  top: 0;
+  top: ${offset}px;
   align-self: flex-start;
   height: 100%;
 `;
@@ -50,7 +50,7 @@ export const sideNav = ({ ...props }) => css`
   }
 `;
 
-export const sideNnvItem = ({ ...props }) => css`
+export const sideNavItem = ({ ...props }) => css`
   padding: 8px 12px;
   line-height: 1em;
   display: block;
@@ -58,6 +58,10 @@ export const sideNnvItem = ({ ...props }) => css`
   width: 100%;
   text-align: left;
   text-decoration: none;
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
   &.isActive {
     background: #e0e7ee;
     font-weight: 500;

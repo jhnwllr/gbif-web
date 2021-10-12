@@ -54,7 +54,7 @@ function ImageMap({ showAll, termMap, occurrence, setActiveImage }) {
 }
 
 function Summary({ showAll, termMap, occurrence, setActiveImage }) {
-  return <Group label="occurrenceDetails.groups.summary">
+  return <Group label="occurrenceDetails.groups.summary" id="summary">
     <Properties css={css.properties} breakpoint={800}>
 
       {/* <Images {...{ showAll, termMap, occurrence, setActiveImage }} /> */}
@@ -84,7 +84,7 @@ function Summary({ showAll, termMap, occurrence, setActiveImage }) {
 }
 
 function Record({ showAll, termMap, occurrence, setActiveImage }) {
-  return <Group label="occurrenceDetails.groups.record">
+  return <Group label="occurrenceDetails.groups.record" id="record">
     <Properties css={css.properties} breakpoint={800}>
       <Institution      {...{ showAll, termMap, occurrence }} />
       <Collection       {...{ showAll, termMap, occurrence }} />
@@ -124,7 +124,7 @@ function Occurrence({ showAll, termMap, occurrence, setActiveImage }) {
     'associatedMedia'].find(x => termMap[x]);
   if (!hasContent) return null;
 
-  return <Group label="occurrenceDetails.groups.occurrence">
+  return <Group label="occurrenceDetails.groups.occurrence" id="occurrence">
     <Properties css={css.properties} breakpoint={800}>
       <HtmlField term={termMap.occurrenceID} showDetails={showAll} />
       <PlainTextField term={termMap.catalogNumber} showDetails={showAll} />
@@ -160,7 +160,7 @@ function Organism({ showAll, termMap, occurrence, setActiveImage }) {
     'organismRemarks'].find(x => termMap[x]);
   if (!hasContent) return null;
 
-  return <Group label="occurrenceDetails.groups.organism">
+  return <Group label="occurrenceDetails.groups.organism" id="organism">
     <Properties css={css.properties} breakpoint={800}>
       <PlainTextField term={termMap.organismID} showDetails={showAll} />
       <PlainTextField term={termMap.organismScope} showDetails={showAll} />
@@ -175,7 +175,7 @@ function Organism({ showAll, termMap, occurrence, setActiveImage }) {
 function MaterialSample({ showAll, termMap, occurrence, setActiveImage }) {
   if (!termMap.materialSampleID) return null;
 
-  return <Group label="occurrenceDetails.groups.materialSample">
+  return <Group label="occurrenceDetails.groups.materialSample" id="material-sample">
     <Properties css={css.properties} breakpoint={800}>
       <PlainTextField term={termMap.materialSampleID} showDetails={showAll} />
     </Properties>
@@ -202,7 +202,7 @@ function Event({ showAll, termMap, occurrence, setActiveImage }) {
     'eventRemarks'].find(x => termMap[x]);
   if (!hasContent) return null;
 
-  return <Group label="occurrenceDetails.groups.event">
+  return <Group label="occurrenceDetails.groups.event" id="event">
     <Properties css={css.properties} breakpoint={800}>
       <PlainTextField term={termMap.eventID} showDetails={showAll} />
       <PlainTextField term={termMap.parentEventID} showDetails={showAll} />
@@ -281,7 +281,7 @@ function Location({ showAll, termMap, occurrence, setActiveImage }) {
     'verbatimLongitude'].find(x => termMap[x]);
   if (!hasContent) return null;
 
-  return <Group label="occurrenceDetails.groups.location">
+  return <Group label="occurrenceDetails.groups.location" id="location">
     <Properties css={css.properties} breakpoint={800}>
       <PlainTextField term={termMap.locationID} showDetails={showAll} />
       <PlainTextField term={termMap.higherGeographyID} showDetails={showAll} />
@@ -369,7 +369,7 @@ function GeologicalContext({ showAll, termMap, occurrence, setActiveImage }) {
     'bed'].find(x => termMap[x]);
   if (!hasContent) return null;
 
-  return <Group label="occurrenceDetails.groups.geologicalContext">
+  return <Group label="occurrenceDetails.groups.geologicalContext" id="geological-context">
     <Properties css={css.properties} breakpoint={800}>
       <PlainTextField term={termMap.geologicalContextID} showDetails={showAll} />
       <PlainTextField term={termMap.earliestEonOrLowestEonothem} showDetails={showAll} />
@@ -405,11 +405,11 @@ function Identification({ showAll, termMap, occurrence, setActiveImage }) {
     'identificationRemarks'].find(x => termMap[x]);
   if (!hasContent) return null;
 
-  return <Group label="occurrenceDetails.groups.identification">
+  return <Group label="occurrenceDetails.groups.identification" id="identification">
     <Properties css={css.properties} breakpoint={800}>
       <HtmlField term={termMap.identificationID} showDetails={showAll} />
       <PlainTextField term={termMap.identificationQualifier} showDetails={showAll} />
-      <PlainTextField term={termMap.typeStatus} showDetails={showAll} getEnum={value => `enums.typeStatus.${value}`} />
+      <EnumField term={termMap.typeStatus} showDetails={showAll} getEnum={value => `enums.typeStatus.${value}`} />
       <PlainTextField term={termMap.identifiedBy} showDetails={showAll} />
       <PlainTextField term={termMap.dateIdentified} showDetails={showAll} />
       <HtmlField term={termMap.identificationReferences} showDetails={showAll} />
@@ -456,7 +456,7 @@ function Taxon({ showAll, termMap, occurrence, setActiveImage }) {
     'scientificNameAuthorship'].find(x => termMap[x]);
   if (!hasContent) return null;
 
-  return <Group label="occurrenceDetails.groups.taxon">
+  return <Group label="occurrenceDetails.groups.taxon" id="taxon">
     <Properties css={css.properties} breakpoint={800}>
       <HtmlField term={termMap.taxonID} showDetails={showAll} />
       <HtmlField term={termMap.scientificNameID} showDetails={showAll} />
@@ -557,7 +557,7 @@ function Other({ showAll, termMap, occurrence, setActiveImage }) {
   //   'gbifID'].find(x => termMap[x]);
   // if (!hasContent) return null;
 
-  return <Group label="occurrenceDetails.groups.other">
+  return <Group label="occurrenceDetails.groups.other" id="other">
     <Properties css={css.properties} breakpoint={800}>
       <PlainTextField term={termMap.abstract} showDetails={showAll} />
       <PlainTextField term={termMap.accessRights} showDetails={showAll} />
@@ -622,7 +622,7 @@ function Other({ showAll, termMap, occurrence, setActiveImage }) {
 }
 
 function Citation({ occurrence }) {
-  return <Group label="phrases.citation">
+  return <Group label="phrases.citation" id="citation">
     <Properties css={css.properties} breakpoint={800}>
       <T><FormattedMessage id={`phrases.citeAs`} /></T>
       <V>{occurrence.dataset.citation.text} https://gbif.org/occurrence/{occurrence.key}</V>
@@ -817,21 +817,29 @@ function Agents({ label, value }) {
 
 function MediaSummary({ occurrence, ...props }) {
   const [activeImage, setActiveImage] = useState(0);
-  const [view, setView] = useState(occurrence.stillImages.length > 0 ? 'IMAGE' : 'MAP');
+  // const [view, setView] = useState(occurrence.stillImages.length > 0 ? 'IMAGE' : 'MAP');
 
-  if (!occurrence.stillImages && !occurrence?.coordinates?.lon) return null;
-  
+  const hasVideo = occurrence?.movingImageCount > 0;
+  const hasPlayableVideo = hasVideo && ['video/mp4', 'video/ogg'].includes(occurrence?.movingImages[0].format);
+  if (!occurrence.stillImageCount > 0 && !hasPlayableVideo) return null;
+
   return <div style={{ position: 'relative', background: '#eee' }}>
+    {hasPlayableVideo && occurrence?.movingImages[0] && <video controls style={{ maxWidth: '100%', height: 400, display: 'block', margin: 'auto' }} >
+      <source src={occurrence?.movingImages[0].identifier} type={occurrence?.movingImages[0].format} />
+      Unable to play
+    </video>}
+    {!hasPlayableVideo && <Image src={occurrence.stillImages[activeImage].identifier} style={{ maxWidth: '100%', height: 400, display: 'block', margin: 'auto' }} />}
+
     {/* <div style={{ display: 'flex', background: 'white', padding: 8, justifyContent: 'flex-end' }}> */}
-    <div style={{ position: 'absolute', margin: 12, top: 0, right: 0, zIndex: 2 }}>
+    {/* <div style={{ position: 'absolute', margin: 12, top: 0, right: 0, zIndex: 2 }}>
       <ButtonGroup style={{ fontSize: 14 }}>
         <Button appearance={view === 'IMAGE' ? 'ink' : 'inkOutline'} truncate onClick={e => setView('IMAGE')}>Media</Button>
         <Button appearance={view !== 'IMAGE' ? 'ink' : 'inkOutline'} onClick={e => setView('MAP')}>Map</Button>
       </ButtonGroup>
-    </div>
-    {view === 'IMAGE' && <Image src={occurrence.stillImages[activeImage].identifier} style={{ maxWidth: '100%', height: 400, display: 'block', margin: 'auto' }} />}
+    </div> */}
 
-    {view === 'MAP' && <div style={{ maxWidth: '100%', height: 400, display: 'block', margin: 'auto', position: 'relative' }}>
+
+    {/* {view === 'MAP' && <div style={{ maxWidth: '100%', height: 400, display: 'block', margin: 'auto', position: 'relative' }}>
       <img
         style={{ display: "block", maxWidth: "100%" }}
         src={`https://api.mapbox.com/styles/v1/mapbox/light-v9/static/pin-s-circle+285A98(${occurrence.coordinates.lon},${occurrence.coordinates.lat})/${occurrence.coordinates.lon},${occurrence.coordinates.lat},13,0/738x400@2x?access_token=pk.eyJ1IjoiaG9mZnQiLCJhIjoiY2llaGNtaGRiMDAxeHNxbThnNDV6MG95OSJ9.p6Dj5S7iN-Mmxic6Z03BEA`}
@@ -846,9 +854,6 @@ function MediaSummary({ occurrence, ...props }) {
         }}
         src={`https://api.mapbox.com/styles/v1/mapbox/light-v9/static/pin-s-circle+dedede(${occurrence.coordinates.lon},${occurrence.coordinates.lat})/${occurrence.coordinates.lon},${occurrence.coordinates.lat},4,0/200x100@2x?access_token=pk.eyJ1IjoiaG9mZnQiLCJhIjoiY2llaGNtaGRiMDAxeHNxbThnNDV6MG95OSJ9.p6Dj5S7iN-Mmxic6Z03BEA`}
       />
-    </div>}
-
-    {/* <button onClick={e => setActiveImage(activeImage - 1)}>prev</button>
-    <button onClick={e => setActiveImage(activeImage + 1)}>next</button> */}
+    </div>} */}
   </div>
 }

@@ -105,6 +105,30 @@ query occurrence($key: ID!){
       rightsHolder
       description
     }
+    sounds {
+      type
+      format
+      identifier
+      created
+      creator
+      license
+      publisher
+      references
+      rightsHolder
+      description
+    }
+    movingImages {
+      type
+      format
+      identifier
+      created
+      creator
+      license
+      publisher
+      references
+      rightsHolder
+      description
+    }
 
     gbifClassification {
       kingdom
