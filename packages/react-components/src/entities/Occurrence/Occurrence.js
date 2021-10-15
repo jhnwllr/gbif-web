@@ -21,10 +21,13 @@ export function Occurrence({
     }
   }, [id]);
 
-  return <MemoryRouter initialEntries={['/']}>
-    <OccurrencePresentation {...{ data, error, loading: loading || !data, id }} />
-  </MemoryRouter>
-  // return <OccurrencePresentation {...{ data, error, loading: loading || !data, id }} />
+  // might be worth looking at https://pretagteam.com/question/using-memoryrouter-inside-of-browserrouter
+  // and https://stackoverflow.com/questions/60716732/using-memoryrouter-inside-of-browserrouter
+  
+  // return <MemoryRouter initialEntries={['/']}>
+  //   <OccurrencePresentation {...{ data, error, loading: loading || !data, id }} />
+  // </MemoryRouter>
+  return <OccurrencePresentation {...{ data, error, loading: loading || !data, id }} />
 };
 
 

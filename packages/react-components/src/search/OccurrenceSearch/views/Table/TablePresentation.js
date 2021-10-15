@@ -7,7 +7,7 @@ import get from 'lodash/get';
 // import { FilterContext } from '../../../../widgets/Filter/state';
 import OccurrenceContext from '../../../SearchContext';
 import { Button, Row, Col, DataTable, Th, Td, TBody, DetailsDrawer } from '../../../../components';
-import { OccurrenceSidebar, Occurrence } from '../../../../entities';
+import { OccurrenceSidebar } from '../../../../entities';
 import { useDialogState } from "reakit/Dialog";
 import { ViewHeader } from '../ViewHeader';
 // import { useUrlState } from '../../../../dataManagement/state/useUrlState';
@@ -148,8 +148,7 @@ export const TablePresentation = ({ first, prev, next, size, from, data, total, 
 
   return <>
     {dialog.visible && <DetailsDrawer href={`https://www.gbif.org/occurrence/${activeKey}`} dialog={dialog} nextItem={nextItem} previousItem={previousItem}>
-      {/* <OccurrenceSidebar id={activeKey} defaultTab='details' style={{ maxWidth: '100%', width: 700, height: '100%' }} onCloseRequest={() => dialog.setVisible(false)} /> */}
-      <Occurrence id={activeKey} defaultTab='details' style={{ maxWidth: '100%', width: 700, height: '100%' }} onCloseRequest={() => dialog.setVisible(false)} />
+      <OccurrenceSidebar id={activeKey} defaultTab='details' style={{ maxWidth: '100%', width: 700, height: '100%' }} onCloseRequest={() => dialog.setVisible(false)} />
     </DetailsDrawer>}
     <div style={{
       flex: "1 1 100%",

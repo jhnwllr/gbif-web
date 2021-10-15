@@ -230,3 +230,19 @@ export const mapThumb = props => css`
   }
 `;
 
+
+export const listArea = props => css`
+  background: #fbfbfb;
+  border: 1px solid #eee;
+  border-width: 1px 0;
+  padding: 8px 0;
+`;
+
+export const listCard = props => css`
+  margin: 0 12px 12px 12px;
+  padding: 12px;
+  border: 1px solid rgb(238, 238, 238);
+  box-shadow: rgb(0 0 0 / 4%) 0px 1px 2px 2px;
+  border-radius: 4px;
+  background: white;
+`;

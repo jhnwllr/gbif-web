@@ -38,9 +38,13 @@ export const Example = () => <Router initialEntries={[`/`]}>
   {/* <Occurrence id={text('id', '2250301288')} /> */}
 
   {/* amplification with sequence 2238150290 2633841312 1208901618 1563183804 1949672676 2633254982 2238434252 2979629271 */}
-  <Occurrence id={text('id', '2633841312')} />
+  <Occurrence id={text('id', '3027960631')} />
+
+  {/* 3027960631 gelimage */}
 
   {/* 2633841312 sequences, clustered, imaged, coordinates*/}
+
+  {/* 3028053821 many extensions: preperation, resourceRelationship, amplification, permit, loan, preservation, material sample */}
 </Router>;
 
 Example.story = {

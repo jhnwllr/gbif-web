@@ -2,7 +2,7 @@ import { jsx } from '@emotion/react';
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import equal from 'fast-deep-equal/react';
-import intersection from 'lodash/intersection';
+import startCase from 'lodash/startCase';
 import { ButtonGroup, Button, Image, ResourceLink, Accordion, Properties, GadmClassification, GalleryTiles, GalleryTile, DatasetKeyLink, PublisherKeyLink } from "../../../components";
 import { CustomValueField, BasicField, PlainTextField, EnumField, HtmlField, LicenseField, Chips } from './properties';
 import { TaxonClassification } from './TaxonClassification/TaxonClassification';
@@ -17,6 +17,7 @@ export function Groups({ occurrence, showAll, setActiveImage, termMap }) {
     <ImageMap             {...{ showAll, termMap, occurrence, setActiveImage }} />
     <SequenceTeaser       {...{ showAll, termMap, occurrence, setActiveImage }} />
     <Summary              {...{ showAll, termMap, occurrence, setActiveImage }} />
+
     <Record               {...{ showAll, termMap, occurrence, setActiveImage }} />
     <Taxon                {...{ showAll, termMap, occurrence, setActiveImage }} />
     <Location             {...{ showAll, termMap, occurrence, setActiveImage }} />
@@ -27,6 +28,19 @@ export function Groups({ occurrence, showAll, setActiveImage, termMap }) {
     <GeologicalContext    {...{ showAll, termMap, occurrence, setActiveImage }} />
     <Identification       {...{ showAll, termMap, occurrence, setActiveImage }} />
     <Other                {...{ showAll, termMap, occurrence, setActiveImage }} />
+
+    <Preparation          {...{ showAll, termMap, occurrence, setActiveImage }} />
+    <ResourceRelationship {...{ showAll, termMap, occurrence, setActiveImage }} />
+    <Amplification        {...{ showAll, termMap, occurrence, setActiveImage }} />
+    <Permit               {...{ showAll, termMap, occurrence, setActiveImage }} />
+    <Loan                 {...{ showAll, termMap, occurrence, setActiveImage }} />
+    <Preservation         {...{ showAll, termMap, occurrence, setActiveImage }} />
+    <MaterialSampleExt    {...{ showAll, termMap, occurrence, setActiveImage }} />
+    <Audubon              {...{ showAll, termMap, occurrence, setActiveImage }} />
+    <DNADerivedData       {...{ showAll, termMap, occurrence, setActiveImage }} />
+    <Cloning              {...{ showAll, termMap, occurrence, setActiveImage }} />
+    <GelImage             {...{ showAll, termMap, occurrence, setActiveImage }} />
+
     <Citation             {...{ showAll, termMap, occurrence, setActiveImage }} />
   </>
 }
@@ -42,7 +56,7 @@ export function Group({ label, children, ...props }) {
     css={css.group()}
     {...props}
   >
-    {label && <h2><FormattedMessage id={label} /></h2>}
+    {label && <h2><FormattedMessage id={label} defaultMessage={getDefaultMessage(label)} /></h2>}
     <div>
       {children}
     </div>
@@ -631,6 +645,115 @@ function Other({ showAll, termMap, occurrence, setActiveImage }) {
   </Group>
 }
 
+function Preparation({ occurrence }) {
+  const extensionName = 'http://data.ggbn.org/schemas/ggbn/terms/Preparation';
+  return <GenericExtension {...{ occurrence, extensionName }} label="phrases.preparation" id="preparation" />
+}
+
+function ResourceRelationship({ occurrence }) {
+  const extensionName = 'http://rs.tdwg.org/dwc/terms/ResourceRelationship';
+  return <GenericExtension {...{ occurrence, extensionName }} label="phrases.resourceRelationship" id="resource-relationship" />
+}
+
+function Amplification({ occurrence }) {
+  const extensionName = 'http://data.ggbn.org/schemas/ggbn/terms/Amplification';
+  return <GenericExtension {...{ occurrence, extensionName }} label="phrases.amplification" id="amplification" />
+}
+
+function Permit({ occurrence }) {
+  const extensionName = 'http://data.ggbn.org/schemas/ggbn/terms/Permit';
+  return <GenericExtension {...{ occurrence, extensionName }} label="phrases.permit" id="permit" />
+}
+
+function Loan({ occurrence }) {
+  const extensionName = 'http://data.ggbn.org/schemas/ggbn/terms/Loan';
+  return <GenericExtension {...{ occurrence, extensionName }} label="phrases.loan" id="loan" />
+}
+
+function Preservation({ occurrence }) {
+  const extensionName = 'http://data.ggbn.org/schemas/ggbn/terms/Preservation';
+  return <GenericExtension {...{ occurrence, extensionName }} label="phrases.preservation" id="preservation" />
+}
+
+function MaterialSampleExt({ occurrence }) {
+  const extensionName = 'http://data.ggbn.org/schemas/ggbn/terms/MaterialSample';
+  return <GenericExtension {...{ occurrence, extensionName }} label="phrases.materialSample" id="material-sample" />
+}
+
+function Audubon({ occurrence }) {
+  const extensionName = 'http://rs.tdwg.org/ac/terms/Multimedia';
+  return <GenericExtension {...{ occurrence, extensionName }} label="phrases.audubon" id="audubon" />
+}
+
+function DNADerivedData({ occurrence }) {
+  const extensionName = 'http://rs.gbif.org/terms/1.0/DNADerivedData';
+  return <GenericExtension {...{ occurrence, extensionName }} label="phrases.DNADerivedData" id="dna-derived-data" />
+}
+
+function Cloning({ occurrence }) {
+  const extensionName = 'http://data.ggbn.org/schemas/ggbn/terms/Cloning';
+  return <GenericExtension {...{ occurrence, extensionName }} label="phrases.cloning" id="cloning" />
+}
+
+function GelImage({ occurrence }) {
+  const extensionName = 'http://data.ggbn.org/schemas/ggbn/terms/GelImage';
+  return <GenericExtension
+    {...{
+      occurrence, extensionName, overwrites: {
+        'http://purl.org/dc/terms/identifier': ({ item }) => <div>
+          <img src={item['http://purl.org/dc/terms/identifier']} />
+          <div>{item['http://purl.org/dc/terms/identifier']}</div>
+        </div>
+      }
+    }}
+    label="phrases.gelImage"
+    id="gel-image" />
+}
+
+
+function GenericExtension({ occurrence, extensionName, overwrites, ...props }) {
+  const list = occurrence?.extensions?.[extensionName];
+  if (!list || list.length === 0) return null;
+
+  return <Group {...props}>
+    {list.length === 1 && <GenericExtensionContent item={list[0]} extensionName={extensionName} overwrites={overwrites} />}
+    {list.length > 1 && <div css={css.listArea()}>
+      <div style={{ fontSize: '12px', margin: '0 12px' }}>{list.length} rows</div>
+      {list.map((item, i) => <ListCard>
+        <GenericExtensionContent item={item} extensionName={extensionName} overwrites={overwrites} />
+      </ListCard>)}
+    </div>}
+  </Group>
+}
+
+function GenericExtensionContent({ item, extensionName, overwrites = {} }) {
+  const fields = Object.keys(item);
+  console.log(fields);
+  return <Properties css={css.properties} breakpoint={800}>
+    {fields.map(field => {
+      if (overwrites[field]) {
+        return <ExtField key={field} {...{ item, extensionName, field }}>
+          {overwrites[field]({ item })}
+        </ExtField>
+      } else {
+        return <ExtField key={field} {...{ item, extensionName, field }} />
+      }
+    })}
+  </Properties>
+}
+
+function ExtField({ item, extensionName, field, children, ...props }) {
+  if (!item[field]) return null;
+  return <>
+    <T><FormattedMessage id={`occurrenceDetails.extensions.${extensionName}.${field}`} defaultMessage={getDefaultMessage(field)} /></T>
+    <V>{children ? children : item[field]}</V>
+  </>
+}
+
+function ListCard(props) {
+  return <div css={css.listCard()} {...props} />
+}
+
 function Citation({ occurrence }) {
   return <Group label="phrases.citation" id="citation">
     <Properties css={css.properties} breakpoint={800}>
@@ -866,4 +989,9 @@ function MediaSummary({ occurrence, ...props }) {
       />
     </div>} */}
   </div>
+}
+
+function getDefaultMessage(str) {
+  if (typeof str !== 'string') return;
+  return startCase(str.replace(/\./g, '/').split('/').reverse()[0]);
 }
