@@ -12,36 +12,36 @@ import * as css from "../styles";
 
 const { Term: T, Value: V } = Properties;
 
-export function Groups({ occurrence, showAll, setActiveImage, termMap }) {
+export function Groups({ occurrence, showAll, updateToc, setActiveImage, termMap }) {
   return <>
-    <ImageMap             {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <SequenceTeaser       {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <Summary              {...{ showAll, termMap, occurrence, setActiveImage }} />
+    <ImageMap             {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <SequenceTeaser       {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <Summary              {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
 
-    <Record               {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <Taxon                {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <Location             {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <Occurrence           {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <Event                {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <Organism             {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <MaterialSample       {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <GeologicalContext    {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <Identification       {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <Other                {...{ showAll, termMap, occurrence, setActiveImage }} />
+    <Record               {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <Taxon                {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <Location             {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <Occurrence           {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <Event                {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <Organism             {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <MaterialSample       {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <GeologicalContext    {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <Identification       {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <Other                {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
 
-    <Preparation          {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <ResourceRelationship {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <Amplification        {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <Permit               {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <Loan                 {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <Preservation         {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <MaterialSampleExt    {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <Audubon              {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <DNADerivedData       {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <Cloning              {...{ showAll, termMap, occurrence, setActiveImage }} />
-    <GelImage             {...{ showAll, termMap, occurrence, setActiveImage }} />
+    <Preparation          {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <ResourceRelationship {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <Amplification        {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <Permit               {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <Loan                 {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <Preservation         {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <MaterialSampleExt    {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <Audubon              {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <DNADerivedData       {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <Cloning              {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
+    <GelImage             {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
 
-    <Citation             {...{ showAll, termMap, occurrence, setActiveImage }} />
+    <Citation             {...{ updateToc, showAll, termMap, occurrence, setActiveImage }} />
   </>
 }
 
@@ -62,7 +62,7 @@ export function Group({ label, children, ...props }) {
     </div>
   </section>
 }
-function ImageMap({ showAll, termMap, occurrence, setActiveImage }) {
+function ImageMap({ updateToc, showAll, termMap, occurrence, setActiveImage }) {
   return <Group>
     <MediaSummary occurrence={occurrence} />
   </Group>
@@ -77,7 +77,7 @@ function SequenceTeaser({ occurrence }) {
   </Group>;
 }
 
-function Summary({ showAll, termMap, occurrence, setActiveImage }) {
+function Summary({ updateToc, showAll, termMap, occurrence, setActiveImage }) {
   return <Group label="occurrenceDetails.groups.summary" id="summary">
     <Properties css={css.properties} breakpoint={800}>
 
@@ -107,7 +107,7 @@ function Summary({ showAll, termMap, occurrence, setActiveImage }) {
   </Group>
 }
 
-function Record({ showAll, termMap, occurrence, setActiveImage }) {
+function Record({ updateToc, showAll, termMap, occurrence, setActiveImage }) {
   return <Group label="occurrenceDetails.groups.record" id="record">
     <Properties css={css.properties} breakpoint={800}>
       <Institution      {...{ showAll, termMap, occurrence }} />
@@ -123,7 +123,7 @@ function Record({ showAll, termMap, occurrence, setActiveImage }) {
   </Group>
 }
 
-function Occurrence({ showAll, termMap, occurrence, setActiveImage }) {
+function Occurrence({ updateToc, showAll, termMap, occurrence, setActiveImage }) {
   const hasContent = [
     'occurrenceID',
     'catalogNumber',
@@ -146,7 +146,10 @@ function Occurrence({ showAll, termMap, occurrence, setActiveImage }) {
     'otherCatalogNumbers',
     'occurrenceRemarks',
     'associatedMedia'].find(x => termMap[x]);
-  if (!hasContent) return null;
+  if (!hasContent) {
+    return null;
+  };
+  updateToc('occurrence');
 
   return <Group label="occurrenceDetails.groups.occurrence" id="occurrence">
     <Properties css={css.properties} breakpoint={800}>
@@ -175,7 +178,7 @@ function Occurrence({ showAll, termMap, occurrence, setActiveImage }) {
   </Group>
 }
 
-function Organism({ showAll, termMap, occurrence, setActiveImage }) {
+function Organism({ updateToc, showAll, termMap, occurrence, setActiveImage }) {
   const hasContent = ['organismID',
     'organismScope',
     'associatedOccurrences',
@@ -196,7 +199,7 @@ function Organism({ showAll, termMap, occurrence, setActiveImage }) {
   </Group>
 }
 
-function MaterialSample({ showAll, termMap, occurrence, setActiveImage }) {
+function MaterialSample({ updateToc, showAll, termMap, occurrence, setActiveImage }) {
   if (!termMap.materialSampleID) return null;
 
   return <Group label="occurrenceDetails.groups.materialSample" id="material-sample">
@@ -206,7 +209,7 @@ function MaterialSample({ showAll, termMap, occurrence, setActiveImage }) {
   </Group>
 }
 
-function Event({ showAll, termMap, occurrence, setActiveImage }) {
+function Event({ updateToc, showAll, termMap, occurrence, setActiveImage }) {
   const hasContent = [
     'eventID',
     'parentEventID',
@@ -251,7 +254,7 @@ function Event({ showAll, termMap, occurrence, setActiveImage }) {
   </Group>
 }
 
-function Location({ showAll, termMap, occurrence, setActiveImage }) {
+function Location({ updateToc, showAll, termMap, occurrence, setActiveImage }) {
   const hasContent = [
     'locationID',
     'higherGeographyID',
@@ -371,7 +374,7 @@ function Location({ showAll, termMap, occurrence, setActiveImage }) {
   </Group>
 }
 
-function GeologicalContext({ showAll, termMap, occurrence, setActiveImage }) {
+function GeologicalContext({ updateToc, showAll, termMap, occurrence, setActiveImage }) {
   const hasContent = [
     'geologicalContextID',
     'earliestEonOrLowestEonothem',
@@ -417,7 +420,7 @@ function GeologicalContext({ showAll, termMap, occurrence, setActiveImage }) {
   </Group>
 }
 
-function Identification({ showAll, termMap, occurrence, setActiveImage }) {
+function Identification({ updateToc, showAll, termMap, occurrence, setActiveImage }) {
   const hasContent = [
     'identificationID',
     'identificationQualifier',
@@ -443,7 +446,7 @@ function Identification({ showAll, termMap, occurrence, setActiveImage }) {
   </Group>
 }
 
-function Taxon({ showAll, termMap, occurrence, setActiveImage }) {
+function Taxon({ updateToc, showAll, termMap, occurrence, setActiveImage }) {
   const hasContent = [
     'taxonID',
     'scientificNameID',
@@ -521,7 +524,7 @@ function Taxon({ showAll, termMap, occurrence, setActiveImage }) {
   </Group>
 }
 
-function Other({ showAll, termMap, occurrence, setActiveImage }) {
+function Other({ updateToc, showAll, termMap, occurrence, setActiveImage }) {
   // const hasContent = [
   //   'abstract',
   //   'accessRights',
@@ -961,7 +964,7 @@ function MediaSummary({ occurrence, ...props }) {
       <source src={occurrence?.movingImages[0].identifier} type={occurrence?.movingImages[0].format} />
       Unable to play
     </video>}
-    {!hasPlayableVideo && <Image src={occurrence.stillImages[activeImage].identifier} style={{ maxWidth: '100%', height: 400, display: 'block', margin: 'auto' }} />}
+    {!hasPlayableVideo && <Image src={occurrence.stillImages[activeImage].identifier} h={400} style={{ maxWidth: '100%', height: 400, display: 'block', margin: 'auto' }} />}
 
     {/* <div style={{ display: 'flex', background: 'white', padding: 8, justifyContent: 'flex-end' }}> */}
     {/* <div style={{ position: 'absolute', margin: 12, top: 0, right: 0, zIndex: 2 }}>

@@ -29,16 +29,19 @@ export const Example = () => <Router initialEntries={[`/`]}>
   {/* <Occurrence id={text('id', '3015568527')} /> */}
   
   {/* movie */}
-  {/* <Occurrence id={text('id', '3004320174')} /> */}
+  <Occurrence id={text('id', '3004320174')} />
+  
+  {/* recordedByID */}
+  {/* <Occurrence id={text('id', '1701596590')} /> */}
 
   {/* taonMatch higher rank */}
   {/* <Occurrence id={text('id', '1632784175')} /> */}
 
-  {/* DNA derived */}
+  {/* DNA derived 2250301288 */}
   {/* <Occurrence id={text('id', '2250301288')} /> */}
 
   {/* amplification with sequence 2238150290 2633841312 1208901618 1563183804 1949672676 2633254982 2238434252 2979629271 */}
-  <Occurrence id={text('id', '3027960631')} />
+  {/* <Occurrence id={text('id', '3027960631')} /> */}
 
   {/* 3027960631 gelimage */}
 
