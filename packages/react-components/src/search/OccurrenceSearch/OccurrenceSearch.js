@@ -4,7 +4,8 @@ import { jsx } from '@emotion/react';
 import React, { useState, useMemo, useContext } from 'react';
 import { useIntl, FormattedNumber } from 'react-intl';
 import PropTypes from 'prop-types';
-import Layout from './Layout';
+import ComponentLayout from './Layout';
+import PageLayout from './PageLayout';
 import { FilterState } from "../../widgets/Filter/state";
 import { Root } from "../../components";
 import OccurrenceContext from '../SearchContext';
@@ -14,95 +15,13 @@ import { getCommonSuggests, suggestStyle } from '../../utils/suggestConfig/getCo
 import { commonFilters, filterBuilder } from '../../utils/filterBuilder';
 import predicateConfig from './config/predicateConfig';
 import ThemeContext from '../../style/themes/ThemeContext';
-import { IconFeatures } from '../../components';
-// import { useUrlState } from '../../dataManagement/state/useUrlState';
 import Base64JsonParam from '../../dataManagement/state/base64JsonParam';
 import { useQueryParam, JsonParam } from 'use-query-params';
 import defaultFilterConfig from './config/filterConf';
 import pick from 'lodash/pick';
 import pickBy from 'lodash/pickBy';
 import without from 'lodash/without';
-
-
-// import history from './history';
-// import qs from 'querystringify';
-
-const tableConfig = {
-  columns: [
-    {
-      trKey: 'filters.taxonKey.name',
-      filterKey: 'taxonKey', // optional
-      value: {
-        key: 'gbifClassification.usage.formattedName',
-        formatter: (value, occurrence) => <span dangerouslySetInnerHTML={{ __html: value }}></span>
-      },
-      width: 'wide'
-    },
-    {
-      trKey: 'tableHeaders.features',
-      value: {
-        key: 'features',
-        formatter: (value, occurrence) => {
-          return <IconFeatures iconsOnly
-            stillImageCount={occurrence.stillImageCount}
-            movingImageCount={occurrence.movingImageCount}
-            soundCount={occurrence.soundCount}
-            typeStatus={occurrence.typeStatus}
-            isSequenced={occurrence.volatile.features.isSequenced}
-            isTreament={occurrence.volatile.features.isTreament}
-            isClustered={occurrence.volatile.features.isClustered}
-            isSamplingEvent={occurrence.volatile.features.isSamplingEvent}
-            issueCount={occurrence?.issues?.length}
-          />
-        }
-      }
-    },
-    {
-      trKey: 'filters.occurrenceCountry.name',
-      filterKey: 'country', //optional
-      value: {
-        key: 'countryCode',
-        labelHandle: 'countryCode'
-      }
-    },
-    {
-      trKey: 'filters.coordinates.name',
-      value: {
-        key: 'formattedCoordinates',
-        // formatter: (value, occurrence) => {
-        //   if (!occurrence.coordinates) return null;
-        //   return <span>
-        //     (<FormattedNumber value={occurrence.coordinates.lat} maximumSignificantDigits={4}/>, <FormattedNumber value={occurrence.coordinates.lon} maximumSignificantDigits={4}/>)
-        //   </span>
-        // }
-      },
-      noWrap: true
-    },
-    {
-      trKey: 'filters.year.name',
-      filterKey: 'year', //optional
-      value: {
-        key: 'year'
-      }
-    },
-    {
-      trKey: 'filters.basisOfRecord.name',
-      filterKey: 'basisOfRecord', //optional
-      value: {
-        key: 'basisOfRecord',
-        labelHandle: 'basisOfRecord'
-      }
-    },
-    {
-      trKey: 'filters.datasetKey.name',
-      filterKey: 'datasetKey', //optional
-      value: {
-        key: 'datasetTitle',
-      },
-      width: 'wide'
-    }
-  ]
-};
+import { tableConfig } from './config/tableConfig';
 
 function buildConfig({ labelConfig, getSuggestConfig, filterWidgetConfig, customConfig }, context) {
   const {
@@ -135,17 +54,21 @@ function buildConfig({ labelConfig, getSuggestConfig, filterWidgetConfig, custom
     //   {type: 'not', predicate: {type: 'equals', key: 'taxonKey', value: 212}}
     // ] },
     predicateConfig,
-    tableConfig
+    availableCatalogues: customConfig.availableCatalogues,
+    tableConfig,
+    defaultTableColumns: customConfig.defaultTableColumns,
+    more: customConfig
   }
 }
 
-function OccurrenceSearch({ config: customConfig = {}, ...props }) {
+function OccurrenceSearch({ config: customConfig = {}, pageLayout, ...props }) {
   const theme = useContext(ThemeContext);
   // const [filter, setFilter] = useState();//useUrlState({param: 'filter', base64encode: true});
   // const [filter, setFilter] = useState({ must: { taxonKey: [2609958] } });
 
   const [filter, setFilter] = useQueryParam('filter', Base64JsonParam);
 
+  const Layout = pageLayout ? PageLayout : ComponentLayout;
   // let filter = { must: { taxonKey: [2609958] } };
   // const setFilter = () => {};
 
@@ -192,22 +115,4 @@ function OccurrenceSearch({ config: customConfig = {}, ...props }) {
   );
 }
 
-// OccurrenceSearch.propTypes = {
-//   theme: PropTypes.object,
-//   settings: PropTypes.object,
-//   locale: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-//   messages: PropTypes.object
-// };
-
 export default OccurrenceSearch;
-
-
-
-/*
-myCustomFilters: new filters that will add/overwrite defaults
-whitelist: only add these filters (applied after custom)
-
-filters // everything that is known to have support
-includedFilters // those that are available to the user
-excludedFilters // those filters that are not hidden in more
-*/

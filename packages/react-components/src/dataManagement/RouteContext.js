@@ -1,10 +1,11 @@
 import React from 'react';
 const gbifOrg = 'https://www.gbif.org';
 
-export default React.createContext({
+export const defaultContext = {
   occurrenceSearch: {
-    url: ({queryString}) => `/occurrence/search${queryString ? `?${queryString}` : ''}`,
-    route: '/occurrence/search'
+    url: ({queryString, basename}) => `${basename ? `/${basename}` : ''}/occurrence/search${queryString ? `?${queryString}` : ''}`,
+    route: '/occurrence/search',
+    isHref: true,
   },
   collectionKey: {
     // url: ({key}) => `/collection/${key}`,
@@ -13,10 +14,13 @@ export default React.createContext({
     route: '/collection/:key'
   },
   collectionSearch: {
-    url: () => `/collection-search/`
+    url: ({queryString, basename}) => `${basename ? `/${basename}` : ''}/collection/search`,
+    isHref: true,
+    route: '/collection/search'
   },
   collectionSpecimens: {
-    url: ({key}) => `/collection/${key}/specimens`
+    url: ({key}) => `/collection/${key}/specimens`,
+    isHref: true,
   },
 
   institutionKey: {
@@ -26,7 +30,9 @@ export default React.createContext({
     route: '/institution/:key'
   },
   institutionSearch: {
-    url: () => `/institution-search/`
+    url: ({queryString, basename}) => `${basename ? `/${basename}` : ''}/institution/search`,
+    isHref: true,
+    route: '/institution/search'
   },
 
   datasetKey: {
@@ -36,7 +42,9 @@ export default React.createContext({
     route: '/dataset/:key'
   },
   datasetSearch: {
-    url: () => `/dataset-search/`
+    url: ({queryString, basename}) => `${basename ? `/${basename}` : ''}/dataset/search`,
+    isHref: true,
+    route: '/dataset/search'
   },
 
   publisherKey: {
@@ -46,6 +54,16 @@ export default React.createContext({
     route: '/publisher/:key'
   },
   publisherSearch: {
-    url: () => `/publisher-search/`
+    url: ({queryString, basename}) => `${basename ? `/${basename}` : ''}/publisher/search`,
+    isHref: true,
+    route: '/publisher/search'
   },
-});
+
+  literatureSearch: {
+    url: ({queryString, basename}) => `${basename ? `/${basename}` : ''}/literature/search`,
+    isHref: true,
+    route: '/literature/search'
+  },
+};
+
+export default React.createContext(defaultContext);

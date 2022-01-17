@@ -1,16 +1,15 @@
 
 import { jsx } from '@emotion/react';
 import React, { useContext, useState, useEffect } from 'react';
-import { MdInfo } from 'react-icons/md'
 import ThemeContext from '../../style/themes/ThemeContext';
-import { Tabs, Eyebrow } from '../../components';
+import { Tabs, Eyebrow, DataHeader, ResourceSearchLink } from '../../components';
 import OccurrenceSearch from '../../search/OccurrenceSearch/OccurrenceSearch';
 import { iconFeature } from '../../components/IconFeatures/styles';
 import { Description as About } from './about/Description';
 import { People } from './people/People';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { join } from '../../utils/util';
-import { Header } from '../shared/Header';
+import { MdChevronLeft, MdFileDownload, MdInfo } from 'react-icons/md';
 
 import * as css from './styles';
 import { MdLocationOn, MdPeople, MdStar } from 'react-icons/md';
@@ -54,37 +53,51 @@ export function CollectionPresentation({
   const hasNoPeople = !collection?.contacts?.length && !recordedByCardinality;
 
   return <>
-    <Header>
-      <Eyebrow prefix="Collection code" suffix={collection.code} />
-      <h1>{collection.name}</h1>
-      {collection.institution && <div>
-        From <a href={`/institution/${collection.institution.key}`}>{collection.institution.name}</a>
-      </div>}
+    <DataHeader
+      style={{ borderBottom: '1px solid #ddd', background: 'white' }}
+      left={<ResourceSearchLink type="collectionSearch" discreet style={{ display: 'flex', alignItems: 'center' }}>
+        <MdChevronLeft /> <FormattedMessage id='catalogues.collections' />
+      </ResourceSearchLink>}
+    />
 
-      <div css={css.summary}>
-        {occurrenceSearch.documents.total > 0 && <div css={iconFeature({ theme })}>
-          <MdLocationOn />
-          <span><FormattedNumber value={occurrenceSearch.documents.total} /> digitized specimens</span>
+    <div css={css.headerWrapper({ theme })}>
+      <div css={css.proseWrapper({ theme })}>
+        <Eyebrow prefix="Collection code" suffix={collection.code} />
+        <h1>{collection.name}</h1>
+        {collection.institution && <div>
+          From <a href={`/institution/${collection.institution.key}`}>{collection.institution.name}</a>
         </div>}
-        {collection.taxonomicCoverage && <div css={iconFeature({ theme })}>
-          <MdStar />
-          <span>{collection.taxonomicCoverage}</span>
-        </div>}
-        {collection.contacts.length > 0 && <div css={iconFeature({ theme })}>
-          <MdPeople />
-          {collection.contacts.length < 5 && <span>
-            {collection.contacts.map(c => `${c.firstName ? c.firstName : ''} ${c.lastName ? c.lastName : ''}`).join(' • ')}
-          </span>
-          }
-          {collection.contacts.length >= 5 && <span>{collection.contacts.length} staff members</span>}
-        </div>}
+
+        <div css={css.summary}>
+          {occurrenceSearch.documents.total > 0 && <div css={iconFeature({ theme })}>
+            <MdLocationOn />
+            <span><FormattedNumber value={occurrenceSearch.documents.total} /> digitized specimens</span>
+          </div>}
+          {collection.taxonomicCoverage && <div css={iconFeature({ theme })}>
+            <MdStar />
+            <span>{collection.taxonomicCoverage}</span>
+          </div>}
+          {collection.contacts.length > 0 && <div css={iconFeature({ theme })}>
+            <MdPeople />
+            {collection.contacts.length < 5 && <span>
+              {collection.contacts.map(c => `${c.firstName ? c.firstName : ''} ${c.lastName ? c.lastName : ''}`).join(' • ')}
+            </span>
+            }
+            {collection.contacts.length >= 5 && <span>{collection.contacts.length} staff members</span>}
+          </div>}
+        </div>
+        <TabList style={{ marginTop: '12px', borderTop: '1px solid #ddd' }}>
+          <RouterTab to={url} exact label="About" />
+          <RouterTab to={join(url, 'people')} css={css.tab({ theme, noData: hasNoPeople })} label="People" />
+          <RouterTab to={join(url, 'specimens')} css={css.tab({ theme, noData: occurrenceSearch?.documents?.total === 0 })} label="Digitized specimens" />
+        </TabList>
       </div>
       <TabList style={{ marginTop: '12px', borderTop: '1px solid #ddd' }}>
         <RouterTab to={url} exact label="About" />
         <RouterTab to={join(url, 'people')} css={css.tab({ theme, noData: hasNoPeople })} label="People" />
         <RouterTab to={join(url, 'specimens')} css={css.tab({ theme, noData: occurrenceSearch?.documents?.total === 0 })} label="Digitized specimens" />
       </TabList>
-    </Header>
+    </div>
 
 
     <section>
