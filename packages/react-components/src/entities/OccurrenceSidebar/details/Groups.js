@@ -107,6 +107,8 @@ function Occurrence({ showAll, termMap, occurrence, setActiveImage }) {
     'associatedTaxa',
     'otherCatalogNumbers',
     'occurrenceRemarks',
+    'degreeOfEstablishment',
+    'pathway',
     'associatedMedia'].find(x => termMap[x]);
   if (!hasContent) return null;
 
@@ -123,7 +125,11 @@ function Occurrence({ showAll, termMap, occurrence, setActiveImage }) {
       <PlainTextField term={termMap.lifeStage} showDetails={showAll} />
       <PlainTextField term={termMap.reproductiveCondition} showDetails={showAll} />
       <PlainTextField term={termMap.behavior} showDetails={showAll} />
+      {/* Voabularies and should really be translated as such */}
       <PlainTextField term={termMap.establishmentMeans} showDetails={showAll} />
+      <PlainTextField term={termMap.degreeOfEstablishment} showDetails={showAll} />
+      <PlainTextField term={termMap.pathway} showDetails={showAll} />
+      
       <EnumField term={termMap.occurrenceStatus} showDetails={showAll} getEnum={value => `enums.occurrenceStatus.${value}`} />
       <PlainTextField term={termMap.preparations} showDetails={showAll} />
       <PlainTextField term={termMap.disposition} showDetails={showAll} />
@@ -241,6 +247,7 @@ function Location({ showAll, termMap, occurrence, setActiveImage }) {
     'pointRadiusSpatialFit',
     'verbatimCoordinateSystem',
     'verbatimSRS',
+    'verticalDatum',
     'footprintWKT',
     'footprintSRS',
     'footprintSpatialFit',
@@ -298,6 +305,7 @@ function Location({ showAll, termMap, occurrence, setActiveImage }) {
       <PlainTextField term={termMap.pointRadiusSpatialFit} showDetails={showAll} />
       <PlainTextField term={termMap.footprintWKT} showDetails={showAll} />
       <PlainTextField term={termMap.footprintSRS} showDetails={showAll} />
+      <PlainTextField term={termMap.verticalDatum} showDetails={showAll} />
       <PlainTextField term={termMap.footprintSpatialFit} showDetails={showAll} />
       <PlainTextField term={termMap.verbatimCoordinateSystem} showDetails={showAll} />
       <PlainTextField term={termMap.verbatimSRS} showDetails={showAll} />
@@ -385,6 +393,8 @@ function Identification({ showAll, termMap, occurrence, setActiveImage }) {
     'identificationQualifier',
     'typeStatus',
     'identifiedBy',
+    'identifiedByIDs',
+    'verbatimIdentification',
     'dateIdentified',
     'identificationReferences',
     'identificationVerificationStatus',
@@ -397,6 +407,8 @@ function Identification({ showAll, termMap, occurrence, setActiveImage }) {
       <PlainTextField term={termMap.identificationQualifier} showDetails={showAll} />
       <PlainTextField term={termMap.typeStatus} showDetails={showAll} getEnum={value => `enums.typeStatus.${value}`} />
       <PlainTextField term={termMap.identifiedBy} showDetails={showAll} />
+      <IdentifiedById {...{ showAll, termMap, occurrence }} />
+      <PlainTextField term={termMap.verbatimIdentification} showDetails={showAll} />
       <PlainTextField term={termMap.dateIdentified} showDetails={showAll} />
       <HtmlField term={termMap.identificationReferences} showDetails={showAll} />
       <PlainTextField term={termMap.identificationVerificationStatus} showDetails={showAll} />

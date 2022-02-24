@@ -14,10 +14,6 @@ export const commonLabels = {
     type: 'TRANSLATION',
     template: id => id
   },
-  catalogNumber: {
-    type: 'TRANSLATION',
-    template: id => id
-  },
   mediaType: {
     type: 'TRANSLATION',
     template: id => `enums.mediaType.${id}`
@@ -119,6 +115,14 @@ export const commonLabels = {
   establishmentMeans: {
     type: 'TRANSLATION',
     template: id => `enums.establishmentMeans.${id}`
+  },
+  establishmentMeansVocabulary: {
+    type: 'ENDPOINT',
+    template: ({ id, api }) => `${api.v1.endpoint}/vocabularies/EstablishmentMeans/concepts/${id}`,
+    transform: (result, { localeContext } = {}) => {
+      const vocabularyLocale = localeContext?.localeMap?.vocabulary || 'en';
+      return { title: result.label[vocabularyLocale] || result.label.en };
+    }
   },
   catalogNumber: {
     type: 'TRANSLATION',

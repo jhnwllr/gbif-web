@@ -73,29 +73,43 @@ export function DatasetPresentation({
             <span><Hostname href={dataset.homepage} /></span>
           </div>}
 
-          {occurrenceSearch.documents.total > 0 && <div css={iconFeature({ theme })}>
-            <MdLocationOn />
-            <span><FormattedNumber value={occurrenceSearch.documents.total} /> occurrences</span>
-          </div>}
+          <div css={css.iconFeatures()}>
+            {dataset.homepage && <div css={iconFeature({ theme })}>
+              <MdLink />
+              <span><Hostname href={dataset.homepage} /></span>
+            </div>}
 
-          {literatureSearch.count > 0 && <div css={countFeature({ theme })}>
-            <span>
-              <MdFormatQuote />
-              <FormattedNumber value={literatureSearch.count} />
-            </span>
-            <span>citations</span>
-          </div>}
+            {occurrenceSearch.documents.total > 0 && <div css={iconFeature({ theme })}>
+              <MdLocationOn />
+              <span><FormattedNumber value={occurrenceSearch.documents.total} /> occurrences</span>
+            </div>}
 
-          {taxonSearch.count > 0 && <div css={iconFeature({ theme })}>
-            <MdPlaylistAddCheck />
-            <span><FormattedNumber value={taxonSearch.count} /> accepted names</span>
-          </div>}
+            {literatureSearch.document?.count > 0 && <div css={countFeature({ theme })}>
+              <span>
+                <MdFormatQuote />
+                <FormattedNumber value={literatureSearch.documents.count} />
+              </span>
+              <span>citations</span>
+            </div>}
 
-          {/* <div css={countFeature({ theme })}>
+            {literatureSearch.count > 0 && <div css={countFeature({ theme })}>
+              <span>
+                <MdFormatQuote />
+                <FormattedNumber value={literatureSearch.count} />
+              </span>
+              <span>citations</span>
+            </div>}
+
+            {taxonSearch.count > 0 && <div css={iconFeature({ theme })}>
+              <MdPlaylistAddCheck />
+              <span><FormattedNumber value={taxonSearch.count} /> accepted names</span>
+            </div>}
+
+            {/* <div css={countFeature({ theme })}>
               <span>{dataset.license}</span>
             </div> */}
 
-          {/* {occurrenceSearch.documents.total > 0 && <div css={countFeature({ theme })}>
+            {/* {occurrenceSearch.documents.total > 0 && <div css={countFeature({ theme })}>
               <span><FormattedNumber value={occurrenceSearch.documents.total} /></span>
               <span>occurrences</span>
             </div>}
@@ -109,6 +123,7 @@ export function DatasetPresentation({
               <span><FormattedNumber value={taxonSearch.count} /></span>
               <span>accepted names</span>
             </div>} */}
+          </div>
         </div>
 
 

@@ -10,7 +10,7 @@ import { useQueryParam, NumberParam } from 'use-query-params';
 function StandardSearchTable({graphQuery, resultKey, offsetName = 'offset', defaultTableConfig, ...props}) {
   // const [offset, setOffset] = useUrlState({ param: 'offset', defaultValue: 0 });
   const [offset = 0, setOffset] = useQueryParam('from', NumberParam);
-  const limit = 20;
+  const limit = 25;
   const currentFilterContext = useContext(FilterContext);
   const { rootPredicate, predicateConfig } = useContext(SearchContext);
   const { data, error, loading, load } = useQuery(graphQuery, { lazyLoad: true });
@@ -44,17 +44,21 @@ function StandardSearchTable({graphQuery, resultKey, offsetName = 'offset', defa
     return <div>Failed to fetch data</div>
   }
   
+  // allow both response types
+  const results = data?.[resultKey]?.documents?.results || data?.[resultKey]?.results;
+  const total = data?.[resultKey]?.documents?.count || data?.[resultKey]?.count;
+
   return <>
     <ResultsTable
       {...props}
       loading={loading}
-      results={data?.[resultKey]?.results}
+      results={results}
       next={next}
       prev={prev}
       first={first}
       size={limit}
       from={offset}
-      total={data?.[resultKey]?.count}
+      total={total}
       defaultTableConfig={defaultTableConfig}
     />
   </>
