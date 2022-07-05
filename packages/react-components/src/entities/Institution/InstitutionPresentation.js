@@ -11,7 +11,7 @@ import { Description as About } from './about/Description';
 import { People } from './people/People';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { join } from '../../utils/util';
-import { Header } from '../shared/Header';
+import { Header } from '../shared/header';
 
 import * as css from './styles';
 import { MdLocationOn, MdPeople, MdStar } from 'react-icons/md';

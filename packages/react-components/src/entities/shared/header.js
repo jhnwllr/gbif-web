@@ -12,3 +12,10 @@ export function Headline(props) {
   const theme = useContext(ThemeContext);
   return <H1 css={css.headline({theme})} {...props} />
 }
+
+export function Header(props) {
+  const theme = useContext(ThemeContext);
+  return <div css={css.headerWrapper({ theme })}>
+    <div css={css.proseWrapper({ theme })} {...props} />
+  </div>
+};

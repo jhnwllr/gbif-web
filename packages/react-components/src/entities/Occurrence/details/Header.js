@@ -9,7 +9,7 @@ import { iconFeature } from '../../../components/IconFeatures/styles';
 import { MdPeople, MdLabel } from 'react-icons/md';
 import { Globe } from './Globe';
 import useBelow from '../../../utils/useBelow';
-import { Header as HeaderWrapper } from '../../shared/Header';
+import { Header as HeaderWrapper } from '../../shared/header';
 import { TaxonClassification } from './TaxonClassification/TaxonClassification';
 import { FaGlobeAfrica, FaTag } from 'react-icons/fa';
 import { AiFillTag } from 'react-icons/ai';
