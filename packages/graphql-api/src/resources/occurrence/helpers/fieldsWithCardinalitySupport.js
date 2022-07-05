@@ -1,6 +1,6 @@
 module.exports = [
   'datasetKey',
-  'publishingOrgKey',
+  'publishingOrg',
   'catalogNumber',
   'recordedBy',
   'identifiedBy',
@@ -10,4 +10,5 @@ module.exports = [
   'samplingProtocol',
   'sampleSizeUnit',
   'verbatimScientificName',
+  'eventId',
 ];

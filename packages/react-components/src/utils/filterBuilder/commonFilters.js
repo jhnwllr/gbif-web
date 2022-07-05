@@ -128,7 +128,8 @@ export const commonFilters = {
         },
       },
       specific: {
-        suggestHandle: 'datasetKey',
+        suggestHandle: 'datasetKeyFromOccurrenceIndex',
+        allowEmptyQueries: true
       }
     }
   },
@@ -143,7 +144,8 @@ export const commonFilters = {
         },
       },
       specific: {
-        suggestHandle: 'publisherKey',
+        suggestHandle: 'publisherKeyFromOccurrenceIndex',
+        allowEmptyQueries: true
       }
     }
   },
@@ -566,13 +568,10 @@ export const commonFilters = {
         placeholder: 'Search by recorded by',
         supportsExist: true,
         query: `
-          query keywordSearch($predicate: Predicate, $size: Int){
+          query keywordSearch($predicate: Predicate, $size: Int, $include: String){
             occurrenceSearch(predicate: $predicate) {
-              cardinality {
-                recordedBy
-              }
               facet {
-                recordedBy(size: $size) {
+                recordedBy(size: $size, include: $include) {
                   key
                   count
                 }

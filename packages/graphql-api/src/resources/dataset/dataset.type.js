@@ -89,7 +89,7 @@ const typeDef = gql`
     created: DateTime
     createdBy: String
     curatorialUnits: [JSON]
-    dataDescriptions: [JSON]
+    dataDescriptions: [DataDescription]
     dataLanguage: String
     decades: [Int]
     deleted: DateTime
@@ -100,7 +100,6 @@ const typeDef = gql`
     external: Boolean
     geographicCoverages: [GeographicCoverage]
     homepage: URL
-    hostingOrganizationKey: ID
     identifiers: [Identifier]
     installationKey: ID
     keywordCollections: [KeywordCollection]
@@ -132,7 +131,6 @@ const typeDef = gql`
     subtype: DatasetSubtype
     
     duplicateOfDataset: Dataset
-    hostingOrganization: Organization
     installation: Installation
     parentDataset: Dataset
     publishingOrganization: Organization
@@ -140,6 +138,7 @@ const typeDef = gql`
     constituents(limit: Int, offset: Int): DatasetListResults
     networks: [Network]!
     metrics: DatasetChecklistMetrics
+    gridded: [GridMetric]
 
     """
     Link to homepage with crawling logs.
@@ -167,6 +166,15 @@ const typeDef = gql`
     otherCount: JSON
     synonymsCount: Int
     usagesCount: Int
+  }
+
+  type GridMetric {
+    key: ID
+    totalCount: Float
+    minDist: Float
+    minDistCount: Float
+    percent: Float
+    maxPercent: Float
   }
 
   type DatasetBreakdown {
@@ -243,6 +251,14 @@ const typeDef = gql`
     funding: String
     studyAreaDescription: String
     designDescription: String
+  }
+
+  type DataDescription {
+    charset: String
+    name: String
+    format: String
+    formatVersion: String
+    url: String
   }
 
   type DatasetFacet {

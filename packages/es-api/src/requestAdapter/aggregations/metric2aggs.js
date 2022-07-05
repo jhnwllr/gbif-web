@@ -14,7 +14,8 @@ function metric2aggs(metrics = {}, config) {
           aggs[name] = {
             terms: {
               field: conf.field,
-              size: metric.size
+              size: metric.size,
+              include: metric.include
             }
           };
           break;
@@ -24,6 +25,26 @@ function metric2aggs(metrics = {}, config) {
           aggs[name] = {
             stats: {
               field: conf.field
+            }
+          };
+          break;
+        }
+        case 'histogram': {
+          if (conf.type !== 'numeric') throw new ResponseError(400, 'badRequest', 'Only numeric fields support this aggregation');
+          aggs[name] = {
+            histogram: {
+              field: conf.field,
+              interval: metric.interval || 45
+            }
+          };
+          break;
+        }
+        case 'auto_date_histogram': {
+          if (conf.type !== 'date') throw new ResponseError(400, 'badRequest', 'Only date fields support this aggregation');
+          aggs[name] = {
+            auto_date_histogram: {
+              field: conf.field,
+              buckets: metric.buckets || 10
             }
           };
           break;

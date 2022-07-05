@@ -22,12 +22,11 @@ export { DetailsDrawer } from './DetailsDrawer/DetailsDrawer';
 export { MajorRanks } from './MajorRanks/MajorRanks';
 export { IconFeatures } from './IconFeatures/IconFeatures';
 export { HyperText } from './HyperText/HyperText';
-export { default as Doi } from './Doi/Doi'
 export { Progress } from './Progress/Progress';
 export { Classification } from './Classification/Classification';
 export { Tag, Tags } from './Tag/Tag';
 export { GadmClassification } from './GadmClassification/GadmClassification';
-export { IdentifierBadge } from './IdentifierBadge/IdentifierBadge';
+export { IdentifierBadge, Doi } from './IdentifierBadge';
 export { Eyebrow } from './Eyebrow/Eyebrow';
 export { JazzIcon } from './JazzIcon/JazzIcon';
 export { Prose } from './typography/Prose';
@@ -39,4 +38,7 @@ export { ResourceLink, PublisherKeyLink, DatasetKeyLink, ResourceSearchLink } fr
 export { HostnameLink } from './HostnameLink/HostnameLink';
 export { NavBar, NavItem } from './NavBar/NavBar';
 export { DataHeader } from './DataHeader/DataHeader';
+export { ContactList } from './ContactList/ContactList';
+export { LicenseTag } from './LicenseTag/LicenseTag';
+export { OccurrenceMap } from './OccurrenceMap/OccurrenceMap';
 // -- Add imports above this line (required by plopfile.js) --

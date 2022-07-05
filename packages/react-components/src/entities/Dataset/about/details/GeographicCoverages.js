@@ -1,6 +1,6 @@
 import { jsx } from "@emotion/react";
 import React from "react";
-import { Properties } from "../../../../components";
+import { Properties, HyperText } from "../../../../components";
 import { FormattedMessage, FormattedDate } from "react-intl";
 
 const { Term: T, Value: V } = Properties;
@@ -40,10 +40,29 @@ function GeographicCoverage({ coverage }) {
       ],
     };
   }
+
+  let Bbox;
+  if (coverage?.boundingBox?.minLatitude) {
+    Bbox = <Properties horizontal>
+    <T>Latitude</T>
+    <V>
+      From {coverage.boundingBox.minLatitude} to{" "}
+      {coverage.boundingBox.maxLatitude}
+    </V>
+    <T>Longitude</T>
+    <V>
+      From {coverage.boundingBox.minLongitude} to{" "}
+      {coverage.boundingBox.maxLongitude}
+    </V>
+  </Properties>
+  } else {
+    Bbox = null;
+  }
+
   return (
     <Properties>
       <T>Description</T>
-      <V>{coverage.description}</V>
+      <V><HyperText text={coverage.description} /></V>
       {geoJSON && (
         <>
           <T></T>
@@ -54,21 +73,14 @@ function GeographicCoverage({ coverage }) {
                 JSON.stringify(geoJSON)
               )})/auto/600x300@2x?access_token=pk.eyJ1IjoiaG9mZnQiLCJhIjoiY2llaGNtaGRiMDAxeHNxbThnNDV6MG95OSJ9.p6Dj5S7iN-Mmxic6Z03BEA`}
             />
-            <Properties horizontal>
-            <T>Latitude</T>
-            <V>
-              From {coverage.boundingBox.minLatitude} to{" "}
-              {coverage.boundingBox.maxLatitude}
-            </V>
-            <T>Longitude</T>
-            <V>
-              From {coverage.boundingBox.minLongitude} to{" "}
-              {coverage.boundingBox.maxLongitude}
-            </V>
-          </Properties>
+            {Bbox}
           </V>
         </>
       )}
+      {!geoJSON && <>
+        <T>Bounding box</T>
+        <V>{Bbox}</V>
+      </>}
     </Properties>
   );
 }

@@ -6,6 +6,8 @@ const build = theme => {
   let fullTheme = { ...defaultTheme, ...theme }
   const direction = fullTheme.darkTheme ? -1 : 1;
 
+  fullTheme.borderRadiusPx = theme.borderRadius + 'px';
+
   fullTheme.primary500 = theme.primary;
   fullTheme.primary600 = shadeHexColor(fullTheme.primary, -0.05);
   fullTheme.primary700 = shadeHexColor(fullTheme.primary, -0.1);
@@ -23,6 +25,7 @@ const build = theme => {
   });
 
   fullTheme.linkColor = theme.linkColor || theme.primary;
+  fullTheme.headerFontFamily = theme.headerFontFamily || theme.fontFamily;
 
   // GENERATE PAPER BACKGROUNDS
   // lighter paper colors are used to indicate elevation/focus
@@ -43,7 +46,7 @@ const build = theme => {
   const brightMapColors = [
     "#fed976",
     "#fd8d3c",
-    "#fd8d3c",
+    "#F7642E",
     "#f03b20",
     "#bd0026"
   ];
@@ -52,6 +55,15 @@ const build = theme => {
   if (!fullTheme.mapDensityColors) {
     fullTheme.mapDensityColors = fullTheme.darkTheme ? darkMapColors : brightMapColors;
   }
+
+  const cssVariables = {};
+  for (const [key, value] of Object.entries(fullTheme)) {
+    if (!(value instanceof Object)) {
+      cssVariables[`--${key}`] = value;
+    }
+  }
+  fullTheme.cssVariables = cssVariables;
+  
   return fullTheme;
 }
 

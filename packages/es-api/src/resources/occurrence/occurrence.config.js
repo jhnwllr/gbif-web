@@ -97,9 +97,18 @@ const config =
         "defaultLowerBound": "lte"
       }
     },
+    "datasetID": {
+      "type": "keyword",
+      "field": "datasetID"
+    },
     "datasetKey": {
       "type": "keyword",
       "field": "datasetKey"
+    },
+    "datasetName": {
+      "type": "keyword",
+      "field": "datasetName.keyword",
+      "suggestField": "datasetName.suggest"
     },
     "datasetPublishingCountry": {
       "type": "keyword",
@@ -202,11 +211,11 @@ const config =
       "type": "keyword",
       "field": "establishmentMeans.concept"
     },
+    // "eventDate": {
+    //   "field": "eventDate",
+    //   "discarded": true
+    // },
     "eventDate": {
-      "field": "eventDate",
-      "discarded": true
-    },
-    "eventDateSingle": {
       "type": "date",
       "field": "eventDateSingle",
       "get": {
@@ -507,7 +516,7 @@ const config =
       "field": "samplingProtocol.keyword",
       "suggestField": "samplingProtocol.suggest"
     },
-    "scoordinates": {
+    "geometry": {
       "type": "geo_shape",
       "field": "scoordinates",
       "get": {
