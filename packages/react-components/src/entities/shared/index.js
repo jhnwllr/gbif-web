@@ -7,7 +7,7 @@ import { Autocomplete, TextButton, Button, Skeleton } from '../../components'
 import { MdPushPin } from 'react-icons/md';
 import { FormattedDate } from 'react-intl';
 import { ContentWrapper, HeaderWrapper } from './header';
-import { BrokenJar } from '../../components/Icons/Icons';
+// import { BrokenJar } from '../../components/Icons/Icons';
 
 export function Card({ padded = true, ...props }) {
   return <div

@@ -14,5 +14,6 @@ module.exports = [
   'collectionKey',
   'collectionCode',
   'preparations',
-  'speciesKey'
+  'speciesKey',
+  'taxonKey'
 ];

@@ -73,6 +73,7 @@ const typeDef = gql`
     collectionKey: Int!
     collectionCode: Int!
     speciesKey: Int!
+    taxonKey: Int!
     preparations: Int!
   }
 
