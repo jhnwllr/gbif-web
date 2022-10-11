@@ -1,6 +1,6 @@
 import { jsx, css } from '@emotion/react';
-import React from 'react';
-import { OccurrenceSummary, DataQuality, Datasets } from '../../../widgets/dashboard';
+import React, { useState } from 'react';
+import { OccurrenceSummary, DataQuality, Datasets, Taxa } from '../../../widgets/dashboard';
 
 export function Dashboard({
   data = {},
@@ -11,6 +11,11 @@ export function Dashboard({
   className,
   ...props
 }) {
+  const predicate = {
+    type: "equals",
+    key: "collectionKey",
+    value: collection.key
+  };
   return <div>
     <div css={css`
       display: flex; margin: -6px; padding-bottom: 200px; flex-wrap: wrap;
@@ -19,25 +24,16 @@ export function Dashboard({
       }
       `}>
       <div>
-        <OccurrenceSummary predicate={{
-          type: "equals",
-          key: "collectionKey",
-          value: collection.key
-        }} />
+        <OccurrenceSummary predicate={predicate} />
       </div>
       <div>
-        <DataQuality predicate={{
-          type: "equals",
-          key: "collectionKey",
-          value: collection.key
-        }} />
+        <DataQuality predicate={predicate} />
       </div>
       <div>
-        <Datasets predicate={{
-          type: "equals",
-          key: "collectionKey",
-          value: collection.key
-        }} />
+        <Datasets predicate={predicate} />
+      </div>
+      <div>
+        <Taxa predicate={predicate} />
       </div>
     </div>
   </div>

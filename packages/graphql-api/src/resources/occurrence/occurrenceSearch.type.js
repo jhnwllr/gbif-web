@@ -72,8 +72,14 @@ const typeDef = gql`
     eventId: Int!
     collectionKey: Int!
     collectionCode: Int!
-    speciesKey: Int!
     taxonKey: Int!
+    classKey: Int!
+    familyKey: Int!
+    genusKey: Int!
+    kingdomKey: Int!
+    orderKey: Int!
+    phylumKey: Int!
+    speciesKey: Int!
     preparations: Int!
   }
 

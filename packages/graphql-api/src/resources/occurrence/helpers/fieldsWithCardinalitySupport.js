@@ -14,6 +14,12 @@ module.exports = [
   'collectionKey',
   'collectionCode',
   'preparations',
-  'speciesKey',
+  "classKey",
+  "familyKey",
+  "genusKey",
+  "kingdomKey",
+  "orderKey",
+  "phylumKey",
+  "speciesKey",
   'taxonKey'
 ];
