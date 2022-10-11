@@ -3,7 +3,7 @@
     "messages": "http://localhost:5002/en-developer.json?v=c55d2fb178a0584cb7ec8a1a7f954844bbdbf9ea"
   },
   "en-ZZ": {
-    "messages": "http://localhost:5002/en-pseudo.json?v=a64be89f0cf10ab25e87ce4ff894c7300b04b893"
+    "messages": "http://localhost:5002/en-pseudo.json?v=caf072bee29ad2a05fe7c4ab244f157af9fb7b6e"
   },
   "en": {
     "messages": "http://localhost:5002/en.json?v=c4ee15ff79f0d21d4a4710e0e5eca50198dca9df"
