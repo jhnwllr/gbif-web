@@ -334,7 +334,7 @@ const typeDef = gql`
     from: Int
     relatedOccurrences: [RelatedOccurrence]
   }
-  
+
   type RelatedOccurrence {
     reasons: [String]!
     occurrence: Occurrence
@@ -350,7 +350,7 @@ const typeDef = gql`
     publishingOrgKey: ID
     publishingOrgName: String
     datasetKey: ID
-    datasetName: String
+    datasetName: [String]
     occurrenceID: String
     catalogNumber: String
   }
