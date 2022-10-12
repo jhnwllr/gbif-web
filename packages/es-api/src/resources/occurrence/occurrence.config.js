@@ -288,7 +288,7 @@ const config =
     },
     "iucnRedListCategoryCode": {
       "type": "keyword",
-      "field": "iucnRedListCategoryCode"
+      "field": "gbifClassification.iucnRedListCategoryCode"
     },
     "lastCrawled": {
       "type": "date",

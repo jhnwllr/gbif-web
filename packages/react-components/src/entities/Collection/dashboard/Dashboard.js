@@ -1,6 +1,6 @@
 import { jsx, css } from '@emotion/react';
 import React, { useState } from 'react';
-import { OccurrenceSummary, DataQuality, Datasets, Taxa } from '../../../widgets/dashboard';
+import { OccurrenceSummary, DataQuality, Datasets, Taxa, Iucn, Preparations } from '../../../widgets/dashboard';
 
 export function Dashboard({
   data = {},
@@ -30,11 +30,17 @@ export function Dashboard({
         <DataQuality predicate={predicate} />
       </div>
       <div>
+        <Preparations predicate={predicate} />
+      </div>
+      {/* <div>
         <Datasets predicate={predicate} />
       </div>
       <div>
         <Taxa predicate={predicate} />
       </div>
+      <div>
+        <Iucn predicate={predicate} />
+      </div> */}
     </div>
   </div>
 };
