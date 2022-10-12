@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { Button as ButtonA11y } from "reakit/Button";
 import * as styles from './Button.styles';
 import { getClasses } from '../../utils/util';
-import { MdMoreHoriz } from 'react-icons/md';
+import { MdMoreHoriz, MdClose } from 'react-icons/md';
 import { Menu, MenuAction } from '../Menu/Menu';
 
 const truncateStyle = {

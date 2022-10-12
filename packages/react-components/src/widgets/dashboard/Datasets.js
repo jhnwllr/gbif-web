@@ -13,9 +13,11 @@ export function Datasets({
   predicate,
   ...props
 }) {
+  const facetResults = useFacets({ predicate, query: DATASET_FACETS });
   return <Card {...props}>
     <CardTitle>Datasets</CardTitle>
     <GroupBy {...{
+      facetResults,
       predicate,
       query: DATASET_FACETS,
       transform: data => {
@@ -57,9 +59,9 @@ export function Preparations({
   predicate,
   ...props
 }) {
-  const facetResults = useFacets({ 
-    predicate, 
-    query: PREPARATIONS_FACETS, 
+  const facetResults = useFacets({
+    predicate,
+    query: PREPARATIONS_FACETS,
     otherVariables: {
       hasPredicate: {
         type: 'and',
@@ -79,7 +81,7 @@ export function Preparations({
     <CardTitle>
       Preparations
       <div css={css`font-weight: 400; color: var(--color300); font-size: 0.95em;`}>
-        <div>{formatAsPercentage(filledPercentage)}% of the records have filled this field</div>
+        <div>{formatAsPercentage(filledPercentage)}% filled</div>
       </div>
     </CardTitle>
 
@@ -119,30 +121,31 @@ export function Taxa({
   predicate,
   ...props
 }) {
+  const [query, setQuery] = useState(getTaxonQuery('familyKey'));
+  const [rank, setRank] = useState('FAMILY');
+  const facetResults = useFacets({ predicate, query });
   return <Card {...props}>
     <CardTitle css={css`display: flex;`}>
-      <div css={css`flex: 1 1 auto;`}>Top taxa</div>
+      <div css={css`flex: 1 1 auto;`}>{rank}</div>
       <div css={css`flex: 0 0 auto; font-size: 13px;`}>
         <DropdownButton
           look="primaryOutline"
           menuItems={menuState => [
-            <DropdownButton.MenuAction onClick={e => { menuState.hide() }}>Kingdom</DropdownButton.MenuAction>,
-            <DropdownButton.MenuAction onClick={e => { menuState.hide() }}>Phylum</DropdownButton.MenuAction>,
-            <DropdownButton.MenuAction onClick={e => { menuState.hide() }}>Class</DropdownButton.MenuAction>,
-            <DropdownButton.MenuAction onClick={e => { menuState.hide() }}>Order</DropdownButton.MenuAction>,
-            <DropdownButton.MenuAction onClick={e => { menuState.hide() }}>Family</DropdownButton.MenuAction>,
-            <DropdownButton.MenuAction onClick={e => { menuState.hide() }}>Genus</DropdownButton.MenuAction>,
-            <DropdownButton.MenuAction onClick={e => { menuState.hide() }}>Species</DropdownButton.MenuAction>,
-            <DropdownButton.MenuAction onClick={e => { menuState.hide() }}>Any taxon</DropdownButton.MenuAction>,
+            <DropdownButton.MenuAction onClick={e => { setRank('KINGDOM'); setQuery(getTaxonQuery('kingdomKey')); menuState.hide() }}>Kingdoms</DropdownButton.MenuAction>,
+            <DropdownButton.MenuAction onClick={e => { setRank('PHYLUM'); setQuery(getTaxonQuery('phylumKey')); menuState.hide() }}>Phyla</DropdownButton.MenuAction>,
+            <DropdownButton.MenuAction onClick={e => { setRank('CLASS'); setQuery(getTaxonQuery('classKey')); menuState.hide() }}>Classes</DropdownButton.MenuAction>,
+            <DropdownButton.MenuAction onClick={e => { setRank('ORDER'); setQuery(getTaxonQuery('orderKey')); menuState.hide() }}>Orders</DropdownButton.MenuAction>,
+            <DropdownButton.MenuAction onClick={e => { setRank('FAMILY'); setQuery(getTaxonQuery('familyKey')); menuState.hide() }}>Families</DropdownButton.MenuAction>,
+            <DropdownButton.MenuAction onClick={e => { setRank('GENUS'); setQuery(getTaxonQuery('genusKey')); menuState.hide() }}>Genera</DropdownButton.MenuAction>,
+            <DropdownButton.MenuAction onClick={e => { setRank('SPECIES'); setQuery(getTaxonQuery('speciesKey')); menuState.hide() }}>Species</DropdownButton.MenuAction>,
+            <DropdownButton.MenuAction onClick={e => { setRank('ANY_RANK'); setQuery(getTaxonQuery('taxonKey')); menuState.hide() }}>Any taxon</DropdownButton.MenuAction>,
           ]}>
-          <Button look="primaryOutline">IUCN</Button>
           <Button>Family</Button>
         </DropdownButton>
       </div>
     </CardTitle>
     <GroupBy {...{
-      predicate,
-      query: TAXON_FACETS,
+      facetResults,
       transform: data => {
         return data?.occurrenceSearch?.facet?.results?.map(x => {
           return {
@@ -161,17 +164,17 @@ export function Taxa({
     }} />
   </Card>
 };
-const TAXON_FACETS = `
+const getTaxonQuery = rank => `
 query summary($predicate: Predicate, $size: Int, $from: Int){
   occurrenceSearch(predicate: $predicate) {
     documents(size: 0) {
       total
     }
     cardinality {
-      total: familyKey
+      total: ${rank}
     }
     facet {
-      results: familyKey(size: $size, from: $from) {
+      results: ${rank}(size: $size, from: $from) {
         key
         count
         entity: taxon {
@@ -193,11 +196,13 @@ export function Iucn({
   predicate,
   ...props
 }) {
+  const facetResults = useFacets({ predicate, query: IUCN_FACETS });
   return <Card {...props}>
     <CardTitle>
       IUCN
     </CardTitle>
     <GroupBy {...{
+      facetResults,
       size: 5,
       predicate: {
         type: 'and',
@@ -236,10 +241,10 @@ query summary($predicate: Predicate, $size: Int, $from: Int){
       total
     }
     cardinality {
-      total: speciesKey
+      total: familyKey
     }
     facet {
-      results: speciesKey(size: $size, from: $from) {
+      results: familyKey(size: $size, from: $from) {
         key
         count
         entity: taxon {
@@ -285,7 +290,7 @@ function useFacets({ predicate, otherVariables = {}, query, size = 10 }) {
       },
       queue: { name: 'dashboard' }
     });
-  }, [predicate, from, size]);
+  }, [predicate, query, from, size]);
 
   const next = useCallback(() => {
     setFrom(Math.max(0, from + size));
