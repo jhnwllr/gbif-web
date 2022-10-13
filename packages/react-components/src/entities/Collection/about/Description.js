@@ -155,7 +155,7 @@ export function Description({
         {!isPinned && <Metadata entity={collection} setPinState={() => setPinState(true)} />}
       </div>
 
-      {!hideSideBar && occurrenceSearch?.documents?.total > 0 && <aside css={css`flex: 0 0 280px; margin: 12px;`}>
+      {!hideSideBar && occurrenceSearch?.documents?.total > 0 && <aside css={css`flex: 0 0 350px; margin: 12px;`}>
         {loading && <Card style={{ padding: '24px 12px', marginBottom: 12 }}>
           <SideBarLoader />
         </Card>}

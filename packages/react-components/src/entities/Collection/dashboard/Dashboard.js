@@ -1,5 +1,6 @@
 import { jsx, css } from '@emotion/react';
 import React from 'react';
+import { OccurrenceMap } from '../../../components';
 import { OccurrenceSummary, DataQuality, Datasets, Taxa, Iucn, Preparations } from '../../../widgets/dashboard';
 import useBelow from '../../../utils/useBelow';
 
@@ -21,6 +22,9 @@ export function Dashboard({
     <DashBoardLayout>
       <DashboardSection>
         <OccurrenceSummary predicate={predicate} />
+      </DashboardSection>
+      <DashboardSection>
+        <OccurrenceMap rootPredicate={predicate}/>
       </DashboardSection>
       <DashboardSection>
         <DataQuality predicate={predicate} />
