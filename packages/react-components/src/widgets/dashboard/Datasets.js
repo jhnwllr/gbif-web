@@ -8,6 +8,8 @@ import { formatAsPercentage } from '../../utils/util';
 import { useDeepCompareEffect } from 'react-use';
 import { useQuery } from '../../dataManagement/api';
 
+import Chart from 'react-apexcharts'
+
 
 export function Datasets({
   predicate,
@@ -76,6 +78,30 @@ export function Preparations({
     }
   });
 
+  const state = {
+    series: facetResults?.data?.occurrenceSearch?.facet?.results?.map(x => x.count),
+    options: {
+      chart: {
+        width: 380,
+        type: 'pie',
+      },
+      labels: facetResults?.data?.occurrenceSearch?.facet?.results?.map(x => x.key),
+      responsive: [{
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200
+          },
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }]
+    }
+  };
+
+  const showChart = !facetResults.loading && facetResults?.data?.occurrenceSearch?.facet?.results?.length > 0;
+
   const filledPercentage = facetResults?.data?.isFilled?.documents?.total / facetResults?.data?.occurrenceSearch?.documents?.total;
   return <Card {...props}>
     <CardTitle>
@@ -85,6 +111,9 @@ export function Preparations({
       </div>
     </CardTitle>
 
+    {showChart && <div id="chart" style={{margin: '24px auto'}}>
+      <Chart options={state.options} series={state.series} type="pie" width={380}  />
+    </div>}
     <GroupBy facetResults={facetResults} />
 
     <div css={css`font-weight: 400; color: var(--color300); font-size: 0.95em;`}>
