@@ -54,6 +54,8 @@ function DashBoardLayout({ children, ...props }) {
     return <div css={css`padding-bottom: 200px;`}>{children}</div>
   }
 
+  const childrenArray = Array.isArray(children) ? children : [children];
+  
   return <div css={css`
     display: flex; margin: -6px; padding-bottom: 200px; flex-wrap: wrap;
     > div {
@@ -61,12 +63,12 @@ function DashBoardLayout({ children, ...props }) {
     }
   `}>
     <div>
-      {children
+      {childrenArray
         .filter((x, i) => i % 2 === 0)
         .map(x => x)}
     </div>
     <div>
-      {children
+      {childrenArray
         .filter((x, i) => i % 2 !== 0)
         .map(x => x)}
     </div>

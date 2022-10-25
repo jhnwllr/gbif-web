@@ -2,11 +2,9 @@ import { jsx, css } from '@emotion/react';
 import React from 'react';
 import { useDeepCompareEffect } from 'react-use';
 import { useQuery } from '../../dataManagement/api';
-import { Progress } from '../../components';
-import { FormattedMessage, FormattedNumber } from 'react-intl';
-import { Card, CardTitle, Table } from './shared';
-import { MdChevronRight } from 'react-icons/md';
-import { summary } from '../../components/Accordion/styles';
+import { Skeleton } from '../../components';
+// import { FormattedMessage } from 'react-intl';
+import { Card, CardTitle, Table, FormattedNumber } from './shared';
 
 export function OccurrenceSummary({
   predicate,
@@ -58,7 +56,6 @@ export function OccurrenceSummary({
   const total = data?.occurrenceSearch?.documents?.total;
 
   if (error) return <span>Failure</span>
-  if (!data || loading) return <span>Loading</span>
 
   const summary = data?.occurrenceSearch;
 
@@ -67,40 +64,30 @@ export function OccurrenceSummary({
     <div>
       <Table>
         <tbody css={css`
-          >tr > td > div {
-            display: flex;
-            align-items: center;
-          }
-          /* td, td > div {
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          } */
-          tr {
-            td:last-of-type {
-              width: 80px;
+            >tr > td > div {
+              display: flex;
+              align-items: center;
             }
-          }
-          
-          `}>
+            /* td, td > div {
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            } */
+            `}>
           <tr>
             <td><div>Occurrence records</div></td>
-            <td><FormattedNumber value={summary.documents.total} /></td>
-            <td></td>
+            <td><FormattedNumber value={summary?.documents?.total} /></td>
           </tr>
           <tr>
             <td>Species</td>
-            <td><FormattedNumber value={summary.cardinality.speciesKey} /></td>
-            <td></td>
+            <td><FormattedNumber value={summary?.cardinality?.speciesKey} /></td>
           </tr>
           <tr>
             <td>Taxa</td>
-            <td><FormattedNumber value={summary.cardinality.taxonKey} /></td>
-            <td></td>
+            <td><FormattedNumber value={summary?.cardinality.taxonKey} /></td>
           </tr>
           <tr>
-            <td>Time range</td>
-            <td>{summary.stats.year.min} - {summary.stats.year.max}</td>
-            <td></td>
+            <td>Year range</td>
+            <td>{summary ? <span>{summary.stats.year.min} - {summary.stats.year.max}</span> : <Skeleton width="70px" />}</td>
           </tr>
         </tbody>
       </Table>

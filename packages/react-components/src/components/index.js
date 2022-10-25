@@ -3,7 +3,7 @@ export * from './Switch';
 export * from './Checkbox';
 export { Input } from './Input/Input';
 export { Popover } from './Popover';
-export { StripeLoader } from './Loaders';
+export { StripeLoader, EllipsisLoader } from './Loaders';
 export { Autocomplete } from './Autocomplete/Autocomplete';
 export { Tabs } from './Tabs/Tabs';
 export { Row, Col } from './Row/Row';

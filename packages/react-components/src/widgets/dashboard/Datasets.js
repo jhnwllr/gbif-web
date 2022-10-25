@@ -81,22 +81,25 @@ export function Preparations({
   const state = {
     series: facetResults?.data?.occurrenceSearch?.facet?.results?.map(x => x.count),
     options: {
+      theme: {
+        palette: 'palette2',
+      },
       chart: {
-        width: 380,
+        width: "100%",
         type: 'pie',
       },
       labels: facetResults?.data?.occurrenceSearch?.facet?.results?.map(x => x.key),
-      responsive: [{
-        breakpoint: 480,
-        options: {
-          chart: {
-            width: 200
-          },
-          legend: {
-            position: 'bottom'
-          }
-        }
-      }]
+      // responsive: [{
+      //   breakpoint: 480,
+      //   options: {
+      //     chart: {
+      //       width: 200
+      //     },
+      //     legend: {
+      //       position: 'bottom'
+      //     }
+      //   }
+      // }]
     }
   };
 
@@ -111,8 +114,10 @@ export function Preparations({
       </div>
     </CardTitle>
 
-    {showChart && <div id="chart" style={{margin: '24px auto'}}>
-      <Chart options={state.options} series={state.series} type="pie" width={380}  />
+    {showChart && <div style={{ margin: '24px auto' }}>
+      <div id="chart" style={{ maxWidth: 450, width: 'calc(100% - 1px)', margin: '0 auto' }}>
+        <Chart theme={state.theme} options={state.options} series={state.series} type="pie" />
+      </div>
     </div>}
     <GroupBy facetResults={facetResults} />
 
@@ -225,26 +230,25 @@ export function Iucn({
   predicate,
   ...props
 }) {
-  const facetResults = useFacets({ predicate, query: IUCN_FACETS });
+  const facetResults = useFacets({
+    predicate: {
+      type: 'and',
+      predicates: [
+        predicate,
+        {
+          type: 'in',
+          key: 'iucnRedListCategoryCode',
+          values: ['EX', 'EW', 'CR', 'EN', 'VU', 'NT']
+        }
+      ]
+    }, query: IUCN_FACETS
+  });
   return <Card {...props}>
     <CardTitle>
       IUCN
     </CardTitle>
     <GroupBy {...{
       facetResults,
-      size: 5,
-      predicate: {
-        type: 'and',
-        predicates: [
-          predicate,
-          {
-            type: 'in',
-            key: 'iucnRedListCategoryCode',
-            values: ['EX', 'EW', 'CR', 'EN', 'VU', 'NT']
-          }
-        ]
-      },
-      query: IUCN_FACETS,
       transform: data => {
         return data?.occurrenceSearch?.facet?.results?.map(x => {
           return {
@@ -270,10 +274,10 @@ query summary($predicate: Predicate, $size: Int, $from: Int){
       total
     }
     cardinality {
-      total: familyKey
+      total: speciesKey
     }
     facet {
-      results: familyKey(size: $size, from: $from) {
+      results: speciesKey(size: $size, from: $from) {
         key
         count
         entity: taxon {

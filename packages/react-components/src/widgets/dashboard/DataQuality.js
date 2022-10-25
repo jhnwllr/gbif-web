@@ -3,8 +3,8 @@ import React from 'react';
 import { useDeepCompareEffect } from 'react-use';
 import { useQuery } from '../../dataManagement/api';
 import { Progress } from '../../components';
-import { FormattedMessage, FormattedNumber } from 'react-intl';
-import { Card, CardTitle, Table } from './shared';
+import { FormattedMessage } from 'react-intl';
+import { Card, CardTitle, Table, BarItem, FormattedNumber } from './shared';
 import { MdChevronRight } from 'react-icons/md';
 
 export function DataQuality({
@@ -49,22 +49,31 @@ export function DataQuality({
             }
           ]
         },
+        hasCollector: {
+          type: 'and',
+          predicates: [
+            predicate,
+            {
+              "type": "isNotNull",
+              "key": "recordedBy"
+            }
+          ]
+        },
       },
       queue: { name: 'dashboard' }
     });
   }, [predicate]);
 
-  const total = data?.occurrenceSearch?.documents?.total;
-
   if (error) return <span>Failure</span>
-  if (!data || loading) return <span>Loading</span>
+  const noData = !data || loading;
 
   const summary = data?.occurrenceSearch;
+  const total = summary?.documents?.total;
 
   return <Card {...props}>
-    <CardTitle>Data quality</CardTitle>
+    <CardTitle>Data richness</CardTitle>
     <div>
-      <Table>
+      <Table removeBorder>
         <tbody css={css`
           >tr > td > div {
             display: flex;
@@ -76,38 +85,51 @@ export function DataQuality({
           } */
           tr {
             td:last-of-type {
-              width: 80px;
+              /* width: 80px; */
+              text-align: end;
             }
           }
           
           `}>
           <tr>
-            <td><div>Species level</div></td>
-            <td><FormattedNumber value={data?.rank?.documents?.total} /></td>
             <td>
-              <Progress percent={100 * data?.rank?.documents?.total / summary.documents.total} style={{ height: '1em', marginLeft: 'auto' }} />
+              <BarItem percent={100 * data?.rank?.documents?.total / total}>Identified to species</BarItem>
             </td>
+            <td>
+              <FormattedNumber value={data?.rank?.documents?.total} />
+            </td>
+            {/* <td>
+              <Progress percent={100 * data?.rank?.documents?.total / summary.documents.total} style={{ height: '1em', marginLeft: 'auto' }} />
+            </td> */}
           </tr>
           <tr>
-            <td><div>With coordinates</div></td>
+            <td><BarItem percent={100 * data?.hasCoordinates?.documents?.total / total}>With coordinates</BarItem></td>
             <td><FormattedNumber value={data?.hasCoordinates?.documents?.total} /></td>
-            <td>
-              <Progress percent={100 * data?.hasCoordinates?.documents?.total / summary.documents.total} style={{ height: '1em', marginLeft: 'auto' }} />
-            </td>
+            {/* <td>
+              <Progress percent={100 * data?.hasCoordinates?.documents?.total / total} style={{ height: '1em', marginLeft: 'auto' }} />
+            </td> */}
           </tr>
           <tr>
-            <td><div>With year</div></td>
+            <td><BarItem percent={100 * data?.rank?.documents?.total / total}>With collection year</BarItem></td>
             <td><FormattedNumber value={data?.rank?.documents?.total} /></td>
-            <td>
-              <Progress percent={100 * data?.rank?.documents?.total / summary.documents.total} style={{ height: '1em', marginLeft: 'auto' }} />
-            </td>
+            {/* <td>
+              <Progress percent={100 * data?.rank?.documents?.total / total} style={{ height: '1em', marginLeft: 'auto' }} />
+            </td> */}
           </tr>
           <tr>
-            <td><div>With media</div></td>
+            <td><BarItem percent={100 * data?.hasCollector?.documents?.total / total}>With collector</BarItem></td>
+            <td><FormattedNumber value={data?.hasCollector?.documents?.total} /></td>
+            {/* <td>
+              <Progress percent={100 * data?.hasCollector?.documents?.total / total} style={{ height: '1em', marginLeft: 'auto' }} />
+            </td> */}
+          </tr>
+          <tr>
+            {/* <td><div>With media</div></td> */}
+            <td><BarItem percent={100 * data?.hasMedia?.documents?.total / total}>With media</BarItem></td>
             <td><FormattedNumber value={data?.hasMedia?.documents?.total} /></td>
-            <td>
-              <Progress percent={100 * data?.hasMedia?.documents?.total / summary.documents.total} style={{ height: '1em', marginLeft: 'auto' }} />
-            </td>
+            {/* <td>
+              <Progress percent={100 * data?.hasMedia?.documents?.total / total} style={{ height: '1em', marginLeft: 'auto' }} />
+            </td> */}
           </tr>
         </tbody>
       </Table>
@@ -116,7 +138,7 @@ export function DataQuality({
 };
 
 const OCCURRENCE_STATS = `
-query summary($predicate: Predicate, $hasSpeciesRank: Predicate, $hasCoordinates: Predicate, $hasMedia: Predicate){
+query summary($predicate: Predicate, $hasSpeciesRank: Predicate, $hasCoordinates: Predicate, $hasMedia: Predicate, $hasCollector: Predicate){
   occurrenceSearch(predicate: $predicate) {
     documents(size: 0) {
       total
@@ -133,6 +155,11 @@ query summary($predicate: Predicate, $hasSpeciesRank: Predicate, $hasCoordinates
     }
   }
   hasMedia: occurrenceSearch(predicate: $hasMedia) {
+    documents(size: 0) {
+      total
+    }
+  }
+  hasCollector: occurrenceSearch(predicate: $hasCollector) {
     documents(size: 0) {
       total
     }
