@@ -39,7 +39,6 @@ export const getInstitutions = async ({limit: size, offset: from, ...filter} = {
 
     // cancel loop if request is closed
     if (req && req.aborted) {
-      console.log('aborted');
       return null;
     }
   } while (offset < total && !size);

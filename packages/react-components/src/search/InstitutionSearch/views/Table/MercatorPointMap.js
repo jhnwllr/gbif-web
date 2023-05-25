@@ -293,7 +293,7 @@ export default (props) => {
     const { v1Filter, error } = filter2v1(currentFilterContext.filter, predicateConfig);
     const filter = { ...v1Filter, ...rootPredicate };
     setFilter(filter);
-    const { promise, cancel } = axios.get('http://localhost:4000/unstable-api/map-styles/3031/institutions.geojson', { params: filter });
+    const { promise, cancel } = axios.get(`${env.UTILS_API}/map-styles/3031/institutions.geojson`, { params: filter });
     promise.then(({ data }) => {
       setGeojsonData(data);
     });

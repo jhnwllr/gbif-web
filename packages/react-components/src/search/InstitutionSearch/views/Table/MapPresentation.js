@@ -9,7 +9,7 @@ import env from '../../../../../.env.json';
 import SiteContext from '../../../../dataManagement/SiteContext';
 import { ViewHeader } from '../../../OccurrenceSearch/views/ViewHeader';
 import MercatorPointMap from './MercatorPointMap';
-import { ResourceAction, ResourceLink, getLink } from '../../../../components/resourceLinks/resourceLinks';
+import { ResourceAction } from '../../../../components/resourceLinks/resourceLinks';
 const pixelRatio = parseInt(window.devicePixelRatio) || 1;
 
 const defaultLayerOptions = {
