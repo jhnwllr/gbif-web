@@ -3,6 +3,8 @@ import StandardSearchTable from '../../../StandardSearchTable';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { ResourceLink } from '../../../../components';
 import { InlineFilterChip } from '../../../../widgets/Filter/utils/FilterChip';
+// import MercatorPointMap from './MercatorPointMap';
+import MapPresentation from './MapPresentation';
 
 const QUERY = `
 query list($code: String, $q: String, $offset: Int, $limit: Int, $country: Country, $fuzzyName: String, $city: String, $name: String, $active: Boolean, $numberSpecimens: String, , $displayOnNHCPortal: Boolean){
@@ -48,8 +50,8 @@ const defaultTableConfig = {
       value: {
         key: 'name',
         formatter: (value, item) => <div>
-          <ResourceLink data-loader type='institutionKey' id={item.key} style={{marginRight: 4}}>{value}</ResourceLink>
-          {!item.active && <span style={{padding: '0 3px', background: 'tomato', color: 'white', borderRadius: 2}}>Inactive</span>}
+          <ResourceLink data-loader type='institutionKey' id={item.key} style={{ marginRight: 4 }}>{value}</ResourceLink>
+          {!item.active && <span style={{ padding: '0 3px', background: 'tomato', color: 'white', borderRadius: 2 }}>Inactive</span>}
         </div>,
       },
       width: 'wide'
@@ -136,7 +138,17 @@ const defaultTableConfig = {
 };
 
 function Table() {
-  return <StandardSearchTable graphQuery={QUERY} slowQuery={SLOW_QUERY} resultKey='institutionSearch' defaultTableConfig={defaultTableConfig} />
+  return <div style={{
+    flex: "1 1 100%",
+    display: "flex",
+    height: "100%",
+    maxHeight: "100vh",
+    flexDirection: "row",
+  }}>
+    <StandardSearchTable style={{width: '50%', flex: '0 0 50%'}} graphQuery={QUERY} slowQuery={SLOW_QUERY} resultKey='institutionSearch' defaultTableConfig={defaultTableConfig} />
+    {/* <MercatorPointMap style={{width: '50%', flex: '0 0 50%', margin: '18px 0px 0px 0px'}} /> */}
+    <MapPresentation />
+  </div>
 }
 
 export default Table;
