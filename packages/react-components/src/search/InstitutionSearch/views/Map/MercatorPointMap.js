@@ -1,4 +1,6 @@
-import React, { useContext, useState, useEffect, Component } from "react";
+import React, { useContext, useRef, useState, useEffect, Component } from "react";
+import ReactDOM from "react-dom"
+
 import mapboxgl from 'mapbox-gl';
 import env from '../../../../../.env.json';
 import ThemeContext from '../../../../style/themes/ThemeContext';
@@ -8,6 +10,7 @@ import queryString from 'query-string';
 import { filter2v1 } from '../../../../dataManagement/filterAdapter';
 import axios from "../../../../dataManagement/api/axios";
 import uniqBy from 'lodash/uniqBy';
+import { Button } from "../../../../components";
 
 const mapStyles = {
 
@@ -19,7 +22,6 @@ class Map extends Component {
 
     this.addLayer = this.addLayer.bind(this);
     this.updateLayer = this.updateLayer.bind(this);
-    this.onPointClick = this.onPointClick.bind(this);
     this.myRef = React.createRef();
     this.state = {};
   }
@@ -104,10 +106,6 @@ class Map extends Component {
     // this.addLayer();
   }
 
-  onPointClick(pointData) {
-    // this.props.onPointClick(pointData);
-  }
-
   updateGeoJsonData() {
     const map = this.map;
     const geojsonData = this.props.geojsonData;
@@ -156,10 +154,14 @@ class Map extends Component {
           'step',
           ['get', 'point_count'],
           '#51bbd6',
-          100,
+          10,
           '#f1f075',
-          750,
-          '#f28cb1'
+          50,
+          '#f28cb1',
+          100,
+          '#DA5DBA',
+          600,
+          '#c22dc2'
         ],
         'circle-radius': [
           'step',
@@ -218,7 +220,7 @@ class Map extends Component {
           layers: ['clusters']
         });
         const clusterId = features[0].properties.cluster_id;
-        
+
         map.getSource('markers').getClusterExpansionZoom(
           clusterId,
           (err, zoom) => {
@@ -232,6 +234,7 @@ class Map extends Component {
         );
       });
 
+      const popUpRef = this.props.popUpRef;
       // When a click event occurs on a feature in
       // the unclustered-point layer, open a popup at
       // the location of the feature, with
@@ -249,14 +252,22 @@ class Map extends Component {
         // https://github.com/mapbox/mapbox-gl-js/issues/10297
         // it isn't clear why, but features can be duplicated so we have to find the unique using the key. For tiled data it is because they can appear on multiple tiles, but even for geojson sources it appears to be the case
         const features = uniqBy(e.features, x => x.properties.key);
-        const institutionContent = features.map(x => `<div id="${x.properties.key}" onClick="">${x.properties.name}</div>`).join(``);
-        // new mapboxgl.Popup()
-        //   .setLngLat(coordinates)
-        //   .setHTML(
-        //     `institutions: ${institutionContent}`
-        //   )
-        //   .addTo(map);
-        this.props.onPointClick(features.map(x => x.properties));
+
+        // approach of using mapbox with react popups is taken from here https://www.lostcreekdesigns.co/writing/how-to-create-a-map-popup-component-using-mapbox-and-react/
+        const popupNode = document.createElement("div")
+        ReactDOM.render(
+          <Popup
+            features={features.map(x => x.properties)}
+            onClick={this.props.onPointClick}
+            FeatureComponent={this.props.FeatureComponent}
+          />,
+          popupNode
+        )
+
+        popUpRef.current
+          .setLngLat(e.lngLat)
+          .setDOMContent(popupNode)
+          .addTo(map)
       });
 
       map.on('mouseenter', 'clusters', () => {
@@ -277,28 +288,30 @@ class Map extends Component {
   }
 
   render() {
-    const { query, onMapClick, onPointClick, predicateHash, style, className, ...props } = this.props;
-    return <div ref={this.myRef} {...{ style, className }} />
+    const { query, onMapClick, onPointClick, predicateHash, style, className, loading, ...props } = this.props;
+    return <div {...{ className }} style={{...style, position: 'relative'}}>
+      <div style={{ width: '100%', height: '100%' }} ref={this.myRef} />
+      {loading && <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'white', opacity: 0.6}}></div>}
+    </div>
   }
 }
 
 export default (props) => {
   const theme = useContext(ThemeContext);
-  const currentFilterContext = useContext(FilterContext);
-  const { rootPredicate, predicateConfig } = useContext(SearchContext);
-  const [filter, setFilter] = useState({});
-  const [geojsonData, setGeojsonData] = useState(null);
+  const popUpRef = useRef(new mapboxgl.Popup({ offset: 15 }))
 
-  useEffect(() => {
-    const { v1Filter, error } = filter2v1(currentFilterContext.filter, predicateConfig);
-    const filter = { ...v1Filter, ...rootPredicate };
-    setFilter(filter);
-    const { promise, cancel } = axios.get(`${env.UTILS_API}/map-styles/3031/institutions.geojson`, { params: filter });
-    promise.then(({ data }) => {
-      setGeojsonData(data);
-    });
-    return cancel;
-  }, [currentFilterContext.filterHash, rootPredicate]);
+  return <Map popUpRef={popUpRef} {...props} theme={theme} style={{ width: '100%', height: '100%' }} />
+}
 
-  return <Map geojsonData={geojsonData} filterHash={currentFilterContext.filterHash} {...props} theme={theme} style={{width: '100%', height: '100%'}}/>
+
+function Popup({ features, FeatureComponent = Feature, onClick, ...props }) {
+  return <div>
+    {features.map(x => <FeatureComponent key={x.key} data={x} onClick={onClick} />)}
+  </div>
+}
+
+function Feature({ data, onClick }) {
+  return <Button look="link" onClick={() => onClick([data])}>
+    {data.name}
+  </Button>
 }

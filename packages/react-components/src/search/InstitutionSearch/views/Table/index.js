@@ -3,8 +3,7 @@ import StandardSearchTable from '../../../StandardSearchTable';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { ResourceLink } from '../../../../components';
 import { InlineFilterChip } from '../../../../widgets/Filter/utils/FilterChip';
-// import MercatorPointMap from './MercatorPointMap';
-import MapPresentation from './MapPresentation';
+import Map from '../Map/Map';
 
 const QUERY = `
 query list($code: String, $q: String, $offset: Int, $limit: Int, $country: Country, $fuzzyName: String, $city: String, $name: String, $active: Boolean, $numberSpecimens: String, , $displayOnNHCPortal: Boolean){
@@ -145,9 +144,8 @@ function Table() {
     maxHeight: "100vh",
     flexDirection: "row",
   }}>
-    <StandardSearchTable style={{width: '50%', flex: '0 0 50%'}} graphQuery={QUERY} slowQuery={SLOW_QUERY} resultKey='institutionSearch' defaultTableConfig={defaultTableConfig} />
-    {/* <MercatorPointMap style={{width: '50%', flex: '0 0 50%', margin: '18px 0px 0px 0px'}} /> */}
-    <MapPresentation />
+    <StandardSearchTable style={{width: '50%', flex: '0 0 50%', marginRight: 12}} graphQuery={QUERY} slowQuery={SLOW_QUERY} resultKey='institutionSearch' defaultTableConfig={defaultTableConfig} />
+    <Map />
   </div>
 }
 
