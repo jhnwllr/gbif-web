@@ -9,7 +9,7 @@ import env from '../../../../../.env.json';
 import SiteContext from '../../../../dataManagement/SiteContext';
 import { ViewHeader } from '../../../OccurrenceSearch/views/ViewHeader';
 import MercatorPointMap from './MercatorPointMap';
-import { ResourceAction } from '../../../../components/resourceLinks/resourceLinks';
+import { ResourceAction, ResourceLink } from '../../../../components/resourceLinks/resourceLinks';
 const pixelRatio = parseInt(window.devicePixelRatio) || 1;
 
 const defaultLayerOptions = {
@@ -19,7 +19,7 @@ const defaultLayerOptions = {
   // ANTARCTIC: ['NATURAL', 'BRIGHT', 'DARK']
 };
 
-function Map({ labelMap, query, q, pointData, pointError, pointLoading, loading, total, predicateHash, registerPredicate, loadPointData, defaultMapSettings, ...props }) {
+function Map({ total, geojsonData, filterHash, labelMap, query, q, loading, defaultMapSettings, ...props }) {
   const theme = useContext(ThemeContext);
   const [latestEvent, broadcastEvent] = useState();
   const [listVisible, showList] = useState(false);
@@ -35,7 +35,11 @@ function Map({ labelMap, query, q, pointData, pointError, pointLoading, loading,
           <Button appearance="text" onClick={() => broadcastEvent({ type: 'ZOOM_OUT' })}><MdZoomOut /></Button>
         </div>
         <MercatorPointMap
+          loading={loading}
+          geojsonData={geojsonData}
+          filterHash={filterHash}
           latestEvent={latestEvent}
+          // FeatureComponent={({data}) => <ResourceLink type='institutionKey' id={data.key}>{data.name}</ResourceLink>}
           onPointClick={items => {
             showList(true); 
             setItems(items); 
