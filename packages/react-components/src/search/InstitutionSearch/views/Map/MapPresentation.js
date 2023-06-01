@@ -33,6 +33,7 @@ function Map({ total, geojsonData, filterHash, labelMap, query, q, loading, defa
         <div css={mapCss.mapControls({ theme })}>
           <Button appearance="text" onClick={() => broadcastEvent({ type: 'ZOOM_IN' })}><MdZoomIn /></Button>
           <Button appearance="text" onClick={() => broadcastEvent({ type: 'ZOOM_OUT' })}><MdZoomOut /></Button>
+          <ResourceLink type='institutionKey' id="sdf">slkdjfh</ResourceLink>
         </div>
         <MercatorPointMap
           loading={loading}
