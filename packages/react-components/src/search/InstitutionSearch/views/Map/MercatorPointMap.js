@@ -122,9 +122,6 @@ class Map extends Component {
       map.removeLayer("clusters");
     }
 
-    console.log('addLayer');
-
-
     const source = map.getSource('markers');
     if (!source) {
       map.addSource('markers', {
@@ -185,7 +182,6 @@ class Map extends Component {
       }
     });
 
-    console.log('addLayer unclustered-point')
     map.addLayer({
       id: 'unclustered-point',
       type: 'circle',
