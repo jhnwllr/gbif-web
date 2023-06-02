@@ -1,7 +1,7 @@
 // using axios page through all institutions from the gbif API, given a filter
 // and concatenate the results into a single array
-
 import axios from 'axios';
+import config from '../../../config';
 import cachedInstitutionResponse from './cachedInstitutionResponse.json';
 let allInstitutions = cachedInstitutionResponse;
 
@@ -12,7 +12,7 @@ export const getInstitutions = async ({limit: size, offset: from, ...filter} = {
   let total = 0;
 
   do {
-    const response = await axios.get('https://api.gbif.org/v1/grscicoll/institution', {
+    const response = await axios.get(`${config.apiv1}/grscicoll/institution`, {
       params: {
         limit,
         offset,
@@ -47,8 +47,14 @@ export const getInstitutions = async ({limit: size, offset: from, ...filter} = {
 }
 
 // get institutions as geojson
-export const getInstitutionsGeojson = async (filter, req) => {
-  // if no filter, then return cached results, but trigger a new request in the background and update the cached resonse to next request
+export const getInstitutionsGeojson = async (filter, req, refreshCache) => {
+  // if refreshCache, then return cached results, but trigger a new request in the background and update the cached resonse to next request
+  if (refreshCache) {
+    getInstitutions(filter, req).then((institutions) => {
+      allInstitutions = institutions;
+    });
+  }
+
   let institutions = allInstitutions;
   if (filter && Object.keys(filter).length > 0) {
     institutions = await getInstitutions(filter, req) || [];
@@ -80,8 +86,8 @@ export const getInstitutionsGeojson = async (filter, req) => {
 }
 
 // trigger at sartup to update the cached institutions
-getInstitutionsGeojson();
+getInstitutionsGeojson({}, null, true);
 // update the cahced institutions every 30 minutes
 setInterval(() => {
-  getInstitutionsGeojson();
+  getInstitutionsGeojson({}, null, true);
 }, 1000 * 60 * 30);
