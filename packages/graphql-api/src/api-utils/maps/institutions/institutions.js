@@ -29,7 +29,9 @@ export const getInstitutions = async ({limit: size, offset: from, ...filter} = {
         longitude: institution.longitude,
         name: institution.name,
         key: institution.key,
-        numberSpecimens: institution.numberSpecimens
+        numberSpecimens: institution.numberSpecimens,
+        active: institution.active,
+        displayOnNHCPortal: institution.displayOnNHCPortal
       }
     });
 
@@ -56,7 +58,33 @@ export const getInstitutionsGeojson = async (filter, req, refreshCache) => {
   }
 
   let institutions = allInstitutions;
-  if (filter && Object.keys(filter).length > 0) {
+  
+  // if no filter or a filter by "active" or by "displayOnNHCPortal", then use cached institutions, but filtered by active or displayOnNHCPortal
+  // if any other filters is used, then trigger a request to the API
+  if (onlyContainsValidKeys(filter, ['active', 'displayOnNHCPortal'])) {
+    console.log('true - onlyContainsValidKeys')
+    // parse filter.active to boolean
+    const active = filter.active === 'true';
+console.log('is filter active', !!filter.active);
+    institutions = institutions.filter((institution) => {
+      if (filter.active) {
+        return institution.active === active;
+      }
+      return true;
+    });
+
+    console.log('institution count after filter by active', institutions.length)
+    // parse filter.displayOnNHCPortal to boolean
+    const displayOnNHCPortal = filter.displayOnNHCPortal === 'true';
+    console.log('is filter portal', !!filter.displayOnNHCPortal);
+    institutions = institutions.filter((institution) => {
+      if (filter.displayOnNHCPortal) {
+        return institution.displayOnNHCPortal === displayOnNHCPortal;
+      }
+      return true;
+    });
+    console.log('institution count after filter by portal', institutions.length)
+  } else {
     institutions = await getInstitutions(filter, req) || [];
   }
   
@@ -76,7 +104,8 @@ export const getInstitutionsGeojson = async (filter, req, refreshCache) => {
           coordinates: [longitude, latitude]
         },
         properties: {
-          ...properties
+          name: properties.name,
+          key: properties.key,
         }
       }
     })
@@ -91,3 +120,11 @@ getInstitutionsGeojson({}, null, true);
 setInterval(() => {
   getInstitutionsGeojson({}, null, true);
 }, 1000 * 60 * 30);
+
+
+// given an object, decide if it only contains any keys that aren't in a fixed list of keys. If so return false.
+function onlyContainsValidKeys(object, validKeys) {
+  return Object.keys(object).every((key) => {
+    return validKeys.includes(key);
+  });
+}
