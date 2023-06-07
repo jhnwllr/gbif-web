@@ -110,7 +110,9 @@ class Map extends Component {
     const map = this.map;
     const geojsonData = this.props.geojsonData;
     const source = map.getSource('markers');
-    source.setData(geojsonData);
+    if (source) {
+      source.setData(geojsonData);
+    }
   }
 
   addLayer() {
@@ -136,6 +138,8 @@ class Map extends Component {
       });
     }
 
+    // get primary color from theme
+    const primaryColor = this.props.theme.primary;
     map.addLayer({
       id: 'clusters',
       type: 'circle',
@@ -147,19 +151,7 @@ class Map extends Component {
         //   * Blue, 20px circles when point count is less than 100
         //   * Yellow, 30px circles when point count is between 100 and 750
         //   * Pink, 40px circles when point count is greater than or equal to 750
-        'circle-color': [
-          'step',
-          ['get', 'point_count'],
-          '#51bbd6',
-          10,
-          '#f1f075',
-          50,
-          '#f28cb1',
-          100,
-          '#DA5DBA',
-          600,
-          '#c22dc2'
-        ],
+        'circle-color': primaryColor,
         'circle-radius': [
           'step',
           ['get', 'point_count'],
@@ -188,8 +180,8 @@ class Map extends Component {
       source: 'markers',
       filter: ['!', ['has', 'point_count']],
       paint: {
-        'circle-color': '#11b4da',
-        'circle-radius': 8,
+        'circle-color': primaryColor,
+        'circle-radius': 7,
         'circle-stroke-width': 1,
         'circle-stroke-color': '#fff'
       }
