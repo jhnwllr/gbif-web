@@ -556,7 +556,6 @@ export default {
   //   console.log('get verbatim');
   //   return dataSources.occurrenceAPI.getVerbatim({key: occurrence.key })
   //     .then(verbatim => {
-  //       console.log('sdf');
   //       groupResolver({occurrence, verbatim})
   //     });
   // }

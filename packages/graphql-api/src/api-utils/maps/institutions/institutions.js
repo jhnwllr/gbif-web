@@ -62,10 +62,8 @@ export const getInstitutionsGeojson = async (filter, req, refreshCache) => {
   // if no filter or a filter by "active" or by "displayOnNHCPortal", then use cached institutions, but filtered by active or displayOnNHCPortal
   // if any other filters is used, then trigger a request to the API
   if (onlyContainsValidKeys(filter, ['active', 'displayOnNHCPortal'])) {
-    console.log('true - onlyContainsValidKeys')
     // parse filter.active to boolean
     const active = filter.active === 'true';
-console.log('is filter active', !!filter.active);
     institutions = institutions.filter((institution) => {
       if (filter.active) {
         return institution.active === active;
@@ -73,17 +71,14 @@ console.log('is filter active', !!filter.active);
       return true;
     });
 
-    console.log('institution count after filter by active', institutions.length)
     // parse filter.displayOnNHCPortal to boolean
     const displayOnNHCPortal = filter.displayOnNHCPortal === 'true';
-    console.log('is filter portal', !!filter.displayOnNHCPortal);
     institutions = institutions.filter((institution) => {
       if (filter.displayOnNHCPortal) {
         return institution.displayOnNHCPortal === displayOnNHCPortal;
       }
       return true;
     });
-    console.log('institution count after filter by portal', institutions.length)
   } else {
     institutions = await getInstitutions(filter, req) || [];
   }
