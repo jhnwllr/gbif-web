@@ -1,9 +1,12 @@
+import { jsx, css } from '@emotion/react';
 import React from "react";
 import StandardSearchTable from '../../../StandardSearchTable';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
-import { ResourceLink } from '../../../../components';
+import { ResourceLink, Button } from '../../../../components';
 import { InlineFilterChip } from '../../../../widgets/Filter/utils/FilterChip';
 import Map from '../Map/Map';
+import { MdMap } from 'react-icons/md';
+import useBelow from '../../../../utils/useBelow';
 
 const QUERY = `
 query list($code: String, $q: String, $offset: Int, $limit: Int, $country: Country, $fuzzyName: String, $city: String, $name: String, $active: Boolean, $numberSpecimens: String, , $displayOnNHCPortal: Boolean){
@@ -137,15 +140,40 @@ const defaultTableConfig = {
 };
 
 function Table() {
-  return <div style={{
-    flex: "1 1 100%",
-    display: "flex",
-    height: "100%",
-    maxHeight: "100vh",
-    flexDirection: "row",
-  }}>
-    <StandardSearchTable style={{width: '50%', flex: '0 0 50%', marginRight: 12}} graphQuery={QUERY} slowQuery={SLOW_QUERY} resultKey='institutionSearch' defaultTableConfig={defaultTableConfig} />
-    <Map />
+  const [showMap, setShowMap] = React.useState(true);
+  const [showTable, setShowTable] = React.useState(true);
+  const noSplitPane = useBelow(800);
+
+  // if with below 800px, then the Button should toggle between map and table. If above 800px then the button should toggle the map view, but keep the table in view.
+  const tableView = showTable || !noSplitPane;
+  const mapVisible = (showMap && !noSplitPane) || (!tableView && noSplitPane);
+
+  return <div 
+    css={css`
+      flex: 1 1 100%;
+      display: flex;
+      height: 100%;
+      max-height: 100vh;
+      flex-direction: row;
+      position: relative;
+    `}>
+    <div css={css`
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 1000;
+      font-size: 18px;
+      color: var(--color500);
+    `}>
+      <Button look="text" onClick={() => {
+        setShowMap(!showMap);
+        setShowTable(!showTable);
+      }}>
+        <MdMap />
+      </Button>
+    </div>
+    {tableView && <StandardSearchTable style={{width: '50%', flex: '1 0 50%', marginRight: showMap && !noSplitPane? 12 : 0}} graphQuery={QUERY} slowQuery={SLOW_QUERY} resultKey='institutionSearch' defaultTableConfig={defaultTableConfig} />}
+    {mapVisible && <Map style={{width: '50%', flex: '1 0 50%'}}/>}
   </div>
 }
 
