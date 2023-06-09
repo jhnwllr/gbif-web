@@ -85,7 +85,7 @@ const config = {
   availableCatalogues: ['INSTITUTION', 'COLLECTION', 'OCCURRENCE']
 };
 
-export const Example = () => <Router initialEntries={[`/institution/search?numberSpecimens=100000,*`]}>
+export const Example = () => <Router initialEntries={[`/institution/search`]}>
   <QueryParamProvider ReactRouterRoute={Route}>
     <AddressBar />
     <InstitutionSearch pageLayout config={config} style={{ margin: 'auto', height: 'calc(100vh - 40px)' }} />
