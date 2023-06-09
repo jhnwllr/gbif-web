@@ -35,6 +35,7 @@ function Map({ total, geojsonData, filterHash, labelMap, query, q, loading, defa
           <Button appearance="text" onClick={() => broadcastEvent({ type: 'ZOOM_OUT' })}><MdZoomOut /></Button>
         </div>
         <MercatorPointMap
+          defaultMapSettings={defaultMapSettings}
           loading={loading}
           geojsonData={geojsonData}
           filterHash={filterHash}

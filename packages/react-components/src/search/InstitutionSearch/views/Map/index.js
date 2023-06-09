@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 
-function Table() {
+function MapWrapper() {
   const theme = useContext(ThemeContext);
   const currentFilterContext = useContext(FilterContext);
 
@@ -15,4 +15,4 @@ function Table() {
   </div>
 }
 
-export default Table;
+export default MapWrapper;

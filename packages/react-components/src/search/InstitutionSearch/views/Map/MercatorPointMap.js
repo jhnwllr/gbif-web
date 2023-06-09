@@ -28,14 +28,14 @@ class Map extends Component {
 
   componentDidMount() {
     const mapStyle = this.props.theme.darkTheme ? 'dark-v9' : 'light-v9';
-    let zoom = sessionStorage.getItem('mapZoom') || this.props.defaultMapSettings?.zoom || 0;
+    let zoom = sessionStorage.getItem('institutionMapZoom') || this.props.defaultMapSettings?.zoom || 0;
     zoom = Math.min(Math.max(0, zoom), 20);
     zoom -= 1;
 
-    let lng = sessionStorage.getItem('mapLng') || this.props.defaultMapSettings?.lng || 0;
+    let lng = sessionStorage.getItem('institutionMapLng') || this.props.defaultMapSettings?.lng || 0;
     lng = Math.min(Math.max(-180, lng), 180);
 
-    let lat = sessionStorage.getItem('mapLat') || this.props.defaultMapSettings?.lat || 0;
+    let lat = sessionStorage.getItem('institutionMapLat') || this.props.defaultMapSettings?.lat || 0;
     lat = Math.min(Math.max(-85, lat), 85);
 
     mapboxgl.accessToken = env.MAPBOX_KEY;
@@ -194,15 +194,15 @@ class Map extends Component {
       // remember map position
       map.on('zoomend', function () {
         const center = map.getCenter();
-        sessionStorage.setItem('mapZoom', map.getZoom() + 1);
-        sessionStorage.setItem('mapLng', center.lng);
-        sessionStorage.setItem('mapLat', center.lat);
+        sessionStorage.setItem('institutionMapZoom', map.getZoom() + 1);
+        sessionStorage.setItem('institutionMapLng', center.lng);
+        sessionStorage.setItem('institutionMapLat', center.lat);
       });
       map.on('moveend', function () {
         const center = map.getCenter();
-        sessionStorage.setItem('mapZoom', map.getZoom() + 1);
-        sessionStorage.setItem('mapLng', center.lng);
-        sessionStorage.setItem('mapLat', center.lat);
+        sessionStorage.setItem('institutionMapZoom', map.getZoom() + 1);
+        sessionStorage.setItem('institutionMapLng', center.lng);
+        sessionStorage.setItem('institutionMapLat', center.lat);
       });
 
       // inspect a cluster on click
