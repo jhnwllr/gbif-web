@@ -126,6 +126,7 @@ export const siteConfig = {
   literature: {},
   institution: {
     mapSettings: {
+      enabled: true,
       lat: 54.89,
       lng: -3.86,
       zoom: 5.4

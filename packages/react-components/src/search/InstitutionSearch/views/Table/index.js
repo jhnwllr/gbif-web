@@ -1,5 +1,5 @@
 import { jsx, css } from '@emotion/react';
-import React from "react";
+import React, { useContext } from "react";
 import StandardSearchTable from '../../../StandardSearchTable';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { ResourceLink, Button } from '../../../../components';
@@ -7,6 +7,7 @@ import { InlineFilterChip } from '../../../../widgets/Filter/utils/FilterChip';
 import Map from '../Map/Map';
 import { MdMap } from 'react-icons/md';
 import useBelow from '../../../../utils/useBelow';
+import SiteContext from '../../../../dataManagement/SiteContext';
 
 const QUERY = `
 query list($code: String, $q: String, $offset: Int, $limit: Int, $country: Country, $fuzzyName: String, $city: String, $name: String, $active: Boolean, $numberSpecimens: String, , $displayOnNHCPortal: Boolean){
@@ -140,15 +141,17 @@ const defaultTableConfig = {
 };
 
 function Table() {
-  const [showMap, setShowMap] = React.useState(true);
+  const siteContext = useContext(SiteContext);
+  const mapSettings = siteContext?.institution?.mapSettings;
+  const [showMap, setShowMap] = React.useState(mapSettings?.enabled);
   const [showTable, setShowTable] = React.useState(true);
   const noSplitPane = useBelow(800);
 
   // if with below 800px, then the Button should toggle between map and table. If above 800px then the button should toggle the map view, but keep the table in view.
-  const tableView = showTable || !noSplitPane;
-  const mapVisible = (showMap && !noSplitPane) || (!tableView && noSplitPane);
+  const tableView = showTable || !noSplitPane || !mapSettings?.enabled;
+  const mapVisible = mapSettings?.enabled && ((showMap && !noSplitPane) || (!tableView && noSplitPane));
 
-  return <div 
+  return <div
     css={css`
       flex: 1 1 100%;
       display: flex;
@@ -157,7 +160,7 @@ function Table() {
       flex-direction: row;
       position: relative;
     `}>
-    <div css={css`
+    {mapSettings?.enabled && <div css={css`
       position: absolute;
       top: 0;
       right: 0;
@@ -171,9 +174,9 @@ function Table() {
       }}>
         <MdMap />
       </Button>
-    </div>
-    {tableView && <StandardSearchTable style={{width: '50%', flex: '1 0 50%', marginRight: showMap && !noSplitPane? 12 : 0}} graphQuery={QUERY} slowQuery={SLOW_QUERY} resultKey='institutionSearch' defaultTableConfig={defaultTableConfig} />}
-    {mapVisible && <Map style={{width: '50%', flex: '1 0 50%'}}/>}
+    </div>}
+    {tableView && <StandardSearchTable style={{ width: '50%', flex: '1 0 50%', marginRight: showMap && !noSplitPane ? 12 : 0 }} graphQuery={QUERY} slowQuery={SLOW_QUERY} resultKey='institutionSearch' defaultTableConfig={defaultTableConfig} />}
+    {mapVisible && <Map style={{ width: '50%', flex: '1 0 50%' }} />}
   </div>
 }
 
