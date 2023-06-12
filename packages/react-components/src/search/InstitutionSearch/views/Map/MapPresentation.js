@@ -10,6 +10,8 @@ import SiteContext from '../../../../dataManagement/SiteContext';
 import { ViewHeader } from '../../../OccurrenceSearch/views/ViewHeader';
 import MercatorPointMap from './MercatorPointMap';
 import { ResourceAction, ResourceLink } from '../../../../components/resourceLinks/resourceLinks';
+import LocaleContext from '../../../../dataManagement/LocaleProvider/LocaleContext';
+import RouteContext from '../../../../dataManagement/RouteContext';
 const pixelRatio = parseInt(window.devicePixelRatio) || 1;
 
 const defaultLayerOptions = {
@@ -21,15 +23,16 @@ const defaultLayerOptions = {
 
 function Map({ total, geojsonData, filterHash, labelMap, query, q, loading, defaultMapSettings, ...props }) {
   const theme = useContext(ThemeContext);
+  const localeContext = useContext(LocaleContext);
+  const routeContext = useContext(RouteContext);
   const [latestEvent, broadcastEvent] = useState();
-  const [listVisible, showList] = useState(false);
-  const [items, setItems] = useState(false);
+
+  const FeatureComponent = ({data}) => <ResourceLink localeContext={localeContext} routeContext={routeContext} type='institutionKey' id={data.key}>{data.name}</ResourceLink>;
 
   return <>
     <div css={mapCss.mapArea({ theme })}>
       <ViewHeader message="counts.nResultsWithCoordinates" loading={loading} total={total} />
       <div style={{ position: 'relative', height: '200px', flex: '1 1 auto', display: 'flex', flexDirection: 'column' }}>
-        {listVisible && <InstitutionList institutions={items} onCloseRequest={e => showList(false)} />}
         <div css={mapCss.mapControls({ theme })}>
           <Button appearance="text" onClick={() => broadcastEvent({ type: 'ZOOM_IN' })}><MdZoomIn /></Button>
           <Button appearance="text" onClick={() => broadcastEvent({ type: 'ZOOM_OUT' })}><MdZoomOut /></Button>
@@ -40,11 +43,8 @@ function Map({ total, geojsonData, filterHash, labelMap, query, q, loading, defa
           geojsonData={geojsonData}
           filterHash={filterHash}
           latestEvent={latestEvent}
-          // FeatureComponent={({data}) => <ResourceLink type='institutionKey' id={data.key}>{data.name}</ResourceLink>}
-          onPointClick={items => {
-            showList(true); 
-            setItems(items); 
-          }}
+          FeatureComponent={FeatureComponent}
+          getComponent={() => data => <ResourceLink type='institutionKey' id={data.key}>{data.name}</ResourceLink>}
           style={{ width: '100%', height: '100%' }} />
       </div>
     </div>
@@ -52,29 +52,3 @@ function Map({ total, geojsonData, filterHash, labelMap, query, q, loading, defa
 }
 
 export default Map;
-
-function InstitutionList({ institutions = [] }) {
-  if (!institutions?.length) return null;
-  if (institutions.length === 1) return <ResourceAction type='institutionKey' id={institutions[0].key} />
-  return <ul css={css`
-    position: absolute;
-    margin: 12px;
-    z-index: 10;
-    background: white;
-    padding: 0;
-    list-style: none;
-    `}>
-    {institutions.map(i => <li
-      css={css`
-        padding: 8px 12px;
-        border-bottom: 1px solid #ccc;
-        cursor: pointer;
-        &:hover {
-          background: #eee;
-        }
-      `}
-      key={i.key}>
-      <ResourceAction type='institutionKey' id={i.key} />
-    </li>)}
-  </ul>
-}

@@ -17,11 +17,15 @@ export const ResourceSearchLink = React.forwardRef(({ queryString, type, discree
   }
 });
 
-export const ResourceLink = React.forwardRef(({ id, type, otherIds, discreet, bold,...props }, ref) => {
+export const ResourceLink = React.forwardRef(({ id, type, otherIds, discreet, bold, localeContext: localeOverwrite, routeContext: routeOverwrite, ...props }, ref) => {
   const localeSettings = useContext(LocaleContext);
-  const routeContext = useContext(RouteContext);
+  const routeSettings = useContext(RouteContext);
+
+  const localeContext = localeOverwrite || localeSettings;
+  const routeContext = routeOverwrite || routeSettings;
+
   const basename = routeContext.basename;
-  const gbifOrgLocale = localeSettings?.localeMap?.gbif_org;
+  const gbifOrgLocale = localeContext?.localeMap?.gbif_org;
   const { url, isHref, route } = routeContext[type];
   const to = url({ key: id, otherIds, route, basename, gbifOrgLocalePrefix: gbifOrgLocale ? `/${gbifOrgLocale}` : '' });
   let style = isDiscreetLink;
