@@ -280,9 +280,9 @@ class Map extends Component {
 
   render() {
     const { query, onMapClick, onPointClick, predicateHash, style, className, loading, ...props } = this.props;
-    return <div {...{ className }} style={{...style, position: 'relative'}}>
+    return <div {...{ className }} style={{ ...style, position: 'relative' }}>
       <div style={{ width: '100%', height: '100%' }} ref={this.myRef} />
-      {loading && <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'white', opacity: 0.6}}></div>}
+      {loading && <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'white', opacity: 0.6 }}></div>}
     </div>
   }
 }
@@ -296,8 +296,10 @@ export default (props) => {
 
 
 function Popup({ features, FeatureComponent = Feature, onClick, ...props }) {
-  return <div>
-    {features.map(x => <FeatureComponent key={x.key} data={x} onClick={onClick} />)}
+  return <div style={{lineHeight: '1.2em'}}>
+    {features.map(x => <div style={{margin: '8px 0'}}>
+      <FeatureComponent key={x.key} data={x} onClick={onClick} />
+    </div>)}
   </div>
 }
 
