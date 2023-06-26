@@ -6,18 +6,21 @@ const cors = require('cors');
 const config = require('./config');
 
 var queue = require('express-queue');
-const queueOptions = { 
-  activeLimit: 100, 
-  queuedLimit: 1000, 
+const queueOptions = {
+  activeLimit: 10,
+  queuedLimit: 2000,
   rejectHandler: (req, res) => {
-    res.status(429); 
-    res.json({error: 429, message: 'Too many concurrent requests. This threshold is shared across users, so it is not only your requests.'});
+    res.status(429);
+    res.json({ error: 429, message: 'Too many concurrent requests. This threshold is shared across users, so it is not only your requests.' });
   }
 };
 
-let literature, occurrence, dataset, event;
+let literature, occurrence, eventOccurrence, dataset, event;
 if (config.literature) {
   literature = require('./resources/literature');
+}
+if (config.eventOccurrence) {
+  eventOccurrence = require('./resources/eventOccurrence');
 }
 if (config.occurrence) {
   occurrence = require('./resources/occurrence');
@@ -45,8 +48,10 @@ let setCache = function (req, res, next) {
   // call next() to pass on the request
   next()
 }
-// use middleware
-app.use(setCache)
+if (!config.debug) {
+  // use cache middleware
+  app.use(setCache)
+}
 
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
@@ -69,7 +74,8 @@ const temporaryAuthMiddleware = function (req, res, next) {
   // Pass to next layer of middleware
   next()
 }
-app.use(temporaryAuthMiddleware)
+// use per route instead
+// app.use(temporaryAuthMiddleware)
 
 if (literature) {
   app.post('/literature/meta', asyncMiddleware(postMetaOnly(literature)));
@@ -79,34 +85,61 @@ if (literature) {
   app.get('/literature', queue(queueOptions), asyncMiddleware(searchResource(literature)));
   app.get('/literature/key/:id', asyncMiddleware(keyResource(literature)));
 }
+
 if (occurrence) {
   app.post('/occurrence/meta', asyncMiddleware(postMetaOnly(occurrence)));
   app.get('/occurrence/meta', asyncMiddleware(getMetaOnly(occurrence)));
-  
-  app.post('/occurrence', queue(queueOptions), asyncMiddleware(searchResource(occurrence)));
-  app.get('/occurrence', queue(queueOptions), asyncMiddleware(searchResource(occurrence)));
+
+  app.post('/occurrence', queue(queueOptions), temporaryAuthMiddleware, asyncMiddleware(searchResource(occurrence)));
+  app.get('/occurrence', queue(queueOptions), temporaryAuthMiddleware, asyncMiddleware(searchResource(occurrence)));
   app.get('/occurrence/key/:id', asyncMiddleware(keyResource(occurrence)));
-  app.get('/occurrence/suggest/:key', asyncMiddleware(suggestResource(occurrence)));
+
+  app.get('/occurrence/suggest/:key', temporaryAuthMiddleware, asyncMiddleware(suggestResource(occurrence)));
 }
+
+if (eventOccurrence) {
+  app.post('/event-occurrence/meta', asyncMiddleware(postMetaOnly(eventOccurrence)));
+  app.get('/event-occurrence/meta', asyncMiddleware(getMetaOnly(eventOccurrence)));
+
+  app.post('/event-occurrence', queue(queueOptions), temporaryAuthMiddleware, asyncMiddleware(searchResource(eventOccurrence)));
+  app.get('/event-occurrence', queue(queueOptions), temporaryAuthMiddleware, asyncMiddleware(searchResource(eventOccurrence)));
+  app.get('/event-occurrence/key/:id', asyncMiddleware(keyResource(eventOccurrence)));
+
+  app.get('/event-occurrence/suggest/:key', temporaryAuthMiddleware, asyncMiddleware(suggestResource(eventOccurrence)));
+}
+
 if (dataset) {
-  app.post('/dataset', queue(queueOptions), asyncMiddleware(searchResource(dataset)));
-  app.get('/dataset', queue(queueOptions), asyncMiddleware(searchResource(dataset)));
+  app.post('/dataset', queue(queueOptions), temporaryAuthMiddleware, asyncMiddleware(searchResource(dataset)));
+  app.get('/dataset', queue(queueOptions), temporaryAuthMiddleware, asyncMiddleware(searchResource(dataset)));
   app.get('/dataset/key/:id', asyncMiddleware(keyResource(dataset)));
 }
+
+let eventQueue
 if (event) {
-  app.post('/event', queue(queueOptions), asyncMiddleware(searchResource(event)));
-  app.get('/event', queue(queueOptions), asyncMiddleware(searchResource(event)));
-  app.get('/event/key/:id', asyncMiddleware(keyResource(event)));
+  eventQueue = queue(queueOptions);
+  app.post('/event/meta', asyncMiddleware(postMetaOnly(event)));
+  app.get('/event/meta', asyncMiddleware(getMetaOnly(event)));
+
+  app.post('/event', eventQueue, temporaryAuthMiddleware, asyncMiddleware(searchResource(event)));
+  app.get('/event', eventQueue, temporaryAuthMiddleware, asyncMiddleware(searchResource(event)));
+  app.get('/event/key/:qualifier/:id', temporaryAuthMiddleware, asyncMiddleware(keyResource(event)));
+
+  app.get('/event/suggest/taxonKey', asyncMiddleware(async (req, res) => {
+    const body = await event.scientificNameSuggest({ q: req.query.q, req });
+    res.json(body);
+  }));
 }
 
 function searchResource(resource) {
   const { dataSource, get2predicate, predicate2query, get2metric, metric2aggs } = resource;
   return async (req, res, next) => {
     try {
-      const { metrics, predicate, size, from, includeMeta } = parseQuery(req, res, next, { get2predicate, get2metric });
+      // console.log(`queueLength: ${eventQueue.queue.getLength()}`);
+
+      const { metrics, predicate, size, from, randomSeed, randomize, includeMeta } = parseQuery(req, res, next, { get2predicate, get2metric });
       const aggs = metric2aggs(metrics);
       const query = predicate2query(predicate);
-      const { result, esBody } = await dataSource.query({ query, aggs, size, from, metrics, req });
+      const { result, esBody } = await dataSource.query({ query, aggs, size, from, metrics, randomSeed, randomize, req });
       const meta = {
         GET: req.query,
         predicate,
@@ -147,6 +180,8 @@ function parseQuery(req, res, next, { get2predicate, get2metric }) {
       metrics: jsonMetrics,
       size = 20,
       from = 0,
+      randomSeed,
+      randomize,
       includeMeta = false,
       ...otherParams
     } = query;
@@ -168,7 +203,9 @@ function parseQuery(req, res, next, { get2predicate, get2metric }) {
 
     const intSize = parseInt(size);
     const intFrom = parseInt(from);
-    const result = { metrics, predicate, size: intSize, from: intFrom, includeMeta };
+    const intSeed = parseInt(randomSeed);
+    const boolRandomize = (randomize + '').toLowerCase() === 'true';
+    const result = { metrics, predicate, size: intSize, from: intFrom, randomSeed: intSeed, randomize: boolRandomize, includeMeta };
     return result;
   } catch (err) {
     next(err);
@@ -178,14 +215,14 @@ function parseQuery(req, res, next, { get2predicate, get2metric }) {
 function keyResource(resource) {
   const { dataSource } = resource;
   return async (req, res) => {
-    const body = await dataSource.byKey({ key: req.params.id, req });
+    const body = await dataSource.byKey({ key: req.params.id, qualifier: req.params.qualifier, req });
     res.json(body);
   };
 }
 
 function suggestResource(resource) {
   const { dataSource, getSuggestQuery } = resource;
-  return async (req, res) => {
+  return async (req, res, next) => {
     const suggestQuery = getSuggestQuery({ key: req.params.key, text: req.query.q });
     const body = await dataSource.suggest(suggestQuery);
     res.json(body);

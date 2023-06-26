@@ -1,19 +1,20 @@
 import React from 'react';
 import { addDecorator } from '@storybook/react';
 import { select } from '@storybook/addon-knobs';
-import flatten from 'flat';
+import { ToastContainer } from 'react-toast'
 
 import { LocaleProvider } from "../src/dataManagement/LocaleProvider";
 
 import { Root } from '../src/components';
 
-import ThemeContext, { darkTheme, lightTheme, a11yTheme, vertnetTheme, rtlTheme, gbifTheme } from '../src/style/themes';
+import ThemeContext, { darkTheme, lightTheme, a11yTheme, vertnetTheme, rtlTheme, alaTheme, gbifTheme } from '../src/style/themes';
 import ThemeBuilder from '../src/style/themeBuilder';
 import { ApiContext, ApiClient } from '../src/dataManagement/api';
 import env from '../.env.json';
 import RouteContext from '../src/dataManagement/RouteContext';
 import SiteContext from '../src/dataManagement/SiteContext';
 import { siteConfig } from './siteConfig';
+import {GraphQLContextProvider} from "../src/dataManagement/api/GraphQLContext";
 
 const availableLocales = env.LOCALES || ['en-developer'];
 const locales = availableLocales.map(x => {
@@ -36,6 +37,9 @@ const client = new ApiClient({
   v1: {
     endpoint: env.API_V1
   },
+  esApi: {
+    endpoint: env.ES_WEB_API
+  },
   translations: {
     endpoint: env.TRANSLATIONS
   }
@@ -48,6 +52,7 @@ addDecorator(storyFn => {
     a11y: a11yTheme,
     vertnet: vertnetTheme,
     rtl: rtlTheme,
+    ala: alaTheme,
     gbif: gbifTheme,
     custom: customTheme
   }
@@ -69,36 +74,41 @@ addDecorator(storyFn => {
     <div>
       <SiteContext.Provider value={siteConfig}>
         <ApiContext.Provider value={client}>
-          <LocaleProvider
-            locale={chooseLocale(
-              select(
-                'Choose locale',
-                locales,
-                env.STORYBOOK_LOCALE || locales[0],
-              ),
-            )}>
-            <ThemeContext.Provider
-              value={chooseTheme(
+          <GraphQLContextProvider value={{}}>
+            <LocaleProvider
+              locale={chooseLocale(
                 select(
-                  'Choose Theme',
-                  ['Dark', 'Light', 'A11y', 'Vertnet', 'RTL', 'GBIF', 'Custom'],
-                  'Light',
-                ),
-              )}
-            >
-              <Root id="application" appRoot style={{ padding: 0 }} dir={chooseRtl(
-                select(
-                  'Choose Direction',
-                  ['ltr', 'rtl'],
-                  'ltr',
+                  'Choose locale',
+                  locales,
+                  env.STORYBOOK_LOCALE || locales[0],
                 ),
               )}>
-                <RouteContext.Provider value={siteConfig.routeConfig}>
-                  {storyFn()}
-                </RouteContext.Provider>
-              </Root>
-            </ThemeContext.Provider>
-          </LocaleProvider>
+              <ThemeContext.Provider
+                value={chooseTheme(
+                  select(
+                    'Choose Theme',
+                    ['Dark', 'Light', 'A11y', 'Vertnet', 'RTL', 'GBIF', 'ALA', 'Custom'],
+                    'Light',
+                  ),
+                )}
+              >
+                <Root id="application" appRoot style={{ padding: 0 }} dir={chooseRtl(
+                  select(
+                    'Choose Direction',
+                    ['ltr', 'rtl'],
+                    'ltr',
+                  ),
+                )}>
+                  <RouteContext.Provider value={siteConfig.routeConfig}>
+                    {storyFn()}
+                  </RouteContext.Provider>
+                  <div style={{zIndex: 10000, position: 'fixed'}}>
+                    <ToastContainer position="bottom-center" delay={3000} />
+                  </div>
+                </Root>
+              </ThemeContext.Provider>
+            </LocaleProvider>
+          </GraphQLContextProvider>
         </ApiContext.Provider>
       </SiteContext.Provider>
     </div>

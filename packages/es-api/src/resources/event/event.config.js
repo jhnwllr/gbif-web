@@ -1,7 +1,7 @@
-const config = 
+const config =
 {
   options: {
-    all: {
+    q: {
       type: 'text',
       field: 'all',
       get: {
@@ -17,6 +17,204 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
+    taxonKey: {
+      join: 'occurrence',
+      config: {
+        options: {
+          taxonKey: {
+            type: 'keyword',
+            field: 'occurrence.gbifClassification.taxonKey'
+          }
+        }
+      }
+    },
+    kingdomKey: {
+      join: 'occurrence',
+      config: {
+        options: {
+          kingdomKey: {
+            type: 'keyword',
+            field: 'occurrence.gbifClassification.kingdomKey'
+          }
+        }
+      }
+    },
+    phylumKey: {
+      join: 'occurrence',
+      config: {
+        options: {
+          phylumKey: {
+            type: 'keyword',
+            field: 'occurrence.gbifClassification.phylumKey'
+          }
+        }
+      }
+    },
+    classKey: {
+      join: 'occurrence',
+      config: {
+        options: {
+          classKey: {
+            type: 'keyword',
+            field: 'occurrence.gbifClassification.classKey'
+          }
+        }
+      }
+    },
+    orderKey: {
+      join: 'occurrence',
+      config: {
+        options: {
+          orderKey: {
+            type: 'keyword',
+            field: 'occurrence.gbifClassification.orderKey'
+          }
+        }
+      }
+    },
+    familyKey: {
+      join: 'occurrence',
+      config: {
+        options: {
+          familyKey: {
+            type: 'keyword',
+            field: 'occurrence.gbifClassification.familyKey'
+          }
+        }
+      }
+    },
+    genusKey: {
+      join: 'occurrence',
+      config: {
+        options: {
+          genusKey: {
+            type: 'keyword',
+            field: 'occurrence.gbifClassification.genusKey'
+          }
+        }
+      }
+    },
+    speciesKey: {
+      join: 'occurrence',
+      config: {
+        options: {
+          speciesKey: {
+            type: 'keyword',
+            field: 'occurrence.gbifClassification.speciesKey'
+          }
+        }
+      }
+    },
+    kingdom: {
+      join: 'occurrence',
+      config: {
+        options: {
+          kingdom: {
+            type: 'keyword',
+            field: 'occurrence.gbifClassification.kingdom'
+          }
+        }
+      }
+    },
+    phylum: {
+      join: 'occurrence',
+      config: {
+        options: {
+          phylum: {
+            type: 'keyword',
+            field: 'occurrence.gbifClassification.phylum'
+          }
+        }
+      }
+    },
+    class: {
+      join: 'occurrence',
+      config: {
+        options: {
+          class: {
+            type: 'keyword',
+            field: 'occurrence.gbifClassification.class'
+          }
+        }
+      }
+    },
+    order: {
+      join: 'occurrence',
+      config: {
+        options: {
+          order: {
+            type: 'keyword',
+            field: 'occurrence.gbifClassification.order'
+          }
+        }
+      }
+    },
+    family: {
+      join: 'occurrence',
+      config: {
+        options: {
+          family: {
+            type: 'keyword',
+            field: 'occurrence.gbifClassification.family'
+          }
+        }
+      }
+    },
+    genus: {
+      join: 'occurrence',
+      config: {
+        options: {
+          genus: {
+            type: 'keyword',
+            field: 'occurrence.gbifClassification.genus'
+          }
+        }
+      }
+    },
+    species: {
+      join: 'occurrence',
+      config: {
+        options: {
+          species: {
+            type: 'keyword',
+            field: 'occurrence.gbifClassification.species'
+          }
+        }
+      }
+    },
+    occurrenceSamplingProtocol: {
+      join: 'occurrence',
+      config: {
+        options: {
+          occurrenceSamplingProtocol: {
+            type: 'keyword',
+            field: 'occurrence.samplingProtocol.keyword'
+          }
+        }
+      }
+    },
+    recordedBy: {
+      join: 'occurrence',
+      config: {
+        options: {
+          recordedBy: {
+            type: 'keyword',
+            field: 'occurrence.recordedBy.verbatim'
+          }
+        }
+      }
+    },
+    catalogNumber: {
+      join: 'occurrence',
+      config: {
+        options: {
+          catalogNumber: {
+            type: 'keyword',
+            field: 'occurrence.catalogNumber.keyword'
+          }
+        }
+      }
+    },
     created: {
       type: 'date',
       field: 'created',
@@ -26,6 +224,10 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
+    occurrenceCount: {
+      type: 'numeric',
+      field: 'event.occurrenceCount',
+    },
     firstLoaded: {
       type: 'date',
       field: 'firstLoaded',
@@ -34,6 +236,10 @@ const config =
         defaultUpperBound: 'gte',
         defaultLowerBound: 'lte'
       }
+    },
+    scientificNames: {
+      type: 'keyword',
+      field: 'scientificNames'
     },
     id: {
       type: 'keyword',
@@ -56,23 +262,15 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    type: {
-      type: 'keyword',
-      field: 'type'
-    },
     uniqueKey: {
       type: 'keyword',
       field: 'uniqueKey'
     },
-    verbatim: {
-      field: 'verbatim',
-      discarded: true
-    },
-    event_continent: {
+    continent: {
       type: 'keyword',
       field: 'event.continent'
     },
-    event_coordinatePrecision: {
+    coordinatePrecision: {
       type: 'numeric',
       field: 'event.coordinatePrecision',
       get: {
@@ -81,7 +279,7 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_coordinateUncertaintyInMeters: {
+    coordinateUncertaintyInMeters: {
       type: 'numeric',
       field: 'event.coordinateUncertaintyInMeters',
       get: {
@@ -90,34 +288,24 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_coordinates: {
+    coordinates: {
       field: 'event.coordinates',
       discarded: true
     },
-    event_country: {
-      type: 'text',
-      field: 'event.country',
-      get: {
-        type: 'fuzzy'
-      }
-    },
-    event_countryCode: {
+    countryCode: {
       type: 'keyword',
       field: 'event.countryCode'
     },
-    event_datasetID: {
+    datasetID: {
       type: 'keyword',
       field: 'event.datasetID'
     },
-    event_datasetName: {
-      type: 'text',
-      field: 'event.datasetName',
-      get: {
-        type: 'fuzzy'
-      },
+    datasetName: {
+      type: 'keyword',
+      field: 'event.datasetName.keyword',
       suggestField: 'datasetName.suggest'
     },
-    event_day: {
+    day: {
       type: 'numeric',
       field: 'event.day',
       get: {
@@ -126,7 +314,7 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_decimalLatitude: {
+    decimalLatitude: {
       type: 'numeric',
       field: 'event.decimalLatitude',
       get: {
@@ -135,7 +323,7 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_decimalLongitude: {
+    decimalLongitude: {
       type: 'numeric',
       field: 'event.decimalLongitude',
       get: {
@@ -144,7 +332,7 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_endDayOfYear: {
+    endDayOfYear: {
       type: 'numeric',
       field: 'event.endDayOfYear',
       get: {
@@ -153,11 +341,11 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_eventDate: {
+    eventDate: {
       field: 'event.eventDate',
       discarded: true
     },
-    event_eventDateSingle: {
+    eventDateSingle: {
       type: 'date',
       field: 'event.eventDateSingle',
       get: {
@@ -166,61 +354,71 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_eventId: {
-      type: 'text',
-      field: 'event.eventId',
-      get: {
-        type: 'fuzzy'
-      },
-      suggestField: 'eventId.suggest'
+    eventID: {
+      type: 'keyword',
+      field: 'event.eventID.keyword',
+      suggestField: 'eventID.suggest'
     },
-    event_extensions: {
+    surveyID: {
+      type: 'keyword',
+      field: 'event.surveyID.keyword'
+    },
+    eventType: {
+      type: 'keyword',
+      field: 'event.eventType.concept'
+    },
+    eventTypeHierarchyJoined: {
+      type: 'keyword',
+      field: 'event.eventTypeHierarchyJoined.keyword'
+    },
+    measurementOrFactTypes: {
+      type: 'keyword',
+      field: 'event.measurementOrFactTypes.keyword'
+    },
+    extensions: {
       type: 'keyword',
       field: 'event.extensions'
     },
-    event_footprintWKT: {
+    footprintWKT: {
       type: 'text',
       field: 'event.footprintWKT',
       get: {
         type: 'fuzzy'
       }
     },
-    event_hasCoordinate: {
+    hasCoordinate: {
       type: 'boolean',
       field: 'event.hasCoordinate'
     },
-    event_hasGeospatialIssue: {
+    hasGeospatialIssue: {
       type: 'boolean',
       field: 'event.hasGeospatialIssue'
     },
-    event_id: {
-      type: 'text',
-      field: 'event.id',
-      get: {
-        type: 'fuzzy'
-      }
+    id: {
+      type: 'keyword',
+      field: 'event.id.keyword',
     },
-    event_institutionCode: {
-      type: 'text',
-      field: 'event.institutionCode',
-      get: {
-        type: 'fuzzy'
-      },
+    institutionCode: {
+      type: 'keyword',
+      field: 'event.institutionCode.keyword',
       suggestField: 'institutionCode.suggest'
     },
-    event_issues: {
+    issues: {
       type: 'keyword',
       field: 'event.issues'
     },
-    event_locality: {
-      type: 'text',
-      field: 'event.locality',
-      get: {
-        type: 'fuzzy'
-      },
+    locality: {
+      type: 'keyword',
+      field: 'event.locality.keyword',
       suggestField: 'locality.suggest'
     },
-    event_maximumDepthInMeters: {
+    locationID: {
+      type: 'keyword',
+      field: 'event.locationID.keyword',
+      suggestField: 'locationID.suggest',
+      displayField: 'event.locationID.verbatim'
+    },
+    maximumDepthInMeters: {
       type: 'numeric',
       field: 'event.maximumDepthInMeters',
       get: {
@@ -229,7 +427,7 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_maximumDistanceAboveSurfaceInMeters: {
+    maximumDistanceAboveSurfaceInMeters: {
       type: 'numeric',
       field: 'event.maximumDistanceAboveSurfaceInMeters',
       get: {
@@ -238,7 +436,7 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_maximumElevationInMeters: {
+    maximumElevationInMeters: {
       type: 'numeric',
       field: 'event.maximumElevationInMeters',
       get: {
@@ -247,15 +445,23 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_mediaLicenses: {
+    measurementOrFactCount: {
+      type: 'numeric',
+      field: 'event.measurementOrFactCount'
+    },
+    measurementOrFactTypes: {
+      type: 'keyword',
+      field: 'event.measurementOrFactTypes.keyword'
+    },
+    mediaLicenses: {
       type: 'keyword',
       field: 'event.mediaLicenses'
     },
-    event_mediaTypes: {
+    mediaTypes: {
       type: 'keyword',
       field: 'event.mediaTypes'
     },
-    event_minimumDepthInMeters: {
+    minimumDepthInMeters: {
       type: 'numeric',
       field: 'event.minimumDepthInMeters',
       get: {
@@ -264,7 +470,7 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_minimumDistanceAboveSurfaceInMeters: {
+    minimumDistanceAboveSurfaceInMeters: {
       type: 'numeric',
       field: 'event.minimumDistanceAboveSurfaceInMeters',
       get: {
@@ -273,7 +479,7 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_minimumElevationInMeters: {
+    minimumElevationInMeters: {
       type: 'numeric',
       field: 'event.minimumElevationInMeters',
       get: {
@@ -282,7 +488,7 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_modified: {
+    modified: {
       type: 'date',
       field: 'event.modified',
       get: {
@@ -291,7 +497,7 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_month: {
+    month: {
       type: 'numeric',
       field: 'event.month',
       get: {
@@ -300,45 +506,60 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_multimediaItems: {
+    multimediaItems: {
       field: 'event.multimediaItems',
       discarded: true
     },
-    event_notIssues: {
+    notIssues: {
       type: 'keyword',
       field: 'event.notIssues'
     },
-    event_parentEventId: {
-      type: 'text',
-      field: 'event.parentEventId',
-      get: {
-        type: 'fuzzy'
-      },
-      suggestField: 'parentEventId.suggest'
+    parentEventID: {
+      type: 'keyword',
+      field: 'event.parentEventID.keyword',
+      suggestField: 'parentEventID.suggest'
     },
-    event_publishingCountry: {
-      type: 'text',
-      field: 'event.publishingCountry',
-      get: {
-        type: 'fuzzy'
-      }
+    eventHierarchy: {
+      type: 'keyword',
+      field: 'event.eventHierarchy.keyword',
+      suggestField: 'eventHierarchy.suggest'
     },
-    event_references: {
+    eventHierarchyJoined: {
+      type: 'keyword',
+      field: 'event.eventHierarchyJoined.keyword',
+      suggestField: 'eventHierarchyJoined.suggest'
+    },
+    eventTypeHierarchy: {
+      type: 'keyword',
+      field: 'event.eventTypeHierarchy.keyword',
+      suggestField: 'event.eventTypeHierarchy.suggest',
+      displayField: 'event.eventTypeHierarchy.verbatim'
+    },
+    eventTypeHierarchyJoined: {
+      type: 'keyword',
+      field: 'event.eventTypeHierarchyJoined.keyword',
+      suggestField: 'eventTypeHierarchyJoined.suggest'
+    },
+    publishingCountry: {
+      type: 'keyword',
+      field: 'event.publishingCountry.keyword',
+    },
+    references: {
       type: 'text',
       field: 'event.references',
       get: {
         type: 'fuzzy'
       }
     },
-    event_repatriated: {
+    repatriated: {
       type: 'boolean',
       field: 'event.repatriated'
     },
-    event_sampleSizeUnit: {
+    sampleSizeUnit: {
       type: 'keyword',
       field: 'event.sampleSizeUnit'
     },
-    event_sampleSizeValue: {
+    sampleSizeValue: {
       type: 'numeric',
       field: 'event.sampleSizeValue',
       get: {
@@ -347,26 +568,20 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_samplingProtocol: {
-      type: 'text',
-      field: 'event.samplingProtocol',
-      get: {
-        type: 'fuzzy'
-      },
-      suggestField: 'samplingProtocol.suggest'
-    },
-    event_samplingProtocolJoined: {
+    samplingProtocol: {
       type: 'keyword',
-      field: 'event.samplingProtocolJoined'
+      field: 'event.samplingProtocol.keyword',
+      suggestField: 'samplingProtocol.suggest',
+      displayField: 'event.samplingProtocol.verbatim'
     },
-    event_scoordinates: {
+    scoordinates: {
       type: 'geo_shape',
       field: 'event.scoordinates',
       get: {
         type: 'within'
       }
     },
-    event_startDayOfYear: {
+    startDayOfYear: {
       type: 'numeric',
       field: 'event.startDayOfYear',
       get: {
@@ -375,31 +590,26 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_stateProvince: {
-      type: 'text',
-      field: 'event.stateProvince',
-      get: {
-        type: 'fuzzy'
-      },
-      suggestField: 'stateProvince.suggest'
+    stateProvince: {
+      type: 'keyword',
+      field: 'event.stateProvince.keyword',
+      suggestField: 'stateProvince.suggest',
+      displayField: 'event.stateProvince.verbatim'
     },
-    event_verbatimDepth: {
+    verbatimDepth: {
       type: 'keyword',
       field: 'event.verbatimDepth'
     },
-    event_verbatimElevation: {
+    verbatimElevation: {
       type: 'keyword',
       field: 'event.verbatimElevation'
     },
-    event_waterBody: {
-      type: 'text',
-      field: 'event.waterBody',
-      get: {
-        type: 'fuzzy'
-      },
+    waterBody: {
+      type: 'keyword',
+      field: 'event.waterBody.keyword',
       suggestField: 'waterBody.suggest'
     },
-    event_year: {
+    year: {
       type: 'numeric',
       field: 'event.year',
       get: {
@@ -408,43 +618,43 @@ const config =
         defaultLowerBound: 'lte'
       }
     },
-    event_gadm_gids: {
+    gadm_gids: {
       type: 'keyword',
       field: 'event.gadm.gids'
     },
-    event_gadm_level0Gid: {
+    gadm_level0Gid: {
       type: 'keyword',
       field: 'event.gadm.level0Gid'
     },
-    event_gadm_level0Name: {
+    gadm_level0Name: {
       type: 'keyword',
       field: 'event.gadm.level0Name'
     },
-    event_gadm_level1Gid: {
+    gadm_level1Gid: {
       type: 'keyword',
       field: 'event.gadm.level1Gid'
     },
-    event_gadm_level1Name: {
+    gadm_level1Name: {
       type: 'keyword',
       field: 'event.gadm.level1Name'
     },
-    event_gadm_level2Gid: {
+    gadm_level2Gid: {
       type: 'keyword',
       field: 'event.gadm.level2Gid'
     },
-    event_gadm_level2Name: {
+    gadm_level2Name: {
       type: 'keyword',
       field: 'event.gadm.level2Name'
     },
-    event_gadm_level3Gid: {
+    gadm_level3Gid: {
       type: 'keyword',
       field: 'event.gadm.level3Gid'
     },
-    event_gadm_level3Name: {
+    gadm_level3Name: {
       type: 'keyword',
       field: 'event.gadm.level3Name'
     },
-    metadata_datasetKey: {
+    datasetKey: {
       type: 'keyword',
       field: 'metadata.datasetKey'
     },
@@ -452,7 +662,7 @@ const config =
       type: 'keyword',
       field: 'metadata.datasetPublishingCountry'
     },
-    metadata_datasetTitle: {
+    datasetTitle: {
       type: 'keyword',
       field: 'metadata.datasetTitle'
     },
@@ -500,63 +710,251 @@ const config =
       type: 'keyword',
       field: 'metadata.publishingOrganizationKey'
     },
-    occurrence_core_basisOfRecord: {
+    seedbank_seedPerGram: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.seedPerGram',
+    },
+    seedbank_quantityInGrams: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.quantityInGrams',
+    },
+    seedbank_quantityCount: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.quantityCount',
+    },
+    seedbank_purityPercentage: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.purityPercentage',
+    },
+    seedbank_dateCollected: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.dateCollected',
+    },
+    seedbank_dateInStorage: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.dateInStorage',
+    },
+    seedbank_storageTemperatureInCelsius: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.storageTemperatureInCelsius',
+    },
+    seedbank_storageRelativeHumidityPercentage: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.storageRelativeHumidityPercentage',
+    },
+    seedbank_thousandSeedWeight: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.thousandSeedWeight',
+    },
+    seedbank_numberPlantsSampled: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.numberPlantsSampled',
+    },
+    seedbank_testDateStarted: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.testDateStarted',
+    },
+    seedbank_testLengthInDays: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.testLengthInDays',
+    },
+    seedbank_numberGerminated: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.numberGerminated',
+    },
+    seedbank_germinationRateInDays: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.germinationRateInDays',
+    },
+    seedbank_adjustedGerminationPercentage: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.adjustedGerminationPercentage',
+    },
+    seedbank_viabilityPercentage: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.viabilityPercentage',
+    },
+    seedbank_numberFull: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.numberFull',
+    },
+    seedbank_numberEmpty: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.numberEmpty',
+    },
+    seedbank_numberTested: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.numberTested',
+    },
+    seedbank_numberNotViable: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.numberNotViable',
+    },
+    seedbank_nightTemperatureInCelsius: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.nightTemperatureInCelsius',
+    },
+    seedbank_dayTemperatureInCelsius: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.dayTemperatureInCelsius',
+    },
+    seedbank_darkHours: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.darkHours',
+    },
+    seedbank_lightHours: {
+      type: 'numeric',
+      field: 'event.seedbankRecord.lightHours',
+    },
+    occurrence: {
+      type: 'join',
+      config: {
+        prefix: 'occurrence',
+        options: {
+          basisOfRecord: {
+            type: 'keyword',
+            field: 'basisOfRecord'
+          },
+          class: {
+            type: 'keyword',
+            field: 'gbifClassification.class'
+          },
+          eventID: {
+            type: 'keyword',
+            field: 'eventID'
+          },
+          family: {
+            type: 'keyword',
+            field: 'gbifClassification.family'
+          },
+          genus: {
+            type: 'keyword',
+            field: 'gbifClassification.genus'
+          },
+          identificationReferences: {
+            type: 'keyword',
+            field: 'core.identificationReferences'
+          },
+          identificationRemarks: {
+            type: 'keyword',
+            field: 'core.identificationRemarks'
+          },
+          kingdom: {
+            type: 'keyword',
+            field: 'gbifClassification.kingdom'
+          },
+          occurrenceID: {
+            type: 'keyword',
+            field: 'core.occurrenceID'
+          },
+          order: {
+            type: 'keyword',
+            field: 'gbifClassification.order'
+          },
+          organismQuantity: {
+            type: 'keyword',
+            field: 'core.organismQuantity'
+          },
+          organismQuantityType: {
+            type: 'keyword',
+            field: 'core.organismQuantityType'
+          },
+          phylum: {
+            type: 'keyword',
+            field: 'gbifClassification.phylum'
+          },
+          scientificName: {
+            type: 'keyword',
+            field: 'gbifClassification.acceptedUsage.name.keyword'
+          },
+          taxonRank: {
+            type: 'keyword',
+            field: 'gbifClassification.acceptedUsage.rank'
+          },
+          taxonKey: {
+            type: 'keyword',
+            field: 'core.taxonomy.taxonKey'
+          }
+        }
+      }
+    },
+    kingdoms: {
+      type: 'keyword',
+      field: 'event.kingdoms.keyword'
+    },
+    phyla: {
+      type: 'keyword',
+      field: 'event.phyla.keyword'
+    },
+    orders: {
+      type: 'keyword',
+      field: 'event.orders.keyword'
+    },
+    classes: {
+      type: 'keyword',
+      field: 'event.classes.keyword'
+    },
+    families: {
+      type: 'keyword',
+      field: 'event.families.keyword'
+    },
+    genera: {
+      type: 'keyword',
+      field: 'event.genera.keyword'
+    },
+    basisOfRecord: {
       type: 'keyword',
       field: 'occurrence.core.basisOfRecord'
     },
-    occurrence_core_class: {
+    class: {
       type: 'keyword',
       field: 'occurrence.core.class'
     },
-    occurrence_core_eventID: {
-      type: 'keyword',
-      field: 'occurrence.core.eventID'
-    },
-    occurrence_core_family: {
+    // eventID: {
+    //   type: 'keyword',
+    //   field: 'occurrence.core.eventID'
+    // },
+    family: {
       type: 'keyword',
       field: 'occurrence.core.family'
     },
-    occurrence_core_genus: {
+    genus: {
       type: 'keyword',
       field: 'occurrence.core.genus'
     },
-    occurrence_core_identificationReferences: {
+    identificationReferences: {
       type: 'keyword',
       field: 'occurrence.core.identificationReferences'
     },
-    occurrence_core_identificationRemarks: {
+    identificationRemarks: {
       type: 'keyword',
-      field: 'occurrence.core.identificationRemarks'
+      field: 'occurrence.occurrence.core.identificationRemarks'
     },
-    occurrence_core_kingdom: {
-      type: 'keyword',
-      field: 'occurrence.core.kingdom'
-    },
-    occurrence_core_occurrenceID: {
+    occurrenceID: {
       type: 'keyword',
       field: 'occurrence.core.occurrenceID'
     },
-    occurrence_core_order: {
+    order: {
       type: 'keyword',
       field: 'occurrence.core.order'
     },
-    occurrence_core_organismQuantity: {
+    organismQuantity: {
       type: 'keyword',
       field: 'occurrence.core.organismQuantity'
     },
-    occurrence_core_organismQuantityType: {
+    organismQuantityType: {
       type: 'keyword',
       field: 'occurrence.core.organismQuantityType'
     },
-    occurrence_core_phylum: {
+    phylum: {
       type: 'keyword',
       field: 'occurrence.core.phylum'
     },
-    occurrence_core_scientificName: {
+    scientificName: {
       type: 'keyword',
       field: 'occurrence.core.scientificName'
     },
-    occurrence_core_taxonRank: {
+    taxonRank: {
       type: 'keyword',
       field: 'occurrence.core.taxonRank'
     }

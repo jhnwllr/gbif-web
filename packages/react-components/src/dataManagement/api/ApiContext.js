@@ -9,6 +9,9 @@ const client = new ApiClient({
   v1: {
     endpoint: env.API_V1
   },
+  esApi: {
+    endpoint: env.ES_WEB_API
+  },
   translations: {
     endpoint: env.TRANSLATIONS
   }

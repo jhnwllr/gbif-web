@@ -17,16 +17,16 @@ import { hash } from '../../../utils/util';
 
 const initialSize = 25;
 
-export const FilterContent = ({ config = {}, translations, hide, onApply, onCancel, onFilterChange, focusRef, filterHandle, initFilter }) => {
-  const { data, error, loading, load } = useQuery(config.query, { lazyLoad: true });
+export const FilterContent = ({ config = {}, translations, hide, onApply, LabelFromID, onCancel, onFilterChange, focusRef, filterHandle, initFilter }) => {
+  const { queryKey, placeholder = 'Input text', keepCase, graph } = config;
+  const { data, error, loading, load } = useQuery(config.query, { lazyLoad: true, graph });
   const [size, setSize] = useState(initialSize);
   const [q, setQ] = useState('');
-  const { queryKey, placeholder = 'Input text' } = config;
   const [id] = React.useState(nanoid);
   const initialOptions = get(initFilter, `must.${filterHandle}`, []);
   const [options, setOptions] = useState(initialOptions.filter(x => x.type !== 'isNotNull'));
   const [inputValue, setValue] = useState('');
-  const [showSuggestions, setShowSuggestions] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(initialOptions?.length === 0);
   const searchContext = useContext(SearchContext);
 
   useEffect(() => {
@@ -37,19 +37,27 @@ export const FilterContent = ({ config = {}, translations, hide, onApply, onCanc
       if (searchContext?.rootPredicate) {
         predicates.push(searchContext.rootPredicate);
       }
+      let queryString = q;
+      let postfix = '';
+      if (queryString.indexOf('*') === -1 && queryString.indexOf('?') === -1) {
+        postfix = '*';
+      }
+      queryString = `${q}${postfix}`;
+      
       if (q && q !== '') {
         predicates.push({
           "type": "like",
           "key": queryKey,
-          "value": `${q}`
+          "value": `${queryString}`
         });
       }
 
-      const includePattern = q
+      let includePattern = queryString
         .replace(/\*/g, '.*')
         .replace(/\?/, '.')
-        .replace(/([\?\+\|\{\}\[\]\(\)\"\\])/g, (m, p1) => '\\' + p1)
-        .toLowerCase();
+        .replace(/([\?\+\|\{\}\[\]\(\)\"\\])/g, (m, p1) => '\\' + p1);
+      if (!keepCase) includePattern = includePattern.toLowerCase();
+      
       load({
         keepDataWhileLoading: size > initialSize,
         variables: {
@@ -74,7 +82,7 @@ export const FilterContent = ({ config = {}, translations, hide, onApply, onCanc
     setShowSuggestions(true);
   }, []);
 
-  const items = data?.occurrenceSearch?.facet?.[queryKey];
+  const items = data?.suggestions?.facet?.[queryKey];
 
 
   const pattern = config.restrictWildcards ? /^(?![\*\?]).*/g : undefined;
@@ -129,7 +137,7 @@ export const FilterContent = ({ config = {}, translations, hide, onApply, onCanc
                 }
               }}
             />
-            <Button onClick={() => search(inputValue)}>
+            <Button style={{ marginLeft: 4 }} onClick={() => search(inputValue)}>
               <MdSearch />
             </Button>
           </div>
@@ -159,7 +167,7 @@ export const FilterContent = ({ config = {}, translations, hide, onApply, onCanc
                     loading={loading}
                     helpVisible={true}
                     helpText={<FormattedMessage id="filterSupport.useWildcardPattern" defaultMessage="Search for the pattern" />}
-                    label={q}
+                    label={<LabelFromID id={{type: 'like', value: q}} />}
                     checked={checkedMap.has(hash({type: 'like', value: q}))}
                     onChange={() => {
                       const qString = {type: 'like', value: q};
@@ -198,9 +206,14 @@ export const FilterContent = ({ config = {}, translations, hide, onApply, onCanc
                 {options.map((option) => {
                   return <Option
                     key={hash(option)}
-                    helpVisible={false}
+                    helpVisible={true}
                     // label={option}
-                    label={typeof option === 'string' ? option : option.value}
+                    // label={typeof option === 'string' ? option : option.value}
+                    label={<LabelFromID id={option} />}
+                    helpText={typeof option === 'string' ? 
+                      <FormattedMessage id="filterSupport.useCaseInsensitiveValue" defaultMessage="Search for case insensitive match" /> : 
+                      <FormattedMessage id="filterSupport.useWildcardPattern" defaultMessage="Search for the pattern" />
+                    }
                     checked={checkedMap.has(typeof option === 'string' ? option : hash(option))}
                     onChange={() => toggle(filterHandle, option)}
                   />

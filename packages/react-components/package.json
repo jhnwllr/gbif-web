@@ -10,11 +10,13 @@
     "default": "./build/cjs/index.cjs"
   },
   "scripts": {
-    "build": "npx webpack --mode=production",
+    "build": "path-exists .env.production.json && shx cp .env.production.json .env.json && echo \"Using .env.production.json\";  npx webpack --mode=production",
+    "build:test": "path-exists .env.development.json && shx cp .env.development.json .env.json && echo \"Build with .env.development.json \";  npx webpack --mode=development",
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve-translations": "npx serve locales/dist/ -p 5002 --cors",
     "watch-translations": "npx nodemon locales/build.js -w locales/ -i locales/dist/",
-    "start": "node locales/build.js; start-storybook -p 6006;",
+    "prestart": "echo \"This app requires node 16.13.1 \nCurrent version is \" ; node -v",
+    "start": "path-exists .env.development.json && shx cp .env.development.json .env.json && echo \"Running with .env.development.json\"; node locales/build.js; start-storybook -p 6006;",
     "build-storybook": "npm run build-locales; build-storybook -o ./dist",
     "build-client": "npm run build-locales; npm run build-storybook; npm run build; npx gulp; npx gzipper compress --brotli --include js,css,html,txt,json,map ./dist",
     "build-locales": "node locales/build",
@@ -47,6 +49,7 @@
     "mapbox-gl": "^2.1.1",
     "markdown-it": "^13.0.1",
     "match-sorter": "^6.3.0",
+    "md5": "^2.3.0",
     "nanoid": "^3.1.22",
     "npm": "^8.19.2",
     "object-hash": "^2.1.1",
@@ -63,12 +66,14 @@
     "react-intl": "^5.13.4",
     "react-markdown": "^5.0.3",
     "react-router-dom": "^5.2.0",
+    "react-toast": "^1.0.3",
     "react-use": "^17.2.1",
     "reakit": "^1.3.6",
     "uncontrollable": "^7.2.1",
     "url-regex": "^5.0.0",
     "use-debounce": "^6.0.0",
-    "use-query-params": "1.2.3"
+    "use-query-params": "1.2.3",
+    "wicket": "1.3.8"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
@@ -90,9 +95,11 @@
     "gzipper": "^6.2.1",
     "md5-file": "^5.0.0",
     "nodemon": "^2.0.12",
+    "path-exists-cli": "^2.0.0",
     "plop": "^2.7.4",
     "pseudoloc": "^1.1.0",
     "regenerator-runtime": "^0.13.7",
+    "shx": "^0.3.4",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   }

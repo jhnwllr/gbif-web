@@ -60,7 +60,6 @@ export function getCommonSuggests({ context, suggestStyle, rootPredicate }) {
         return <div style={suggestStyle}>
           {suggestion.title}
         </div>
-
       }
     },
     establishmentMeans: {
@@ -73,6 +72,31 @@ export function getCommonSuggests({ context, suggestStyle, rootPredicate }) {
         return {
           promise: promise.then(response => ({
             data: response.data.results.map(i => ({ key: i.name, title: i.label[vocabularyLocale] || i.label.en }))
+          })),
+          cancel
+        }
+      },
+      // how to map the results to a single string value
+      getValue: suggestion => suggestion.title,
+      // how to display the individual suggestions in the list
+      render: function CatalogNumberSuggestItem(suggestion) {
+        return <div style={suggestStyle}>
+          {suggestion.title}
+        </div>
+      }
+    },
+    eventType: {
+      //What placeholder to show
+      placeholder: 'search.placeholders.default',
+      // how to get the list of suggestion data
+      getSuggestions: ({ q, localeContext }) => {
+        const vocabularyLocale = localeContext?.localeMap?.vocabulary || 'en';
+        // const { promise, cancel } = client.v1Get(`/vocabularies/EventType/concepts?limit=100&q=${q}&locale=${vocabularyLocale}`);
+        const { promise, cancel } = client.v1Get(`/vocabularies/EventType/concepts/suggest?limit=100&q=${q}&locale=${vocabularyLocale}`);
+        return {
+          promise: promise.then(response => ({
+            // data: response.data.results.map(i => ({ key: i.name, title: i.label[vocabularyLocale] || i.label.en }))
+            data: response.data.map(i => ({ key: i.name, title: i.label[vocabularyLocale] || i.label.en }))
           })),
           cancel
         }
@@ -166,6 +190,62 @@ export function getCommonSuggests({ context, suggestStyle, rootPredicate }) {
           promise: promise.then(response => {
             return {
               data: response.data?.occurrenceSearch?.facet?.datasetKey.map(i => ({ ...i, title: i.dataset.title })),
+              rawData: response.data
+            }
+          }),
+          cancel
+        }
+      },
+      // how to map the results to a single string value
+      getValue: suggestion => suggestion.title,
+      // how to display the individual suggestions in the list
+      render: function DatasetSuggestItem(suggestion) {
+        return <div style={suggestStyle}>
+          {suggestion.title}
+          {/* <div style={{ fontSize: '0.85em', color: '#aaa' }}>{suggestion.count} results</div> */}
+        </div>
+      }
+    },
+    datasetKeyFromEventIndex: {
+      //What placeholder to show
+      placeholder: 'search.placeholders.default',
+      // how to get the list of suggestion data
+      getSuggestions: ({ q, size = 100 }) => {
+        const SEARCH = `
+          query keywordSearch($predicate: Predicate, $size: Int){
+            eventSearch(predicate: $predicate) {
+              facet {
+                datasetKey(size: $size) {
+                  key
+                  count
+                  datasetTitle
+                }
+              }
+            }
+          }
+          `;
+        const qPredicate = {
+          "type": "like",
+          "key": "datasetTitle",
+          "value": `*${q.replace(/\s/, '*')}*`
+        }
+
+        let predicate = qPredicate;
+        if (rootPredicate) {
+          predicate = {
+            type: 'and',
+            predicates: [rootPredicate, qPredicate]
+          }
+        }
+        const variables = {
+          size,
+          predicate
+        };
+        const { promise, cancel } = client.query({ query: SEARCH, variables });
+        return {
+          promise: promise.then(response => {
+            return {
+              data: response.data?.eventSearch?.facet?.datasetKey.map(i => ({ ...i, title: i.datasetTitle })),
               rawData: response.data
             }
           }),
@@ -284,6 +364,93 @@ export function getCommonSuggests({ context, suggestStyle, rootPredicate }) {
         </div>
       }
     },
+    taxonKeyVernacular: {
+      //What placeholder to show
+      // placeholder: 'Search by scientific name',
+      placeholder: 'search.placeholders.default',
+      // how to get the list of suggestion data
+      getSuggestions: ({ q, localeContext }) => {
+        const language = localeContext?.localeMap?.iso3LetterCode ?? 'eng';
+        const SEARCH = `
+          query($q: String, $language: Language){
+            taxonSuggestions( q: $q, language: $language) {
+              key
+              scientificName
+              vernacularName
+              taxonomicStatus
+              acceptedNameOf
+              classification {
+                name
+              }
+            }
+          }    
+        `;
+        const { promise, cancel } = client.query({ query: SEARCH, variables: {q, language: language} });
+        return {
+          promise: promise.then(response => {
+            return {
+              data: response.data?.taxonSuggestions.map(i => i),
+            }
+          }),
+          cancel
+        }
+      },
+      // how to map the results to a single string value
+      getValue: suggestion => suggestion.scientificName,
+      // how to display the individual suggestions in the list
+      render: function ScientificNameSuggestItem(suggestion) {
+        const ranks = suggestion.classification.map((rank, i) => <span key={i}>{rank.name}</span>);
+
+        const commonNameTranslation = formatMessage({ id: `filterSupport.commonName` });
+        const acceptedNameOfTranslation = formatMessage({ id: `filterSupport.acceptedNameOf` });
+
+        return <div style={{ maxWidth: '100%' }}>
+          <div style={suggestStyle}>
+            {suggestion.taxonomicStatus !== 'ACCEPTED' && <Tooltip title={<span><FormattedMessage id={`enums.taxonomicStatus.${suggestion.taxonomicStatus}`} /></span>}>
+              <span style={{ display: 'inline-block', marginRight: 8, width: 8, height: 8, borderRadius: 4, background: 'orange' }}></span>
+            </Tooltip>}
+            {suggestion.scientificName}
+          </div>
+          {suggestion.vernacularName && <div style={{ marginBottom: 8, color: '#888', fontSize: '0.85em', lineHeight: 1.2 }}>
+            <div>{commonNameTranslation}: <span style={{ color: '#555'}}>{suggestion.vernacularName}</span></div>
+          </div>}
+          {!suggestion.vernacularName && suggestion.acceptedNameOf && <div style={{ marginBottom: 8, color: '#888', fontSize: '0.85em', lineHeight: 1.2 }}>
+            <div>{acceptedNameOfTranslation}: <span style={{ color: '#555'}}>{suggestion.acceptedNameOf}</span></div>
+          </div>}
+          <div style={{ color: '#aaa', fontSize: '0.85em' }}>
+            <Classification>
+              {ranks}
+            </Classification>
+          </div>
+        </div>
+      }
+    },
+    eventTaxonKey: {
+      //What placeholder to show
+      // placeholder: 'Search by scientific name',
+      placeholder: 'search.placeholders.default',
+      // how to get the list of suggestion data
+      getSuggestions: ({ q }) => client.esApiGet(`/event/suggest/taxonKey?q=${q}`),
+      // how to map the results to a single string value
+      getValue: suggestion => suggestion.scientificName,
+      // how to display the individual suggestions in the list
+      render: function ScientificNameSuggestItem(suggestion) {
+        const ranks = ['kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species'].map((rank, i) => {
+          return suggestion[rank] && rank !== suggestion.rank.toLowerCase() ? <span key={rank}>{suggestion[rank]}</span> : null;
+        });
+
+        return <div style={{ maxWidth: '100%' }}>
+          <div style={suggestStyle}>
+            {suggestion.scientificName}
+          </div>
+          <div style={{ color: '#aaa', fontSize: '0.85em' }}>
+            <Classification>
+              {ranks}
+            </Classification>
+          </div>
+        </div>
+      }
+    },
     recordedBy: {
       //What placeholder to show
       placeholder: 'search.placeholders.default',
@@ -312,10 +479,10 @@ export function getCommonSuggests({ context, suggestStyle, rootPredicate }) {
       // how to get the list of suggestion data
       getSuggestions: ({ q, size = 100 }) => {
         const SEARCH = `
-          query keywordSearch($predicate: Predicate, $size: Int){
+          query keywordSearch($predicate: Predicate, $size: Int, $include: String){
             occurrenceSearch(predicate: $predicate) {
               facet {
-                recordedBy(size: $size) {
+                recordedBy(size: $size, include: $include) {
                   key
                   count
                 }
@@ -328,6 +495,12 @@ export function getCommonSuggests({ context, suggestStyle, rootPredicate }) {
           "key": "recordedBy",
           "value": q
         }
+        let includePattern = q
+          .replace(/\*/g, '.*')
+          .replace(/\?/, '.')
+          .replace(/([\?\+\|\{\}\[\]\(\)\"\\])/g, (m, p1) => '\\' + p1);
+        includePattern = includePattern.toLowerCase();
+
         let predicate = qPredicate;
         if (rootPredicate) {
           predicate = {
@@ -338,7 +511,7 @@ export function getCommonSuggests({ context, suggestStyle, rootPredicate }) {
         const variables = {
           size,
           predicate,
-          include
+          include: includePattern,
         };
         const { promise, cancel } = client.query({ query: SEARCH, variables });
         return {
@@ -475,6 +648,61 @@ export function getCommonSuggests({ context, suggestStyle, rootPredicate }) {
         </div>
       }
     },
-    // -- Add suggests above this line (required by plopfile.js) --
+    eventLocationId: {
+      //What placeholder to show
+      placeholder: 'search.placeholders.locationID',
+      // how to get the list of suggestion data
+      getSuggestions: ({ q, size = 100 }) => {
+        const SEARCH = `
+          query keywordSearch($predicate: Predicate, $size: Int){
+            eventSearch(predicate: $predicate) {
+              facet {
+                locationID(size: $size) {
+                  key
+                  count
+                }
+              }
+            }
+          }
+          `;
+        const qPredicate = {
+          "type": "like",
+          "key": "locationID",
+          "value": `*${q.replace(/\s/, '*')}*`
+        }
+
+        let predicate = qPredicate;
+        if (rootPredicate) {
+          predicate = {
+            type: 'and',
+            predicates: [rootPredicate, qPredicate]
+          }
+        }
+        const variables = {
+          size,
+          predicate
+        };
+        const { promise, cancel } = client.query({ query: SEARCH, variables });
+        return {
+          promise: promise.then(response => {
+            return {
+              data: response.data?.eventSearch?.facet?.locationID.map(i => ({ ...i, title: i.key })),
+              rawData: response.data
+            }
+          }),
+          cancel
+        }
+      },
+      // how to map the results to a single string value
+      getValue: suggestion => suggestion.title,
+      // how to display the individual suggestions in the list
+      render: function LocationIdSuggestItem(suggestion) {
+        return <div style={suggestStyle}>
+          {suggestion.title}
+          <div style={{ fontSize: '0.85em', color: '#aaa' }}>{suggestion.count} results</div>
+        </div>
+      }
+    },
+  // -- Add suggests above this line (required by plopfile.js) --
   }
 }

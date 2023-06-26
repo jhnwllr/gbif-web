@@ -14,8 +14,8 @@ function StandardSearchTable({graphQuery, slowQuery, resultKey, offsetName = 'of
   const limit = 50;
   const currentFilterContext = useContext(FilterContext);
   const { rootPredicate, predicateConfig } = useContext(SearchContext);
-  const { data, error, loading, load } = useQuery(graphQuery, { lazyLoad: true });
-  const { data: slowData, error: slowError, loading: slowLoading, load: slowLoad } = useQuery(slowQuery, { lazyLoad: true });
+  const { data, error, loading, load } = useQuery(graphQuery, { lazyLoad: true, throwAllErrors: true, queryTag: 'table' });
+  const { data: slowData, error: slowError, loading: slowLoading, load: slowLoad } = useQuery(slowQuery, { lazyLoad: true, queryTag: 'tableSlow' });
 
   useEffect(() => {
     const { v1Filter, error } = filter2v1(currentFilterContext.filter, predicateConfig);
@@ -52,7 +52,7 @@ function StandardSearchTable({graphQuery, slowQuery, resultKey, offsetName = 'of
   // allow both response types
   const results = data?.[resultKey]?.documents?.results || data?.[resultKey]?.results;
   const slowresults = slowData?.[resultKey]?.documents?.results || slowData?.[resultKey]?.results || [];
-  const total = data?.[resultKey]?.documents?.count || data?.[resultKey]?.count;
+  const total = data?.[resultKey]?.documents?.total || data?.[resultKey]?.documents?.count || data?.[resultKey]?.count;
 
   let mergedResults = results ? merge([], results, slowresults) : results;
 

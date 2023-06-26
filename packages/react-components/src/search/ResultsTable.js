@@ -19,18 +19,18 @@ const fallbackTableConfig = {
   }]
 };
 
-export const ResultsTable = ({ first, prev, next, size, from, results, total, loading, defaultTableConfig = fallbackTableConfig, hideLock }) => {
+export const ResultsTable = ({ first, prev, next, size, from, results, total, loading, defaultTableConfig = fallbackTableConfig, hideLock, style }) => {
   const currentFilterContext = useContext(FilterContext);
   const { filters, tableConfig = defaultTableConfig, labelMap } = useContext(SearchContext);
   const [fixedColumn, setFixed] = useState(true && !hideLock);
   const noColumnLock = useBelow(1000);
 
   const fixed = fixedColumn && !noColumnLock;
-  const headerss = tableConfig.columns.map((col, index) => {
-    const options = index === 0 && !hideLock ? {
-      locked: fixed, 
-      toggle: noColumnLock ? null : () => setFixed(!fixedColumn)
-    } : null;
+  const headers = tableConfig.columns.map((col, index) => {
+    // const options = index === 0 && !hideLock ? {
+    //   locked: fixed, 
+    //   toggle: noColumnLock ? null : () => setFixed(!fixedColumn)
+    // } : null;
     const FilterPopover = col.filterKey ? filters[col.filterKey]?.Popover : null;
     return <Th key={col.trKey} width={col.width} >
       <Row wrap="nowrap">
@@ -46,23 +46,26 @@ export const ResultsTable = ({ first, prev, next, size, from, results, total, lo
     </Th>
   });
 
-  return <div style={{
+  return<>
+  <div style={{
     flex: "1 1 100%",
     display: "flex",
     height: "100%",
     maxHeight: "100vh",
     flexDirection: "column",
+    ...style
   }}>
     <ResultsHeader loading={loading} total={total} />
     <DataTable fixedColumn={fixed} {...{ first, prev, next, size, from, total, loading }} style={{ flex: "1 1 auto", height: 100, display: 'flex', flexDirection: 'column' }}>
       <thead>
-        <tr>{headerss}</tr>
+        <tr>{headers}</tr>
       </thead>
       <TBody rowCount={size} columnCount={7} loading={loading}>
         {getRows({ tableConfig, labelMap, currentFilterContext, results, filters })}
       </TBody>
     </DataTable>
   </div>
+  </>
 }
 
 function isEmpty(e) {

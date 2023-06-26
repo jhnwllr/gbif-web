@@ -74,6 +74,25 @@ export const defaultContext = {
     isHref: true,
     route: '/literature/search'
   },
+
+  eventKey: {
+    // url: ({key}) => `/publisher/${key}`,
+    // url: ({key, otherIds}) => `${gbifOrg}/dataset/${otherIds.datasetKey}/event/${key}`,
+    url: ({key, otherIds}) => `https://collections.ala.org.au/public/showDataResource/${otherIds.datasetKey}?event=${key}`,
+    isHref: true,
+    route: '/event/:key'
+  },
+  eventSearch: {
+    url: ({queryString, basename}) => `${basename ? `/${basename}` : ''}/event/search`,
+    isHref: true,
+    route: '/publisher/search'
+  },
+  taxonKey: {
+    // url: ({ key }) => `https://gbif.org/species/${key}`,
+    url: ({ key }) => `https://bie.ala.org.au/species/${key}`,
+    isHref: true,
+    route: '/taxon/:key'
+  }
 };
 
 export default React.createContext(defaultContext);

@@ -49,6 +49,15 @@ function groupPredicates(predicates, isRootQuery) {
 function transform(p, config, isRootQuery) {
   const fieldName = getFieldName(p.key, config);
 
+  // for handling joins records
+  if (config?.options?.[p.key]?.join) {
+    return {
+          has_child: {
+            type: config.options[p.key].join,
+            query: transform(p, config.options[p.key].config)
+          }
+        }
+  }
   // for making nested fields easier to query
   if (config?.options?.[p.key]?.type === 'flatNested') {
     return {
@@ -101,6 +110,18 @@ function transform(p, config, isRootQuery) {
       }
     }
     case 'equals': {
+      // if (config.options[p.key].join) {
+      //   return {
+      //     has_child: {
+      //       type: config.options[p.key].join,
+      //       query: {
+      //         term: {
+      //           [fieldName]: p.value
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
       return {
         term: {
           [fieldName]: p.value
@@ -161,6 +182,14 @@ function transform(p, config, isRootQuery) {
       return {
         nested: {
           path: fieldName,
+          query: transform(p.predicate, config.options[p.key].config)
+        }
+      }
+    }
+    case 'join': {
+      return {
+        has_child: {
+          type: 'occurrence',
           query: transform(p.predicate, config.options[p.key].config)
         }
       }

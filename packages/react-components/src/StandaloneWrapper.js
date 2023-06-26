@@ -4,13 +4,14 @@ import { QueryParamProvider } from 'use-query-params';
 import { LocaleProvider } from './dataManagement/LocaleProvider';
 import _get from 'lodash/get';
 import _merge from 'lodash/merge';
-
+import { ToastContainer } from 'react-toast'
 import { Root } from './components';
 import ThemeContext, { lightTheme } from './style/themes';
 import { ApiContext, ApiClient } from './dataManagement/api';
 import RouteContext, { defaultContext } from './dataManagement/RouteContext';
 import SiteContext from './dataManagement/SiteContext';
 import env from '../.env.json';
+import {GraphQLContextProvider} from "./dataManagement/api/GraphQLContext";
 
 const client = new ApiClient({
   gql: {
@@ -18,6 +19,12 @@ const client = new ApiClient({
   },
   v1: {
     endpoint: env.API_V1
+  },
+  esApi: {
+    endpoint: env.ES_WEB_API
+  },
+  translations: {
+    endpoint: env.TRANSLATIONS
   }
 });
 
@@ -43,14 +50,19 @@ function StandaloneWrapper({
   return (
     <SiteContext.Provider value={siteConfig}>
       <ApiContext.Provider value={client}>
-        <LocaleProvider locale={locale} messages={messages}>
-          <ThemeContext.Provider value={theme}>
-            {routes && <RouteContext.Provider value={routeConfig}>
-              {root}
-            </RouteContext.Provider>}
-            {!routes && root}
-          </ThemeContext.Provider>
-        </LocaleProvider>
+        <GraphQLContextProvider value={{}}>
+          <LocaleProvider locale={locale} messages={messages}>
+            <ThemeContext.Provider value={theme}>
+              {routes && <RouteContext.Provider value={routeConfig}>
+                {root}
+              </RouteContext.Provider>}
+              {!routes && root}
+              <div style={{zIndex: 10000, position: 'fixed'}}>
+                <ToastContainer position="bottom-center" delay={3000} />
+              </div>
+            </ThemeContext.Provider>
+          </LocaleProvider>
+        </GraphQLContextProvider>
       </ApiContext.Provider>
     </SiteContext.Provider>
   );

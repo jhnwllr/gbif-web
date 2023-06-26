@@ -132,8 +132,8 @@ export const danger = (theme) => css`
 `;
 
 export const link = (theme) => css`
-  border-color: transparent;
-  background: none;
+  ${text(theme)};
+  color: ${theme.primary500};
 `;
 
 export const isFullWidth = (theme) => css`

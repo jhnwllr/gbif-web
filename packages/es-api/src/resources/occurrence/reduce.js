@@ -29,7 +29,8 @@ function vocabularFallback(obj) {
 function reduce(item) {
   // take dwc items from verbatim
   // overwrite with selected interpreted fields
-  const source = item._source;
+  // const source = item._source;
+  const source = item._source.occurrence != null ? item._source.occurrence : item._source;
   // return _.pick(item._source, whitelist);
   const verbatim = removeUndefined({
     abstract:                           source.verbatim.core['http://purl.org/dc/terms/abstract'],
@@ -275,6 +276,8 @@ function reduce(item) {
     datasetID:                          source.datasetID,
     datasetName:                        source.datasetName,
     otherCatalogNumbers:                source.otherCatalogNumbers,
+    eventHierarchy:                     source.eventHierarchy,
+    eventTypeHierarchy:                 source.eventTypeHierarchy
   };
 
   const gbifSpecific = {
@@ -308,7 +311,7 @@ function reduce(item) {
     // lastInterpreted:                    source.lastInterpreted,
     lastParsed:                         source.lastParsed,
     // mediaType:                          source.mediaType,
-    // networkKey:                         source.networkKeys || [],
+    // networkKey:                         source.networkKeys || [],
     order:                              source.gbifClassification.order,
     orderKey:                           source.gbifClassification.orderKey,
     phylum:                             source.gbifClassification.phylum,
@@ -323,9 +326,9 @@ function reduce(item) {
     specificEpithet:                    source.gbifClassification?.usageParsedName?.specificEpithet,
     subgenus:                           source.gbifClassification.subgenus,
     subgenusKey:                        source.gbifClassification.subgenusKey,
-    taxonKey:                           source.gbifClassification.usage.key,
+    taxonKey:                           source.gbifClassification.usage?.key,
     taxonomicStatus:                    source.gbifClassification?.diagnostics?.status,
-    taxonRank:                          source.gbifClassification.usage.rank,
+    taxonRank:                          source.gbifClassification.usage?.rank,
     // typifiedName:                       source.typifiedName,
     verbatimScientificName:             source.gbifClassification.verbatimScientificName,
     media:                              source.multimediaItems || [],

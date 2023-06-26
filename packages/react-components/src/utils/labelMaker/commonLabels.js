@@ -64,6 +64,19 @@ export const commonLabels = {
     template: ({ id, api }) => `${api.v1.endpoint}/organization/${id}`,
     transform: result => ({ title: result.title })
   },
+  eventDatasetKey: {
+    type: 'GQL',
+    query: `query label($id: JSON!){
+      eventSearch(predicate: {type:equals, key: "datasetKey", value: $id}) {
+        documents(size: 1) {
+          results {
+            datasetTitle
+          }
+        }
+      }
+    }`,
+    transform: result => ({ title: result.data.eventSearch.documents.results[0].datasetTitle }),
+  },
   datasetKey: {
     type: 'GQL',
     query: `query label($id: ID!){
@@ -84,6 +97,10 @@ export const commonLabels = {
   depth: {
     type: 'CUSTOM',
     component: rangeOrEqualLabel('intervals.compactMeters')
+  },
+  measurementOrFactCount: {
+    type: 'CUSTOM',
+    component: rangeOrEqualLabel('intervals.compact')
   },
   organismQuantity: {
     type: 'CUSTOM',
@@ -109,10 +126,6 @@ export const commonLabels = {
     type: 'TRANSLATION',
     template: id => `enums.protocol.${id}`
   },
-  literatureType: {
-    type: 'TRANSLATION',
-    template: id => `enums.literatureType.${id}`
-  },
   establishmentMeans: {
     type: 'TRANSLATION',
     template: id => `enums.establishmentMeans.${id}`
@@ -120,6 +133,14 @@ export const commonLabels = {
   establishmentMeansVocabulary: {
     type: 'ENDPOINT',
     template: ({ id, api }) => `${api.v1.endpoint}/vocabularies/EstablishmentMeans/concepts/${id}`,
+    transform: (result, { localeContext } = {}) => {
+      const vocabularyLocale = localeContext?.localeMap?.vocabulary || 'en';
+      return { title: result.label[vocabularyLocale] || result.label.en };
+    }
+  },
+  eventTypeVocabulary: {
+    type: 'ENDPOINT',
+    template: ({ id, api }) => `${api.v1.endpoint}/vocabularies/EventType/concepts/${id}`,
     transform: (result, { localeContext } = {}) => {
       const vocabularyLocale = localeContext?.localeMap?.vocabulary || 'en';
       return { title: result.label[vocabularyLocale] || result.label.en };
@@ -193,9 +214,31 @@ export const commonLabels = {
     type: 'TRANSLATION',
     template: id => `enums.dwcaExtension.${id}`
   },
+  locationId: {
+    type: 'TRANSFORM',
+    transform: ({ id }) => id
+  },
   numberSpecimens: {
     type: 'CUSTOM',
     component: rangeOrEqualLabel('intervals.compact')
   },
+  identityFn: {
+    type: 'TRANSFORM',
+    transform: ({ id }) => id.value || id
+  },
+  wildcard: {
+    type: 'CUSTOM',
+    component: ({ id }) => {
+      const value = id?.value || id;
+      const trimmed = value.trim();
+      const displayValue = trimmed.length !== value.length ? `"${value}"` : value;
+
+      if (id.type === 'like' && typeof id.value === 'string') {
+        return <i>{displayValue}</i>;
+      }
+      
+      return displayValue;
+    }
+  }
   // -- Add labels above this line (required by plopfile.js) --
 }

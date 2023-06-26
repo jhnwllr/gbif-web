@@ -10,6 +10,7 @@ export default {
   color: '#162d3d',
   darkTheme: false,
   fontFamily: '"Helvetica Neue", BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica", "Arial", sans-serif',
-  borderRadius: 5,
-  drawerZIndex: 1000
+  borderRadius: 3,
+  drawerZIndex: 1000,
+  progressBar: '#68daa8'
 }

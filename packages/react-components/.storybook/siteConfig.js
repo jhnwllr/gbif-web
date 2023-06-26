@@ -53,6 +53,7 @@ const routeConfig = {
 
   datasetKey: {
     isHref: true,
+    // url: ({key}) => `https://collections.ala.org.au/public/showDataResource/${key}`,
     url: ({ key }) => {
       // return `/iframe.html?id=entities-dataset-page--example&viewMode=story&knob-datasetUUID=${key}`;
       return `/?path=/story/entities-dataset-page--example&knob-Choose%20Direction=ltr&knob-Choose%20Theme=gbif&knob-Choose%20locale=en-DK&knob-datasetUUID=${key}`;
@@ -93,20 +94,54 @@ const routeConfig = {
     isHref: true,
     route: '/literature/search',
   },
+
+  eventKey: {
+    // url: ({key}) => `/publisher/${key}`,
+    // url: ({key, otherIds}) => `${gbifOrg}/dataset/${otherIds.datasetKey}/event/${key}`,
+    url: ({key, otherIds}) => `https://collections.ala.org.au/public/showDataResource/${otherIds.datasetKey}?event=${key}`,
+    isHref: true,
+    route: '/event/:key'
+  },
+  eventSearch: {
+    url: ({queryString, basename}) => `${basename ? `/${basename}` : ''}/event/search`,
+    isHref: true,
+    route: '/publisher/search'
+  },
+  taxonKey: {
+    // url: ({ key }) => `https://gbif.org/species/${key}`,
+    url: ({ key }) => `https://bie.ala.org.au/species/${key}`,
+    isHref: true,
+    route: '/taxon/:key'
+  },
 };
 
 export const siteConfig = {
   routeConfig,
-  occurrence: {},
+  occurrence: {
+    mapSettings: {
+      userLocationEnabled: true,
+    }
+  },
   dataset: {},
+  event: {
+    enableGraphQLAPI: true,
+    enableResetFilter: true
+  },
   literature: {},
-  institution: {},
+  institution: {
+    mapSettings: {
+      enabled: true,
+      lat: 54.89,
+      lng: -3.86,
+      zoom: 5.4
+    },
+  },
   collection: {},
   publisher: {},
   apiKeys: {
-    mapbox: env._FOR_STORYBOOK_BUT_PUBLIC.apiKeys.mapbox,
+    mapbox: env._FOR_STORYBOOK_BUT_PUBLIC?.apiKeys?.mapbox,
     bing: 'need to make a call to register',
-    maptiler: env._FOR_STORYBOOK_BUT_PUBLIC.apiKeys.maptiler
+    maptiler: env._FOR_STORYBOOK_BUT_PUBLIC?.apiKeys?.maptiler
   },
   maps: {
     // locale: 'ja',

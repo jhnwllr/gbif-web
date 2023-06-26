@@ -15,7 +15,7 @@ import { OccurrenceSidebar } from '../../../../entities';
 import ThemeContext from '../../../../style/themes/ThemeContext';
 import { useDialogState } from "reakit/Dialog";
 import ListBox from './ListBox';
-import { MdOutlineLayers, MdZoomIn, MdZoomOut, MdLanguage } from 'react-icons/md'
+import { MdOutlineLayers, MdZoomIn, MdZoomOut, MdLanguage, MdMyLocation } from 'react-icons/md'
 import { ViewHeader } from '../ViewHeader';
 import MapComponentMB from './MapboxMap';
 import MapComponentOL from './OpenlayersMap';
@@ -24,7 +24,10 @@ import env from '../../../../../.env.json';
 import SiteContext from '../../../../dataManagement/SiteContext';
 import { FormattedMessage } from 'react-intl';
 import { getMapStyles } from './standardMapStyles';
+import { toast } from 'react-toast'
+
 const pixelRatio = parseInt(window.devicePixelRatio) || 1;
+const hasGeoLocation = "geolocation" in navigator;
 
 const defaultLayerOptions = {
   // ARCTIC: ['NATURAL', 'BRIGHT', 'DARK'],
@@ -35,7 +38,7 @@ const defaultLayerOptions = {
 
 function getStyle({ styles = {}, projection, type, lookup = {}, layerOptions }) {
   const fallbackStyleName = `${layerOptions?.[projection]?.[0]}_${projection}`
-  const styleKey = lookup?.[projection]?.[type] || `${type}_${projection}`;  
+  const styleKey = lookup?.[projection]?.[type] || `${type}_${projection}`;
   let style = styles[styleKey] ? styles[styleKey] : styles[fallbackStyleName];
   return style;
 }
@@ -44,6 +47,7 @@ function Map({ labelMap, query, q, pointData, pointError, pointLoading, loading,
   const dialog = useDialogState({ animated: true, modal: false });
   const theme = useContext(ThemeContext);
   const siteContext = useContext(SiteContext);
+  const userLocationEnabled = siteContext?.occurrence?.mapSettings?.userLocationEnabled;
 
   const styleLookup = siteContext?.maps?.styleLookup || {};
 
@@ -64,6 +68,7 @@ function Map({ labelMap, query, q, pointData, pointError, pointLoading, loading,
   const [layerOptions, setLayerOptions] = useState(mapStyles);
   const [layerId, setLayerId] = useState(defaultStyle);
   const [latestEvent, broadcastEvent] = useState();
+  const [searchingLocation, setLocationSearch] = useState();
   const [basemapOptions, setBasemapOptions] = useState();
   const [activeId, setActive] = useState();
   const [activeItem, setActiveItem] = useState();
@@ -102,6 +107,26 @@ function Map({ labelMap, query, q, pointData, pointError, pointLoading, loading,
   const previousItem = useCallback(() => {
     setActive(Math.max(0, activeId - 1));
   }, [items, activeId]);
+
+  const getUserLocation = useCallback(() => {
+    if (hasGeoLocation) {
+      setLocationSearch(true);
+      navigator.geolocation.getCurrentPosition((position) => {
+        setLocationSearch(false);
+        const { latitude, longitude } = position.coords;
+        broadcastEvent({ type: 'ZOOM_TO', lat: latitude, lng: longitude, zoom: 11 });
+      }, err => {
+        toast.error(<div>
+          <h3><FormattedMessage id='map.failedToGetUserLocation.title' defaultMessage="Unable to get location." /></h3>
+          <FormattedMessage id='map.failedToGetUserLocation.message' defaultMessage="Check browser settings." />
+        </div>, {
+          backgroundColor: 'tomato',
+          color: '#ffffff',
+        });
+        setLocationSearch(false);
+      });
+    }
+  }, []);
 
   const menuLayerOptions = menuState => layerOptions?.[projection].map((layerId) => {
     const layerStyle = getStyle({ styles: basemapOptions, projection, type: layerId, lookup: styleLookup });
@@ -159,8 +184,20 @@ function Map({ labelMap, query, q, pointData, pointError, pointLoading, loading,
             trigger={<Button appearance="text"><MdOutlineLayers /></Button>}
             items={menuLayerOptions}
           />}
+          {userLocationEnabled && <Button loading={searchingLocation} appearance="text" onClick={getUserLocation}><MdMyLocation /></Button>}
         </div>
-        <MapComponent mapConfig={mapConfiguration.mapConfig} latestEvent={latestEvent} defaultMapSettings={defaultMapSettings} predicateHash={predicateHash} q={q} css={css.mapComponent({ theme })} theme={theme} query={query} onMapClick={e => showList(false)} onPointClick={data => { showList(true); loadPointData(data) }} registerPredicate={registerPredicate} />
+        <MapComponent
+          mapConfig={mapConfiguration.mapConfig}
+          latestEvent={latestEvent}
+          defaultMapSettings={defaultMapSettings}
+          predicateHash={predicateHash}
+          q={q}
+          css={css.mapComponent({ theme })}
+          theme={theme}
+          query={query}
+          onMapClick={e => showList(false)}
+          onPointClick={data => { showList(true); loadPointData(data) }}
+          registerPredicate={registerPredicate} />
       </div>
     </div>
   </>;

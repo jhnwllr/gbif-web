@@ -1,4 +1,3 @@
-// const elasticsearch = require('elasticsearch');
 const { Client } = require('@elastic/elasticsearch');
 const Agent = require('agentkeepalive');
 const { ResponseError } = require('../errorHandler');

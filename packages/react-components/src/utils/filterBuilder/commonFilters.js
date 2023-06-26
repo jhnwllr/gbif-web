@@ -48,7 +48,7 @@ export const commonFilters = {
         },
       },
       specific: {
-        suggestHandle: 'countryCode',
+        suggestHandle: 'countryCode'
       }
     }
   },
@@ -150,6 +150,24 @@ export const commonFilters = {
       }
     }
   },
+  eventDatasetKey: {
+    type: 'SUGGEST',
+    config: {
+      std: {
+        filterHandle: 'datasetKey',
+        id2labelHandle: 'eventDatasetKey',
+        translations: {
+          count: 'filters.datasetKey.count', // translation path to display names with counts. e.g. "3 scientific names"
+          name: 'filters.datasetKey.name',// translation path to a title for the popover and the button
+          description: 'filters.datasetKey.description', // translation path for the filter description
+        },
+      },
+      specific: {
+        suggestHandle: 'datasetKeyFromEventIndex',
+        allowEmptyQueries: true
+      }
+    }
+  },
   publisherKey: {
     type: 'SUGGEST',
     config: {
@@ -204,7 +222,7 @@ export const commonFilters = {
     config: {
       std: {
         filterHandle: 'catalogNumber',// if nothing else provided, then this is the filterName used
-        id2labelHandle: 'catalogNumber',
+        id2labelHandle: 'wildcard',
         translations: {
           count: 'filters.catalogNumber.count', // translation path to display names with counts. e.g. "3 scientific names"
           name: 'filters.catalogNumber.name',// translation path to a title for the popover and the button
@@ -212,12 +230,12 @@ export const commonFilters = {
         },
       },
       specific: {
-        id2labelHandle: 'catalogNumber',
+        id2labelHandle: 'wildcard',
         placeholder: 'Search for a catalog number',
         supportsExist: true,
         query: `
           query keywordSearch($predicate: Predicate, $size: Int){
-            occurrenceSearch(predicate: $predicate) {
+            suggestions: occurrenceSearch(predicate: $predicate) {
               cardinality {
                 catalogNumber
               }
@@ -384,11 +402,12 @@ export const commonFilters = {
         },
       },
       specific: {
+        supportsExist: true,
         placeholder: 'Units of sample size',
         disallowLikeFilters: true,
         query: `
           query keywordSearch($predicate: Predicate, $size: Int){
-            occurrenceSearch(predicate: $predicate) {
+            suggestions: occurrenceSearch(predicate: $predicate) {
               cardinality {
                 sampleSizeUnit
               }
@@ -489,6 +508,7 @@ export const commonFilters = {
         }
       },
       specific: {
+        supportsExist: true,
         placeholder: 'search.placeholders.range',
         regex: /^((-)?[0-9]{0,4})(,)?((-)?[0-9]{0,4})$/
       }
@@ -584,12 +604,44 @@ export const commonFilters = {
       }
     }
   },
+  eventType: {
+    type: 'KEYWORD_SEARCH',
+    config: {
+      std: {
+        filterHandle: 'eventType',
+        id2labelHandle: 'identityFn',
+        translations: {
+          count: 'filters.eventType.count', // translation path to display names with counts. e.g. "3 scientific names"
+          name: 'filters.eventType.name',// translation path to a title for the popover and the button
+          description: 'filters.eventType.description', // translation path for the filter description
+        }
+      },
+      specific: {
+        placeholder: 'Search by event type',
+        query: `
+            query keywordSearch($predicate: Predicate, $size: Int){
+              suggestions: eventSearch(predicate: $predicate) {
+                facet {
+                  eventType(size: $size) {
+                    key
+                    count
+                  }
+                }
+              }
+            }
+        `,
+        queryKey: 'eventType',
+        keepCase: true
+      }
+    }
+  },
   recordedBy: {
+    // type: 'SUGGEST',
     type: 'KEYWORD_SEARCH',//KEYWORD_SEARCH | SUGGEST
     config: {
       std: {
         filterHandle: 'recordedBy',// if nothing else provided, then this is the filterName used
-        id2labelHandle: 'recordedBy',
+        id2labelHandle: 'wildcard',//'recordedBy',
         translations: {
           count: 'filters.recordedBy.count', // translation path to display names with counts. e.g. "3 scientific names"
           name: 'filters.recordedBy.name',// translation path to a title for the popover and the button
@@ -599,12 +651,11 @@ export const commonFilters = {
       specific: {
         // suggestHandle: 'recordedBy',
         // suggestHandle: 'recordedByWildcard',
-        id2labelHandle: 'recordedBy',
         placeholder: 'Search by recorded by',
         supportsExist: true,
         query: `
           query keywordSearch($predicate: Predicate, $size: Int, $include: String){
-            occurrenceSearch(predicate: $predicate) {
+            suggestions: occurrenceSearch(predicate: $predicate) {
               facet {
                 recordedBy(size: $size, include: $include) {
                   key
@@ -614,6 +665,7 @@ export const commonFilters = {
             }
           }
         `,
+        // keepCase: true,
         queryKey: 'recordedBy'
       }
     }
@@ -743,7 +795,7 @@ export const commonFilters = {
         placeholder: 'Search by locality',
         query: `
           query keywordSearch($predicate: Predicate, $size: Int){
-            occurrenceSearch(predicate: $predicate) {
+            suggestions: occurrenceSearch(predicate: $predicate) {
               cardinality {
                 locality
               }
@@ -776,7 +828,7 @@ export const commonFilters = {
         placeholder: 'Search by water body',
         query: `
           query keywordSearch($predicate: Predicate, $size: Int){
-            occurrenceSearch(predicate: $predicate) {
+            suggestions: occurrenceSearch(predicate: $predicate) {
               cardinality {
                 waterBody
               }
@@ -809,7 +861,7 @@ export const commonFilters = {
         placeholder: 'Search by state province',
         query: `
           query keywordSearch($predicate: Predicate, $size: Int){
-            occurrenceSearch(predicate: $predicate) {
+            suggestions: occurrenceSearch(predicate: $predicate) {
               cardinality {
                 stateProvince
               }
@@ -823,6 +875,36 @@ export const commonFilters = {
           }
         `,
         queryKey: 'stateProvince'
+      }
+    }
+  },
+  eventStateProvince: {
+    type: 'KEYWORD_SEARCH',
+    config: {
+      std: {
+        filterHandle: 'eventStateProvince',
+        id2labelHandle: 'stateProvince',
+        translations: {
+          count: 'filters.stateProvince.count', // translation path to display names with counts. e.g. "3 scientific names"
+          name: 'filters.stateProvince.name',// translation path to a title for the popover and the button
+          description: 'filters.stateProvince.description', // translation path for the filter description
+        },
+      },
+      specific: {
+        placeholder: 'Search by state province',
+        query: `
+          query keywordSearch($predicate: Predicate, $size: Int){
+            suggestions: eventSearch(predicate: $predicate) {
+              facet {
+                stateProvince(size: $size) {
+                  key
+                  count
+                }
+              }
+            }
+          }
+        `,
+        queryKey: 'stateProvince',
       }
     }
   },
@@ -844,7 +926,56 @@ export const commonFilters = {
       }
     }
   },
+  parentEventId: {
+    type: 'SIMPLE_TEXT',
+    config: {
+      std: {
+        filterHandle: 'parentEventId',
+        id2labelHandle: 'parentEventId',
+        translations: {
+          count: 'filters.parentEventId.count', // translation path to display names with counts. e.g. "3 scientific names"
+          name: 'filters.parentEventId.name',// translation path to a title for the popover and the button
+          description: 'filters.parentEventId.description', // translation path for the filter description
+        },
+      },
+      specific: {
+        placeholder: 'Search by parent event identifier',
+        supportsExist: true
+      }
+    }
+  },
   samplingProtocol: {
+    type: 'KEYWORD_SEARCH',
+    config: {
+      std: {
+        filterHandle: 'samplingProtocol',
+        id2labelHandle: 'samplingProtocol',
+        translations: {
+          count: 'filters.samplingProtocol.count', // translation path to display names with counts. e.g. "3 scientific names"
+          name: 'filters.samplingProtocol.name',// translation path to a title for the popover and the button
+          description: 'filters.samplingProtocol.description', // translation path for the filter description
+        },
+      },
+      specific: {
+        supportsExist: true,
+        placeholder: 'Search by sampling protocol',
+        query: `
+          query keywordSearch($predicate: Predicate, $size: Int){
+            suggestions: occurrenceSearch(predicate: $predicate) {
+              facet {
+                samplingProtocol(size: $size) {
+                  key
+                  count
+                }
+              }
+            }
+          }
+        `,
+        queryKey: 'samplingProtocol',
+      }
+    }
+  },
+  eventSamplingProtocol: {
     type: 'KEYWORD_SEARCH',
     config: {
       std: {
@@ -859,13 +990,10 @@ export const commonFilters = {
       specific: {
         placeholder: 'Search by sampling protocol',
         query: `
-          query keywordSearch($predicate: Predicate, $size: Int){
-            occurrenceSearch(predicate: $predicate) {
-              cardinality {
-                samplingProtocol
-              }
+          query keywordSearch($predicate: Predicate, $size: Int, $include: String){
+            suggestions: eventSearch(predicate: $predicate) {
               facet {
-                samplingProtocol(size: $size) {
+                samplingProtocol(size: $size, include: $include) {
                   key
                   count
                 }
@@ -873,7 +1001,7 @@ export const commonFilters = {
             }
           }
         `,
-        queryKey: 'samplingProtocol'
+        queryKey: 'samplingProtocol',
       }
     }
   },
@@ -949,7 +1077,7 @@ export const commonFilters = {
         supportsExist: true,
         query: `
           query keywordSearch($predicate: Predicate, $size: Int){
-            occurrenceSearch(predicate: $predicate) {
+            suggestions: occurrenceSearch(predicate: $predicate) {
               cardinality {
                 identifiedBy
               }
@@ -1147,6 +1275,24 @@ export const commonFilters = {
       }
     }
   },
+  eventTaxonKey: {
+    type: 'SUGGEST',
+    config: {
+      std: {
+        filterHandle: 'eventTaxonKey',
+        id2labelHandle: 'taxonKey',
+        translations: {
+          count: 'filters.taxonKey.count', // translation path to display names with counts. e.g. "3 scientific names"
+          name: 'filters.taxonKey.name',// translation path to a title for the popover and the button
+          description: 'filters.taxonKey.description', // translation path for the filter description
+        },
+      },
+      specific: {
+        suggestHandle: 'eventTaxonKey',
+        id2labelHandle: 'id2labelHandle'
+      }
+    }
+  },
   verbatimScientificName: {
     type: 'KEYWORD_SEARCH',
     config: {
@@ -1163,7 +1309,7 @@ export const commonFilters = {
         placeholder: 'Example: Felis concolor',
         query: `
           query keywordSearch($predicate: Predicate, $size: Int){
-            occurrenceSearch(predicate: $predicate) {
+            suggestions: occurrenceSearch(predicate: $predicate) {
               cardinality {
                 verbatimScientificName
               }
@@ -1247,6 +1393,92 @@ export const commonFilters = {
       specific: {
         placeholder: 'Range or single value',
         singleSelect: true
+      }
+    }
+  },
+  measurementOrFactTypes: {
+    type: 'KEYWORD_SEARCH', // SIMPLE_TEXT
+    config: {
+      std: {
+        filterHandle: 'measurementOrFactTypes',
+        id2labelHandle: 'measurementOrFactTypes',
+        translations: {
+          count: 'filters.measurementOrFactTypes.count', // translation path to display names with counts. e.g. "3 scientific names"
+          name: 'filters.measurementOrFactTypes.name',// translation path to a title for the popover and the button
+          description: 'filters.measurementOrFactTypes.description', // translation path for the filter description
+        },
+      },
+      specific: {
+        placeholder: 'Search by measurement type',
+        query: `
+          query keywordSearch($predicate: Predicate, $size: Int, $include: String){
+            suggestions: eventSearch(predicate: $predicate) {
+              facet {
+                measurementOrFactTypes(size: $size, include: $include) {
+                  key
+                  count
+                }
+              }
+            }
+          }
+        `,
+        queryKey: 'measurementOrFactTypes',
+        keepCase: true
+      }
+    }
+  },
+  measurementOrFactCount: {
+    type: 'NUMBER_RANGE',
+    config: {
+      std: {
+        filterHandle: 'measurementOrFactCount',
+        id2labelHandle: 'measurementOrFactCount',
+        translations: {
+          count: 'filters.measurementOrFactCount.count', // translation path to display names with counts. e.g. "3 scientific names"
+          name: 'filters.measurementOrFactCount.name',// translation path to a title for the popover and the button
+          description: 'filters.measurementOrFactCount.description', // translation path for the filter description
+        }
+      },
+      specific: {
+        placeholder: 'search.placeholders.range',
+        regex: /^((-)?[0-9]{0,10})(,)?((-)?[0-9]{0,10})$/
+      }
+    }
+  },
+  occurrenceCount: {
+    type: 'NUMBER_RANGE',
+    config: {
+      std: {
+        filterHandle: 'occurrenceCount',
+        id2labelHandle: 'measurementOrFactCount',
+        translations: {
+          count: 'filters.occurrenceCount.count', // translation path to display names with counts. e.g. "3 scientific names"
+          name: 'filters.occurrenceCount.name',// translation path to a title for the popover and the button
+          description: 'filters.occurrenceCount.description', // translation path for the filter description
+        }
+      },
+      specific: {
+        placeholder: 'search.placeholders.range',
+        regex: /^((-)?[0-9]{0,10})(,)?((-)?[0-9]{0,10})$/
+      }
+    }
+  },
+  locationId: {
+    type: 'SUGGEST',
+    config: {
+      std: {
+        filterHandle: 'locationId',
+        id2labelHandle: 'locationId',
+        translations: {
+          count: 'filters.locationId.count', // translation path to display names with counts. e.g. "3 scientific names"
+          name: 'filters.locationId.name',// translation path to a title for the popover and the button
+          description: 'filters.locationId.description', // translation path for the filter description
+        },
+      },
+      specific: {
+        supportsExist: true,
+        suggestHandle: 'eventLocationId',
+        id2labelHandle: 'locationId',
       }
     }
   },
