@@ -18,15 +18,18 @@ export function Card({ padded = true, ...props }) {
   </div>
 }
 
-export function CardTitle({ padded = true, ...props }) {
+export function CardTitle({ padded = true, options, children, ...props }) {
   return <div
     css={css`
       margin-bottom: 1.2rem;
       font-weight: 500;
       line-height: 1.2;
       font-size: 1em;
+      display: flex;
     `}
     {...props}>
+      <div css={css`flex: 1 1 auto;`}>{children}</div>
+      <div css={css`flex: 0 0 auto;`}>{options}</div>
   </div>
 }
 

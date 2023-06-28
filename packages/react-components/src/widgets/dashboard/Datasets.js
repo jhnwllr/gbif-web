@@ -2,17 +2,16 @@ import { jsx, css } from '@emotion/react';
 import React, { useState, useCallback } from 'react';
 import { Card, CardTitle } from './shared';
 import { GroupByTable } from './GroupByTable';
-import { Button, ResourceLink, Classification, DropdownButton } from '../../components';
+import { Button, ResourceLink, Classification, DropdownButton, Tooltip, Skeleton } from '../../components';
 import { formatAsPercentage } from '../../utils/util';
 
 import { useDeepCompareEffect } from 'react-use';
 import { useQuery } from '../../dataManagement/api';
 
-import Chart from 'react-apexcharts';
-
 import Highcharts from './highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import { getPieOptions } from './charts/pie';
+import { useIntl, FormattedMessage } from 'react-intl';
 
 export function Datasets({
   predicate,
@@ -96,7 +95,7 @@ export function Preparations({
     data
   };
 
-  const options = getPieOptions({serie, clickCallback: ({filter} = {}) => console.log(filter), interactive: true});
+  const options = getPieOptions({ serie, clickCallback: ({ filter } = {}) => console.log(filter), interactive: true });
 
   const filledPercentage = facetResults?.data?.isFilled?.documents?.total / facetResults?.data?.occurrenceSearch?.documents?.total;
   return <Card {...props}>
@@ -173,7 +172,10 @@ export function Taxa({
             <DropdownButton.MenuAction onClick={e => { setRank('SPECIES'); setQuery(getTaxonQuery('speciesKey')); menuState.hide() }}>Species</DropdownButton.MenuAction>,
             <DropdownButton.MenuAction onClick={e => { setRank('ANY_RANK'); setQuery(getTaxonQuery('taxonKey')); menuState.hide() }}>Any taxon</DropdownButton.MenuAction>,
           ]}>
-          <Button>Family</Button>
+          <Button onClick={e => {
+            setRank('FAMILY');
+            setQuery(getTaxonQuery('familyKey'));
+          }}>Family</Button>
         </DropdownButton>
       </div>
     </CardTitle>
@@ -236,7 +238,7 @@ export function Iucn({
         predicate,
         {
           type: 'in',
-          key: 'iucnRedListCategoryCode',
+          key: 'iucnRedListCategory',
           values: ['EX', 'EW', 'CR', 'EN', 'VU', 'NT']
         }
       ]
@@ -244,9 +246,9 @@ export function Iucn({
   });
   return <Card {...props}>
     <CardTitle>
-      IUCN
+      IUCN Threat Status
       <div css={css`font-weight: 400; color: var(--color300); font-size: 0.95em;`}>
-        <div>Specimens in the collection that are near threatened or more vulnerable according to the IUCN Redlist</div>
+        <div>Specimens in the collection that are near threatened or more vulnerable according to the Global IUCN Redlist</div>
       </div>
     </CardTitle>
     <GroupBy {...{
@@ -255,7 +257,9 @@ export function Iucn({
         return data?.occurrenceSearch?.facet?.results?.map(x => {
           return {
             key: x.key,
-            title: <div><span style={{background: 'tomato'}}>{x?.entity?.iucnRedListCategory?.code}</span>{x?.entity?.title}</div>,
+            title: <div>
+              <IucnCategory code={x?.entity?.iucnRedListCategory?.code} category={x?.entity?.iucnRedListCategory?.category} />
+              {x?.entity?.title}</div>,
             count: x.count,
             description: <Classification>
               {['kingdom', 'phylum', 'class', 'order', 'family', 'genus'].map(rank => {
@@ -301,13 +305,32 @@ query summary($predicate: Predicate, $size: Int, $from: Int){
 }
 `;
 
+function IucnCategory({ code, category }) {
+  return <Tooltip title={<FormattedMessage id={`enums.threatStatus.${category}`} />}>
+    <span css={css`
+      background: #7a443a;
+      color: white;
+      padding: 3px 5px;
+      font-size: 10px;
+      font-weight: bold;
+      border-radius: 3px;
+      margin-right: 4px;
+    `}>
+      {code}
+    </span>
+  </Tooltip>
+}
 
-function GroupBy({ facetResults, transform, ...props }) {
+
+export function GroupBy({ facetResults, transform, ...props }) {
   const { data, results, loading, error, next, prev, first, isLastPage, isFirstPage, total, distinct } = facetResults;
   const mappedResults = transform ? transform(data) : results;
   return <>
-    <div css={css`font-size: 13px; color: #888; margin-bottom: 8px;`}>{distinct} results</div>
-    <GroupByTable results={mappedResults} total={total} {...props} />
+    <div css={css`font-size: 13px; color: #888; margin-bottom: 8px;`}>
+      {loading && <Skeleton as="div" width="100px" />}
+      {!loading && <>{distinct} results</>}
+    </div>
+    <GroupByTable results={mappedResults} total={total} {...props} loading={loading} />
     <div css={css`margin-left: auto; font-size: 12px;`}>
       {!(isLastPage && isFirstPage) && <Button look="ghost" onClick={prev} css={css`margin-right: 8px; `} disabled={isFirstPage}>Previous</Button>}
       {!isLastPage && <Button look="ghost" onClick={next}>Next</Button>}
@@ -315,8 +338,9 @@ function GroupBy({ facetResults, transform, ...props }) {
   </>
 }
 
-function useFacets({ predicate, otherVariables = {}, query, size = 10 }) {
+export function useFacets({ predicate, otherVariables = {}, keys, translationTemplate, query, size = 10 }) {
   const [from = 0, setFrom] = useState(0);
+  const intl = useIntl();
   const { data, error, loading, load } = useQuery(query, { lazyLoad: true });
 
   useDeepCompareEffect(() => {
@@ -343,7 +367,7 @@ function useFacets({ predicate, otherVariables = {}, query, size = 10 }) {
     setFrom(0);
   });
 
-  const results = data?.occurrenceSearch?.facet?.results?.map(x => {
+  let results = data?.occurrenceSearch?.facet?.results?.map(x => {
     return {
       key: x.key,
       title: x?.entity?.title || x?.key,
@@ -351,13 +375,41 @@ function useFacets({ predicate, otherVariables = {}, query, size = 10 }) {
       description: x?.entity?.description
     }
   });
+  
+  // If an explicit list of keys is provided, then use that order and fill missing results with count=0
+  if (keys && Array.isArray(keys)) {
+    results = keys.map(key => {
+      const result = results ? results.find(x => x.key.toString() === key.toString()) : undefined;
+      if (result) {
+        return result;
+      }
+      return {
+        key,
+        title: key,
+        count: 0,
+        description: null
+      }
+    });
+  }
+
+  // if a translationTemplate of the form "something.else.{key}" is provided, then use that to translate the title
+  if (translationTemplate && results?.length > 0) {
+    results = results.map(x => {
+      return {
+        ...x,
+        title: intl.formatMessage({id: translationTemplate.replace('{key}', x.key)})
+      }
+    });
+  }
+
+  const cardinality = data?.occurrenceSearch?.cardinality?.total ?? data?.occurrenceSearch?.facet?.results?.length ?? 0;
 
   return {
     data, results, loading, error,
     next, prev, first,
-    isLastPage: data?.occurrenceSearch?.cardinality?.total <= from + size,
+    isLastPage: cardinality <= from + size,
     isFirstPage: from === 0,
     total: data?.occurrenceSearch?.documents?.total,
-    distinct: data?.occurrenceSearch?.cardinality?.total
+    distinct: cardinality
   };
 }

@@ -1,7 +1,7 @@
 import { jsx, css } from '@emotion/react';
 import React from 'react';
 import { OccurrenceMap } from '../../../components';
-import { OccurrenceSummary, DataQuality, Datasets, Taxa, Iucn, Preparations } from '../../../widgets/dashboard';
+import { OccurrenceSummary, DataQuality, Datasets, Taxa, Iucn, Preparations, Months } from '../../../widgets/dashboard';
 import useBelow from '../../../utils/useBelow';
 
 export function Dashboard({
@@ -21,10 +21,13 @@ export function Dashboard({
   return <div>
     <DashBoardLayout>
       <DashboardSection>
+        <Months predicate={predicate} />
+      </DashboardSection>
+      <DashboardSection>
         <OccurrenceSummary predicate={predicate} />
       </DashboardSection>
       <DashboardSection>
-        <OccurrenceMap rootPredicate={predicate}/>
+        <OccurrenceMap rootPredicate={predicate} />
       </DashboardSection>
       <DashboardSection>
         <DataQuality predicate={predicate} />
@@ -55,7 +58,7 @@ function DashBoardLayout({ children, ...props }) {
   }
 
   const childrenArray = Array.isArray(children) ? children : [children];
-  
+
   return <div css={css`
     display: flex; margin: -6px; padding-bottom: 200px; flex-wrap: wrap;
     > div {

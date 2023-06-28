@@ -1,11 +1,12 @@
 import { jsx, css } from '@emotion/react';
 import React from 'react';
-import { Progress } from '../../components';
+import { Progress, Skeleton } from '../../components';
 import { FormattedNumber } from 'react-intl';
 import { Table } from './shared';
 
 export function GroupByTable({
   predicate,
+  loading,
   columnTitle,
   columnCount = 'Records',
   results = [],
@@ -13,6 +14,17 @@ export function GroupByTable({
   ...props
 }) {
   const totalPage = results.reduce((a, c) => a + (c.count || 0), 0);
+  // maximum count on page
+  const maxCount = results.reduce((a, c) => Math.max(a, c.count || 0), 0);
+
+  if (loading) {
+    return <div>
+      {[1, 2].map(x => <>
+        <Skeleton as="div" width="60%" style={{ marginBottom: 12 }} />
+        <Skeleton as="div" style={{ marginBottom: 12 }} />
+      </>)}
+    </div>
+  }
 
   return <Table>
     {columnTitle && <thead css={css`
@@ -47,7 +59,7 @@ export function GroupByTable({
           </td>
           <td css={css`text-align: end;`}><FormattedNumber value={e.count} /></td>
           <td>
-            <Progress color="var(--primary200)" overlays={[{ percent: 100 * e.count / total, color: 'var(--primary)' }]} percent={100 * e.count / totalPage} style={{ height: '1em', marginLeft: 'auto' }} />
+            <Progress color="var(--primary200)" overlays={[{ percent: 100 * e.count / total, color: 'var(--primary)' }]} percent={100 * e.count / maxCount} style={{ height: '1em', marginLeft: 'auto' }} />
           </td>
         </tr>
       })}
