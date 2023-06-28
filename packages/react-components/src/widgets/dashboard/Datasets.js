@@ -8,8 +8,11 @@ import { formatAsPercentage } from '../../utils/util';
 import { useDeepCompareEffect } from 'react-use';
 import { useQuery } from '../../dataManagement/api';
 
-import Chart from 'react-apexcharts'
+import Chart from 'react-apexcharts';
 
+import Highcharts from './highcharts'
+import HighchartsReact from 'highcharts-react-official'
+import { getPieOptions } from './charts/pie';
 
 export function Datasets({
   predicate,
@@ -62,6 +65,7 @@ export function Preparations({
   ...props
 }) {
   const facetResults = useFacets({
+    size: 10,
     predicate,
     query: PREPARATIONS_FACETS,
     otherVariables: {
@@ -78,32 +82,21 @@ export function Preparations({
     }
   });
 
-  const state = {
-    series: facetResults?.data?.occurrenceSearch?.facet?.results?.map(x => x.count),
-    options: {
-      theme: {
-        palette: 'palette2',
-      },
-      chart: {
-        width: "100%",
-        type: 'pie',
-      },
-      labels: facetResults?.data?.occurrenceSearch?.facet?.results?.map(x => x.key),
-      // responsive: [{
-      //   breakpoint: 480,
-      //   options: {
-      //     chart: {
-      //       width: 200
-      //     },
-      //     legend: {
-      //       position: 'bottom'
-      //     }
-      //   }
-      // }]
+  const showChart = !facetResults.loading && facetResults?.data?.occurrenceSearch?.facet?.results?.length > 0;
+
+  const data = facetResults?.data?.occurrenceSearch?.facet?.results?.map(x => {
+    return {
+      y: x.count,
+      name: x.key,
     }
+  });
+  const serie = {
+    name: 'Occurrences',
+    colorByPoint: true,
+    data
   };
 
-  const showChart = !facetResults.loading && facetResults?.data?.occurrenceSearch?.facet?.results?.length > 0;
+  const options = getPieOptions({serie, clickCallback: ({filter} = {}) => console.log(filter), interactive: true});
 
   const filledPercentage = facetResults?.data?.isFilled?.documents?.total / facetResults?.data?.occurrenceSearch?.documents?.total;
   return <Card {...props}>
@@ -115,9 +108,15 @@ export function Preparations({
     </CardTitle>
 
     {showChart && <div style={{ margin: '24px auto' }}>
-      <div id="chart" style={{ maxWidth: 450, width: 'calc(100% - 1px)', margin: '0 auto' }}>
+      {/* <div id="chart" style={{ maxWidth: 450, width: 'calc(100% - 1px)', margin: '0 auto' }}>
         <Chart theme={state.theme} options={state.options} series={state.series} type="pie" />
-      </div>
+      </div> */}
+
+      <HighchartsReact
+        highcharts={Highcharts}
+        options={options}
+      />
+
     </div>}
     <GroupBy facetResults={facetResults} />
 
@@ -246,6 +245,9 @@ export function Iucn({
   return <Card {...props}>
     <CardTitle>
       IUCN
+      <div css={css`font-weight: 400; color: var(--color300); font-size: 0.95em;`}>
+        <div>Specimens in the collection that are near threatened or more vulnerable according to the IUCN Redlist</div>
+      </div>
     </CardTitle>
     <GroupBy {...{
       facetResults,
@@ -253,7 +255,7 @@ export function Iucn({
         return data?.occurrenceSearch?.facet?.results?.map(x => {
           return {
             key: x.key,
-            title: x?.entity?.title,
+            title: <div><span style={{background: 'tomato'}}>{x?.entity?.iucnRedListCategory?.code}</span>{x?.entity?.title}</div>,
             count: x.count,
             description: <Classification>
               {['kingdom', 'phylum', 'class', 'order', 'family', 'genus'].map(rank => {
@@ -288,6 +290,10 @@ query summary($predicate: Predicate, $size: Int, $from: Int){
           order
           family
           genus
+          iucnRedListCategory {
+            category
+            code
+          }
         }
       }
     }

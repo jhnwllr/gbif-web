@@ -59,6 +59,7 @@ function builder({ locale = 'en', folder = 'translations', keepEmptyStrings = fa
         dwcaExtension: getFile(locale, `../${folder}/${locale}/enums/dwcaExtension`),
         identifierType: getFile(locale, `../${folder}/${locale}/enums/identifierType`),
         yesNo: getFile(locale, `../${folder}/${locale}/enums/yesNo`),
+        threatStatus: getFile(locale, `../${folder}/${locale}/enums/threatStatus`),
   // -- Add enums above this line (required by plopfile.js) --
       }
     }

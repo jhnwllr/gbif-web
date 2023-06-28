@@ -19,6 +19,11 @@
     "count": "{num, plural, one { specimen count } other {# Specimen counts filters}}",
     "description": "The number of held specimens stated in the description. This number does not say anything about how many records have been digitized and shared."
   },
+  "threatStatus": {
+    "name": "IUCN Global Red List Category",
+    "count": "{num, plural, one { IUCN Global Red List category } other {# IUCN Global Red List categories}}",
+    "description": "A short description of the component should be placed here"
+  },
   "taxonKey": {
     "name": "Scientific name",
     "count": "{num, plural, one {scientific name} other {# scientific names}}",

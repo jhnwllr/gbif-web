@@ -15,6 +15,7 @@ import datasetType from '../../enums/basic/datasetType.json';
 import datasetSubtype from '../../enums/basic/datasetSubtype.json';
 import literatureType from '../../enums/cms/literatureType.json';
 import dwcaExtension from '../../enums/basic/dwcaExtension.json';
+import threatStatus from '../../enums/basic/threatStatus.json';
 // -- Add imports above this line (required by plopfile.js) --
 
 export const commonFilters = {
@@ -1482,6 +1483,23 @@ export const commonFilters = {
       }
     }
   },
+  threatStatus: {
+      type: 'ENUM',
+      config: {
+        std: {
+          filterHandle: 'threatStatus',
+          id2labelHandle: 'threatStatus',
+          translations: {
+            count: 'filters.threatStatus.count', // translation path to display names with counts. e.g. "3 scientific names"
+            name: 'filters.threatStatus.name',// translation path to a title for the popover and the button
+            description: 'filters.threatStatus.description', // translation path for the filter description
+          }
+        },
+        specific: {
+          options: threatStatus
+        }
+      }
+    },
   // -- Add filters above this line (required by plopfile.js) --
   q: {
     type: 'CUSTOM_STANDARD',
