@@ -11,6 +11,8 @@ import { FormattedMessage } from 'react-intl';
 import { GroupBy, Pagging, useFacets } from './Datasets';
 import { getColumnOptions } from './charts/column';
 import monthEnum from '../../enums/basic/month.json';
+import licenseEnum from '../../enums/basic/license.json';
+import basisOfRecordEnum from '../../enums/basic/basisOfRecord.json';
 import { MdViewStream } from 'react-icons/md';
 import { BsFillBarChartFill, BsPieChartFill } from 'react-icons/bs';
 import RouteContext from '../../dataManagement/RouteContext';
@@ -41,19 +43,153 @@ function ViewOptions({ view, setView }) {
   </div>
 }
 
+export function EnumChartGenerator({
+  predicate,
+  detailsRoute,
+  fieldName,
+  enumKeys,
+  translationTemplate, // will fallback to "enums.{fieldName}.{key}"
+  facetSize,
+  disableOther,
+  disableUnknown,
+  currentFilter = {}, //excluding root predicate
+  ...props
+}) {
+  const GQL_QUERY = `
+    query summary($predicate: Predicate, $hasPredicate: Predicate, $size: Int, $from: Int){
+      occurrenceSearch(predicate: $predicate) {
+        documents(size: 0) {
+          total
+        }
+        cardinality {
+          total: ${fieldName}
+        }
+        facet {
+          results: ${fieldName}(size: $size, from: $from) {
+            key
+            count
+          }
+        }
+      }
+      isNotNull: occurrenceSearch(predicate: $hasPredicate) {
+        documents(size: 0) {
+          total
+        }
+      }
+    }
+  `;
+  return <EnumChart {...{
+    predicate, detailsRoute, gqlQuery: GQL_QUERY, currentFilter,
+    translationTemplate: translationTemplate ?? `enums.${fieldName}.{key}`,
+    enumKeys,
+    disableOther,
+    disableUnknown,
+    predicateKey: fieldName,
+    facetSize,
+  }} {...props} />
+}
+
+export function Licenses({
+  predicate,
+  detailsRoute,
+  currentFilter = {}, //excluding root predicate
+  ...props
+}) {
+  return <EnumChartGenerator {...{
+    predicate, detailsRoute, currentFilter,
+    enumKeys: licenseEnum,
+    fieldName: 'license',
+    facetSize: 10,
+  }} {...props} />
+}
+
+export function BasisOfRecord({
+  predicate,
+  detailsRoute,
+  currentFilter = {}, //excluding root predicate
+  ...props
+}) {
+  return <EnumChartGenerator {...{
+    predicate, detailsRoute, currentFilter,
+    enumKeys: basisOfRecordEnum,
+    fieldName: 'basisOfRecord',
+    facetSize: 10,
+  }} {...props} />
+}
+
+export function OccurrenceIssue({
+  predicate,
+  detailsRoute,
+  currentFilter = {}, //excluding root predicate
+  ...props
+}) {
+  return <EnumChartGenerator {...{
+    predicate, detailsRoute, currentFilter,
+    fieldName: 'issue',
+    translationTemplate: 'enums.occurrenceIssue.{key}',
+    facetSize: 10,
+    disableOther: true,
+    disableUnknown: true
+  }} {...props} />
+}
+
 export function Months({
   predicate,
   detailsRoute,
   currentFilter = {}, //excluding root predicate
   ...props
 }) {
-  const location = useLocation();
-  const facetResults = useFacets({
-    size: 12,
-    keys: monthEnum,
+  const GQL_QUERY = `
+    query summary($predicate: Predicate, $hasPredicate: Predicate, $size: Int, $from: Int){
+      occurrenceSearch(predicate: $predicate) {
+        documents(size: 0) {
+          total
+        }
+        cardinality {
+          total: month
+        }
+        facet {
+          results: month(size: $size, from: $from) {
+            key
+            count
+          }
+        }
+      }
+      isNotNull: occurrenceSearch(predicate: $hasPredicate) {
+        documents(size: 0) {
+          total
+        }
+      }
+    }
+  `;
+  return <EnumChart {...{
+    predicate, detailsRoute, gqlQuery: GQL_QUERY, currentFilter,
     translationTemplate: 'enums.month.{key}',
+    enumKeys: monthEnum,
+    predicateKey: 'month',
+    facetSize: 12,
+  }} {...props} />
+}
+
+export function EnumChart({
+  predicate,
+  detailsRoute,
+  translationTemplate,
+  gqlQuery,
+  enumKeys,
+  predicateKey,
+  facetSize,
+  disableOther,
+  disableUnknown,
+  currentFilter = {}, //excluding root predicate
+  ...props
+}) {
+  const facetQuery = {
+    size: facetSize,
+    keys: enumKeys,
+    translationTemplate,
     predicate,
-    query: MONTHS_FACETS,
+    query: gqlQuery,
     otherVariables: {
       hasPredicate: {
         type: 'and',
@@ -61,14 +197,28 @@ export function Months({
           predicate,
           {
             type: 'isNotNull',
-            key: 'month'
+            key: predicateKey
           }
         ]
       }
     }
-  });
+  };
+
+  return <OneDimensionalChart {...{ facetQuery, disableOther, disableUnknown }} {...props} />
+}
+
+export function OneDimensionalChart({
+  facetQuery,
+  filterKey,
+  detailsRoute,
+  disableOther,
+  disableUnknown,
+  currentFilter = {}, //excluding root predicate
+  ...props
+}) {
+  const location = useLocation();
+  const facetResults = useFacets(facetQuery);
   const [view, setView] = useState('PIE');
-  const routeContext = useContext(RouteContext);
   const [redirect, setRedirect] = useState();
 
   if (redirect) {
@@ -83,11 +233,12 @@ export function Months({
       y: x.count,
       name: x.title,
       key: x.key,
-      filter: {must: {month: [x.key]}},
+      filter: { must: { [filterKey]: [x.key] } },
+      visible: x.count > 0
     }
   });
   if (view === 'PIE') {
-    if (otherCount) {
+    if (!disableOther && otherCount) {
       data.push({
         y: otherCount,
         name: 'Other',
@@ -95,13 +246,13 @@ export function Months({
         visible: true
       });
     }
-    if (emptyCount) {
+    if (!disableUnknown && emptyCount) {
       data.push({
         y: emptyCount,
         name: 'Unknown',
         visible: true,
         color: "url(#unknown2)",
-        filter: {must_not: {month: [{"type":"isNotNull"}]}},
+        filter: { must_not: { [filterKey]: [{ "type": "isNotNull" }] } },
       });
     }
   }
@@ -112,17 +263,17 @@ export function Months({
   };
 
   const pieOptions = getPieOptions({
-    serie, 
-    onClick: ({filter}) => {
+    serie,
+    onClick: ({ filter }) => {
       if (!filter) return;
-      const f = filter.must || filter.must_not ? {filter: btoa(JSON.stringify(mergeDeep({}, currentFilter, filter)))} : filter;
+      const f = filter.must || filter.must_not ? { filter: btoa(JSON.stringify(mergeDeep({}, currentFilter, filter))) } : filter;
       setRedirect({
         pathname: detailsRoute || location.pathname,
-        state: { 
+        state: {
           key: 'fc904fab-a33c-4ca8-bd23-698ddb026f26'
         },
         search: `?${qs.stringify(f)}`
-    });
+      });
     },
     interactive: true
   });
@@ -132,11 +283,11 @@ export function Months({
 
   return <Card {...props} loading={facetResults.loading}>
     <CardTitle options={<ViewOptions view={view} setView={setView} />}>
-      Months
-      <div style={{color: '#888'}}>Event date for digitized specimens per month</div>
-      <div css={css`font-weight: 400; color: var(--color300); font-size: 0.95em;`}>
+      {filterKey}
+      <div style={{ color: '#888' }}>Occurrences for digitized specimens per {filterKey}</div>
+      {!disableUnknown && <div css={css`font-weight: 400; color: var(--color300); font-size: 0.95em;`}>
         <div>{formatAsPercentage(filledPercentage)}% filled</div>
-      </div>
+      </div>}
 
     </CardTitle>
 
@@ -158,29 +309,6 @@ export function Months({
     </div> */}
   </Card>
 };
-const MONTHS_FACETS = `
-query summary($predicate: Predicate, $hasPredicate: Predicate, $size: Int, $from: Int){
-  occurrenceSearch(predicate: $predicate) {
-    documents(size: 0) {
-      total
-    }
-    cardinality {
-      total: month
-    }
-    facet {
-      results: month(size: $size, from: $from) {
-        key
-        count
-      }
-    }
-  }
-  isNotNull: occurrenceSearch(predicate: $hasPredicate) {
-    documents(size: 0) {
-      total
-    }
-  }
-}
-`;
 
 
 // From https://stackoverflow.com/questions/27936772/how-to-deep-merge-instead-of-shallow-merge

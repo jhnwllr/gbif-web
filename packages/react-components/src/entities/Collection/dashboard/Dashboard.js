@@ -1,7 +1,7 @@
 import { jsx, css } from '@emotion/react';
 import React from 'react';
 import { OccurrenceMap } from '../../../components';
-import { OccurrenceSummary, DataQuality, Datasets, Taxa, Iucn, Preparations, Months } from '../../../widgets/dashboard';
+import { OccurrenceSummary, DataQuality, Datasets, Taxa, Iucn, Preparations, Months, Licenses, BasisOfRecord, OccurrenceIssue } from '../../../widgets/dashboard';
 import useBelow from '../../../utils/useBelow';
 
 export function Dashboard({
@@ -20,8 +20,21 @@ export function Dashboard({
   };
   return <div>
     <DashBoardLayout>
+    <DashboardSection>
+        <OccurrenceIssue predicate={predicate} detailsRoute={'/specimens'} />
+      </DashboardSection>
       <DashboardSection>
-        <Months predicate={predicate} />
+        <BasisOfRecord predicate={predicate} detailsRoute={'/specimens'} />
+      </DashboardSection>
+      <DashboardSection>
+        <Licenses predicate={predicate} detailsRoute={'/specimens'} />
+      </DashboardSection>
+      <DashboardSection>
+        <Months predicate={predicate} detailsRoute={'/specimens'} currentFilter={{
+          must: {
+            taxonKey: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          }
+        }} />
       </DashboardSection>
       <DashboardSection>
         <OccurrenceSummary predicate={predicate} />

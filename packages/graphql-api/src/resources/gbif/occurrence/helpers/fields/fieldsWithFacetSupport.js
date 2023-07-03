@@ -31,7 +31,7 @@ export default [
   'installationKey',
   'institutionCode',
   'institutionKey',
-  'issues',
+  'issue',
   'license',
   'lifeStage',
   'locality',

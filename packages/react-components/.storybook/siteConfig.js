@@ -28,7 +28,12 @@ const routeConfig = {
   collectionKeySpecimens: {
     // url: ({ key }) => `/collection/${key}/specimens`
     url: ({route, queryString, basename, key}) => `${basename ? `/${basename}` : ''}/collection/${key}/specimens${queryString ? `?${queryString}` : ''}`,
-    route: '/collection/:key/specimens',
+    route: '/specimens',
+  },
+  collectionKeyDashboard: {
+    // url: ({ key }) => `/collection/${key}/specimens`
+    url: ({route, queryString, basename, key}) => `${basename ? `/${basename}` : ''}/collection/${key}/specimens${queryString ? `?${queryString}` : ''}`,
+    route: '/dashboard',
   },
 
   institutionKey: {

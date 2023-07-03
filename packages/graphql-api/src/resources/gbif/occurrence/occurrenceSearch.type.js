@@ -79,6 +79,9 @@ const typeDef = gql`
     verbatimScientificName: Int!
     eventId: Int!
     month: Int!
+    license: Int!
+    basisOfRecord: Int!
+    issue: Int!
     collectionKey: Int!
     collectionCode: Int!
     taxonKey: Int!
@@ -120,7 +123,7 @@ const typeDef = gql`
     eventId(size: Int, from: Int): [OccurrenceFacetResult_string]
     id(size: Int, from: Int): [OccurrenceFacetResult_string]
     institutionCode(size: Int, from: Int): [OccurrenceFacetResult_string]
-    issues(size: Int, from: Int): [OccurrenceFacetResult_string]
+    issue(size: Int, from: Int): [OccurrenceFacetResult_string]
     license(size: Int, from: Int): [OccurrenceFacetResult_string]
     lifeStage(size: Int, from: Int): [OccurrenceFacetResult_string]
     locality(size: Int, from: Int): [OccurrenceFacetResult_string]

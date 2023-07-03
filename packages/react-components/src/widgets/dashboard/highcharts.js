@@ -68,7 +68,7 @@ Highcharts.theme = {
           d: "M 2, 2.5 a 0.75,0.75 0 0,0 1.50,0 a 0.75,0.75 0 0,0 -1.50,0, M 6.5, 6.5 a 0.75,0.75 0 0,0 1.50,0 a 0.75,0.75 0 0,0 -1.50,0",
           stroke: "#FFFFFF",
           strokeWidth: 2,
-          fill: "#F47954",
+          fill: palette[0],
           icon: <div />
         }
       },
@@ -205,7 +205,7 @@ Highcharts.theme = {
     'url(#circles)',
     'url(#slope-down-thin)',
     'url(#slope-up-thin)',
-    'url(#custom-pattern3)',
+    'url(#dots)',
   ],
   chart: {
     // backgroundColor: {
