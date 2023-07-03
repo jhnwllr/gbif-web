@@ -1,7 +1,7 @@
-export function getPieOptions({ serie, clickCallback, interactive }) {
+export function getPieOptions({ serie, onClick, interactive }) {
   const options = {
     chart: {
-      height: 300,
+      height: 400,
       animation: false,
       type: 'pie',
     },
@@ -20,7 +20,7 @@ export function getPieOptions({ serie, clickCallback, interactive }) {
         point: interactive ? {
           events: {
             click: function () {
-              clickCallback({filter: this.filter, name: this.name, count: this.y}, this)
+              onClick({filter: this.filter, name: this.name, count: this.y}, this)
             }
           }
         } : {}

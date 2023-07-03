@@ -2,10 +2,11 @@ import env from '../.env.json';
 
 const routeConfig = {
   occurrenceSearch: {
-    url: ({ queryString }) => {
-      return `/?path=/story/search-occurrencesearch--example&viewMode=story`;
-    },
-    isHref: true,
+    // url: ({ queryString }) => {
+    //   return `/?path=/story/search-occurrencesearch--example&viewMode=story&${queryString}`;
+    // },
+    url: ({route, queryString, basename}) => `${basename ? `/${basename}` : ''}${route}${queryString ? `?${queryString}` : ''}`,
+    isHref: false,
     route: '/occurrence/search',
   },
 
@@ -25,7 +26,9 @@ const routeConfig = {
     route: '/collection/search',
   },
   collectionKeySpecimens: {
-    url: ({ key }) => `/collection/${key}/specimens`
+    // url: ({ key }) => `/collection/${key}/specimens`
+    url: ({route, queryString, basename, key}) => `${basename ? `/${basename}` : ''}/collection/${key}/specimens${queryString ? `?${queryString}` : ''}`,
+    route: '/collection/:key/specimens',
   },
 
   institutionKey: {

@@ -20,9 +20,17 @@ export function getColumnOptions({ serie, clickCallback, interactive }) {
           },
           stops: [
             [0, 'var(--primary)'],
-            [1, 'var(--primary300)']
+            [1, 'var(--primary200)']
           ]
-        }
+        },
+        borderWidth: 0,
+        // shadow: {
+        //   color: '#000',
+        //   width: 3,
+        //   opacity: 0.1,
+        //   offsetX: 0,
+        //   offsetY: 0
+        // }
       },
       column: {
         allowPointSelect: interactive,
@@ -54,12 +62,15 @@ export function getColumnOptions({ serie, clickCallback, interactive }) {
         formatter: function () {
           return truncate(this.value, 50);
         }
-      }
+      },
+      lineColor: '#d0d2da',
     },
     yAxis: {
       title: {
         text: 'occurrences'
-      }
+      },
+      gridLineDashStyle: 'LongDash',
+      lineColor: '#d0d2da',
     },
     series: [serie],
     exporting: {

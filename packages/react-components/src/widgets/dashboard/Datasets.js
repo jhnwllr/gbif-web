@@ -97,7 +97,7 @@ export function Preparations({
 
   const options = getPieOptions({ serie, clickCallback: ({ filter } = {}) => console.log(filter), interactive: true });
 
-  const filledPercentage = facetResults?.data?.isFilled?.documents?.total / facetResults?.data?.occurrenceSearch?.documents?.total;
+  const filledPercentage = facetResults?.data?.isNotNull?.documents?.total / facetResults?.data?.occurrenceSearch?.documents?.total;
   return <Card {...props}>
     <CardTitle>
       Preparations
@@ -140,7 +140,7 @@ query summary($predicate: Predicate, $hasPredicate: Predicate, $size: Int, $from
       }
     }
   }
-  isFilled: occurrenceSearch(predicate: $hasPredicate) {
+  isNotNull: occurrenceSearch(predicate: $hasPredicate) {
     documents(size: 0) {
       total
     }
@@ -331,11 +331,16 @@ export function GroupBy({ facetResults, transform, ...props }) {
       {!loading && <>{distinct} results</>}
     </div>
     <GroupByTable results={mappedResults} total={total} {...props} loading={loading} />
-    <div css={css`margin-left: auto; font-size: 12px;`}>
-      {!(isLastPage && isFirstPage) && <Button look="ghost" onClick={prev} css={css`margin-right: 8px; `} disabled={isFirstPage}>Previous</Button>}
-      {!isLastPage && <Button look="ghost" onClick={next}>Next</Button>}
-    </div>
   </>
+}
+
+export function Pagging({ facetResults, ...props }) {
+  const { next, prev, isLastPage, isFirstPage } = facetResults;
+  if (isFirstPage && isLastPage) return null;
+  return <div css={css`margin-left: auto; font-size: 12px;`}>
+    {!(isLastPage && isFirstPage) && <Button look="ghost" onClick={prev} css={css`margin-right: 8px; `} disabled={isFirstPage}>Previous</Button>}
+    {!isLastPage && <Button look="ghost" onClick={next}>Next</Button>}
+  </div>
 }
 
 export function useFacets({ predicate, otherVariables = {}, keys, translationTemplate, query, size = 10 }) {
@@ -345,6 +350,7 @@ export function useFacets({ predicate, otherVariables = {}, keys, translationTem
 
   useDeepCompareEffect(() => {
     load({
+      keepDataWhileLoading: true,
       variables: {
         predicate,
         ...otherVariables,
@@ -375,7 +381,7 @@ export function useFacets({ predicate, otherVariables = {}, keys, translationTem
       description: x?.entity?.description
     }
   });
-  
+
   // If an explicit list of keys is provided, then use that order and fill missing results with count=0
   if (keys && Array.isArray(keys)) {
     results = keys.map(key => {
@@ -397,19 +403,34 @@ export function useFacets({ predicate, otherVariables = {}, keys, translationTem
     results = results.map(x => {
       return {
         ...x,
-        title: intl.formatMessage({id: translationTemplate.replace('{key}', x.key)})
+        title: intl.formatMessage({ id: translationTemplate.replace('{key}', x.key) })
       }
     });
   }
 
-  const cardinality = data?.occurrenceSearch?.cardinality?.total ?? data?.occurrenceSearch?.facet?.results?.length ?? 0;
+  const distinct = data?.occurrenceSearch?.cardinality?.total ?? data?.occurrenceSearch?.facet?.results?.length ?? 0;
+
+  const total = data?.occurrenceSearch?.documents?.total ?? 0;
+  const isNotNull = data?.isNotNull?.documents?.total;
+  // what is the sum of values in the current page. Sum the data?.occurrenceSearch?.facet?.results
+  const pageSum = results?.reduce((acc, x) => acc + x.count, 0) ?? 0;
+  // what is the difference between the total and the sum of the current page
+  const otherOrEmptyCount = total - pageSum;
+  const otherCount = isNotNull ? isNotNull - pageSum : undefined;
+  // how many entries have no value
+  const emptyCount = isNotNull ? total - isNotNull : undefined;
 
   return {
     data, results, loading, error,
     next, prev, first,
-    isLastPage: cardinality <= from + size,
+    isLastPage: distinct <= from + size,
     isFirstPage: from === 0,
-    total: data?.occurrenceSearch?.documents?.total,
-    distinct: cardinality
+    total,
+    distinct,
+    otherCount,
+    emptyCount,
+    isNotNull,
+    pageSum,
+    otherOrEmptyCount
   };
 }

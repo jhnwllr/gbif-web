@@ -1,9 +1,9 @@
 import { jsx, css } from '@emotion/react';
 import React from 'react';
-import { Skeleton } from '../../components';
+import { EllipsisLoader, Skeleton } from '../../components';
 import { FormattedNumber as Number } from 'react-intl';
 
-export function Card({ padded = true, ...props }) {
+export function Card({ padded = true, loading, children, ...props }) {
   return <div
     css={css`
       background: var(--paperBackground);
@@ -13,8 +13,26 @@ export function Card({ padded = true, ...props }) {
       padding: 18px;
       display: block !important;
       overflow: hidden;
+      position: relative;
     `}
     {...props}>
+      {loading && <div css={css`
+        z-index: 1000;
+        background: white;
+        position: absolute;
+        text-align: center; 
+        opacity: 0.8; 
+        top: 0; 
+        bottom: 0;
+        left: 0;
+        right: 0;
+      `}>
+        <EllipsisLoader active={true} css={css`
+          top: 50%;
+          transform: translateY(-50%);
+        `}/>
+        </div>}
+      {children}
   </div>
 }
 
