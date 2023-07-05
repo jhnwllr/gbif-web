@@ -20,14 +20,14 @@ export function Dashboard({
   };
   return <div>
     <DashBoardLayout>
-      <DashboardSection>
-        <Datasets predicate={predicate} detailsRoute={'/specimens'} />
-      </DashboardSection>
-      <DashboardSection>
-        <Datasets2 predicate={predicate} detailsRoute={'/specimens'} />
-      </DashboardSection>
       {/* <DashboardSection>
-        <OccurrenceIssue predicate={predicate} detailsRoute={'/specimens'} />
+        <Datasets predicate={predicate} detailsRoute={'/specimens'} />
+      </DashboardSection> */}
+      <DashboardSection>
+        <Datasets2 predicate={predicate} detailsRoute={'/occurrence/search'} />
+      </DashboardSection>
+      <DashboardSection>
+        <OccurrenceIssue predicate={predicate} detailsRoute={'/collection/:key/specimens'} />
       </DashboardSection>
       <DashboardSection>
         <BasisOfRecord predicate={predicate} detailsRoute={'/specimens'} />
@@ -41,8 +41,8 @@ export function Dashboard({
             taxonKey: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
           }
         }} />
-      </DashboardSection> */}
-      {/* <DashboardSection>
+      </DashboardSection>
+      <DashboardSection>
         <OccurrenceSummary predicate={predicate} />
       </DashboardSection>
       <DashboardSection>
@@ -62,7 +62,7 @@ export function Dashboard({
       </DashboardSection>
       <DashboardSection>
         <Iucn predicate={predicate} />
-      </DashboardSection> */}
+      </DashboardSection>
     </DashBoardLayout>
   </div>
 };

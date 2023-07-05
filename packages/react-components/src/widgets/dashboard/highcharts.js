@@ -153,9 +153,6 @@ Highcharts.theme = {
         width: 10,
         height: 10
       },
-
-
-
       {
         id: "wave",
         path: {

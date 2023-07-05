@@ -1,5 +1,5 @@
 import { jsx, css } from '@emotion/react';
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { Card, CardTitle } from './shared';
 import { Button, ResourceLink, resourceAction } from '../../components';
 import { formatAsPercentage } from '../../utils/util';
@@ -241,18 +241,19 @@ export function Datasets({
     size: facetSize,
     keys: enumKeys,
     translationTemplate,
-    predicate,
+    predicate: undefined,
     query: GQL_QUERY
   };
 
-  return <OneDimensionalChart {...{ 
-    facetQuery, 
-    disableOther: false, 
-    disableUnknown: true, 
-    predicateKey: 'datasetKey', 
-    title: 'Datasets', 
+  return <OneDimensionalChart {...{
+    facetQuery,
+    detailsRoute,
+    disableOther: false,
+    disableUnknown: true,
+    predicateKey: 'datasetKey',
+    title: 'Datasets',
     subtitleKey: 'dashboard.numberOfOccurrences',
-    options: ['TABLE', 'PIE', 'COLUMN'],
+    options: ['PIE', 'TABLE', 'COLUMN'],
     transform: data => {
       return data?.occurrenceSearch?.facet?.results?.map(x => {
         return {
@@ -287,6 +288,18 @@ export function OneDimensionalChart({
   const [view, setView] = useState(options?.[0] ?? 'TABLE');
   const [redirect, setRedirect] = useState();
 
+  const handleRedirect = useCallback(({ filter }) => {
+    if (!filter) return;
+    const f = filter.must || filter.must_not ? { filter: btoa(JSON.stringify(mergeDeep({}, currentFilter, filter))) } : filter;
+    setRedirect({
+      pathname: detailsRoute || location.pathname,
+      state: {
+        key: 'fc904fab-a33c-4ca8-bd23-698ddb026f26'
+      },
+      search: `?${qs.stringify(f)}`
+    });
+  }, []);
+
   if (redirect) {
     return <Redirect to={redirect} />
   }
@@ -310,6 +323,12 @@ export function OneDimensionalChart({
   const singleValue = notEmptyResults?.length === 1 ? notEmptyResults[0] : null;
 
   if (view === 'PIE') {
+    // if the series have less than 5 items, then use every 2th color from the default palette Highcharts?.defaultOptions?.colors
+    if (data?.length < 5) {
+      data.forEach((x, i) => {
+        x.color = Highcharts?.defaultOptions?.colors?.[i * 2 + 2];
+      });
+    }
     if (!disableOther && otherCount) {
       data.push({
         y: otherCount,
@@ -337,17 +356,7 @@ export function OneDimensionalChart({
 
   const pieOptions = getPieOptions({
     serie,
-    onClick: ({ filter }) => {
-      if (!filter) return;
-      const f = filter.must || filter.must_not ? { filter: btoa(JSON.stringify(mergeDeep({}, currentFilter, filter))) } : filter;
-      setRedirect({
-        pathname: detailsRoute || location.pathname,
-        state: {
-          key: 'fc904fab-a33c-4ca8-bd23-698ddb026f26'
-        },
-        search: `?${qs.stringify(f)}`
-      });
-    },
+    onClick: handleRedirect,
     interactive: true
   });
   const columnOptions = getColumnOptions({ serie, clickCallback: ({ filter } = {}) => console.log(filter), interactive: true });
@@ -381,7 +390,7 @@ export function OneDimensionalChart({
         options={columnOptions}
       />}
     </div>}
-    {renderedView === 'TABLE' && <GroupBy facetResults={facetResults} transform={transform} />}
+    {renderedView === 'TABLE' && <GroupBy facetResults={facetResults} transform={transform} onClick={handleRedirect} />}
     <Pagging facetResults={facetResults} />
 
     {messages.length > 0 && <div css={css`

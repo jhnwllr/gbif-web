@@ -10,6 +10,7 @@ export function GroupByTable({
   columnTitle,
   columnCount = 'Records',
   results = [],
+  onClick,
   total = 800,
   ...props
 }) {
@@ -54,7 +55,7 @@ export function GroupByTable({
       {results.map((e, i) => {
         return <tr key={e.key}>
           <td>
-            {e.filter && <div onClick={() => console.log(e.filter)}>{e.title}</div>}
+            {e.filter && <div onClick={() => onClick({filter: e.filter})}>{e.title}</div>}
             {!e.filter && <div>{e.title}</div>}
             <div css={css`color: var(--color400); font-size: 13px; margin-top: 4px;`}>{e.description}</div>
           </td>
