@@ -1,7 +1,7 @@
 import { jsx, css } from '@emotion/react';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Card, CardTitle } from './shared';
-import { Button, ResourceLink, resourceAction } from '../../components';
+import { Button, ResourceLink } from '../../components';
 import { formatAsPercentage } from '../../utils/util';
 import qs from 'query-string';
 import Highcharts from './highcharts';
@@ -15,7 +15,6 @@ import monthEnum from '../../enums/basic/month.json';
 import basisOfRecordEnum from '../../enums/basic/basisOfRecord.json';
 import { MdLink, MdViewStream } from 'react-icons/md';
 import { BsFillBarChartFill, BsPieChartFill } from 'react-icons/bs';
-import RouteContext from '../../dataManagement/RouteContext';
 import { useLocation, Redirect } from 'react-router-dom';
 
 // Component to control the view options: table, pie chart, bar chart
@@ -169,7 +168,6 @@ export function OccurrenceIssue({
 
 export function EnumChart({
   predicate,
-  detailsRoute,
   translationTemplate,
   gqlQuery,
   enumKeys,
@@ -293,9 +291,6 @@ export function OneDimensionalChart({
     const f = filter.must || filter.must_not ? { filter: btoa(JSON.stringify(mergeDeep({}, currentFilter, filter))) } : filter;
     setRedirect({
       pathname: detailsRoute || location.pathname,
-      state: {
-        key: 'fc904fab-a33c-4ca8-bd23-698ddb026f26'
-      },
       search: `?${qs.stringify(f)}`
     });
   }, []);
@@ -313,7 +308,7 @@ export function OneDimensionalChart({
       y: x.count,
       name: x.title,
       key: x.key,
-      filter: { must: { [predicateKey]: [x.key] } },
+      filter: { [predicateKey]: [x.key] },
       visible: x.count > 0
     }
   });

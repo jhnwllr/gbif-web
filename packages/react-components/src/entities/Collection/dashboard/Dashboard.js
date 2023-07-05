@@ -1,8 +1,9 @@
 import { jsx, css } from '@emotion/react';
-import React from 'react';
+import React, { useContext } from 'react';
 import { OccurrenceMap } from '../../../components';
 import { OccurrenceSummary, DataQuality, Datasets, Datasets2, Taxa, Iucn, Preparations, Months, Licenses, BasisOfRecord, OccurrenceIssue } from '../../../widgets/dashboard';
 import useBelow from '../../../utils/useBelow';
+import RouteContext from '../../../dataManagement/RouteContext';
 
 export function Dashboard({
   data = {},
@@ -13,30 +14,32 @@ export function Dashboard({
   className,
   ...props
 }) {
+  const routeContext = useContext(RouteContext);
   const predicate = {
     type: "equals",
     key: "collectionKey",
     value: collection.key
   };
+  const specimenSearchRoute = routeContext.collectionKeySpecimens.route.replace(':key', collection.key);
   return <div>
     <DashBoardLayout>
       {/* <DashboardSection>
         <Datasets predicate={predicate} detailsRoute={'/specimens'} />
       </DashboardSection> */}
       <DashboardSection>
-        <Datasets2 predicate={predicate} detailsRoute={'/occurrence/search'} />
+        <Datasets2 predicate={predicate} detailsRoute={specimenSearchRoute} />
       </DashboardSection>
       <DashboardSection>
-        <OccurrenceIssue predicate={predicate} detailsRoute={'/collection/:key/specimens'} />
+        <OccurrenceIssue predicate={predicate} detailsRoute={specimenSearchRoute} />
       </DashboardSection>
       <DashboardSection>
-        <BasisOfRecord predicate={predicate} detailsRoute={'/specimens'} />
+        <BasisOfRecord predicate={predicate} detailsRoute={specimenSearchRoute} />
       </DashboardSection>
       <DashboardSection>
-        <Licenses predicate={predicate} detailsRoute={'/specimens'} />
+        <Licenses predicate={predicate} detailsRoute={specimenSearchRoute} />
       </DashboardSection>
       <DashboardSection>
-        <Months predicate={predicate} detailsRoute={'/specimens'} currentFilter={{
+        <Months predicate={predicate} detailsRoute={specimenSearchRoute} currentFilter={{
           must: {
             taxonKey: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
           }

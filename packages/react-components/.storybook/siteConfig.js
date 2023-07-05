@@ -11,12 +11,11 @@ const routeConfig = {
   },
 
   collectionKey: {
-    route: '/',
     isHref: true,
     url: ({ key }) => {
       return `/?path=/story/entities-collection-page--example&knob-collectionUUID=${key}`;
     },
-    route: '/collection/:key'
+    route: '/',
   },
   collectionSearch: {
     // url: () => `/collection/`,
@@ -29,12 +28,12 @@ const routeConfig = {
   collectionKeySpecimens: {
     // url: ({ key }) => `/collection/${key}/specimens`
     url: ({route, queryString, basename, key}) => `${basename ? `/${basename}` : ''}/collection/${key}/specimens${queryString ? `?${queryString}` : ''}`,
-    route: 'collection/:key/specimens',
+    route: '/specimens',
   },
   collectionKeyDashboard: {
     // url: ({ key }) => `/collection/${key}/specimens`
     url: ({route, queryString, basename, key}) => `${basename ? `/${basename}` : ''}/collection/${key}/specimens${queryString ? `?${queryString}` : ''}`,
-    route: 'collection/:key/dashboard',
+    route: '/dashboard',
   },
 
   institutionKey: {
