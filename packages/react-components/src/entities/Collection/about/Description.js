@@ -56,6 +56,11 @@ export function Description({
 
             <Property value={collection.incorporatedCollections} labelId="grscicoll.incorporatedCollections" />
             <Property value={collection.importantCollectors} labelId="grscicoll.importantCollectors" />
+            {/* <Property labelId="grscicoll.importantCollectors">
+              <ul>
+                {collection.importantCollectors.map((v, i) => <li key={i}><Link to={{pathname: "/specimens", search: `?recordedBy=${encodeURIComponent(v)}`}}>{v}</Link></li>)}
+              </ul>
+            </Property> */}
             {/* <Property value={collection.personalCollection} labelId="grscicoll.personalCollection" /> */}
           </Properties>
         </Card>
@@ -171,9 +176,9 @@ export function Description({
             type: "equals",
             key: "collectionKey",
             value: collection.key
-          }}/>
+          }} />
           {/* <ThumbnailMap filter={{ collectionKey: collection.key }} /> */}
-          <TotalAndDistinct style={{padding: '24px 12px'}} predicate={{
+          <TotalAndDistinct style={{ padding: '24px 12px' }} predicate={{
             type: "equals",
             key: "collectionKey",
             value: collection.key
