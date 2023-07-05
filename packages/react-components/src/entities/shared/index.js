@@ -21,13 +21,6 @@ export function Card({ padded = true, ...props }) {
   </div>
 }
 
-function PaddedContent(props) {
-  return <div
-    css={paddedContent}
-    {...props}>
-  </div>
-}
-
 export function CardHeader2(props) {
   return <h2 css={h2Style} {...props} />
 }

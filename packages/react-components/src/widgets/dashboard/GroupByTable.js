@@ -54,7 +54,8 @@ export function GroupByTable({
       {results.map((e, i) => {
         return <tr key={e.key}>
           <td>
-            <div>{e.title}</div>
+            {e.filter && <div onClick={() => console.log(e.filter)}>{e.title}</div>}
+            {!e.filter && <div>{e.title}</div>}
             <div css={css`color: var(--color400); font-size: 13px; margin-top: 4px;`}>{e.description}</div>
           </td>
           <td css={css`text-align: end;`}><FormattedNumber value={e.count} /></td>

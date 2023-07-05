@@ -416,7 +416,7 @@ export function useFacets({ predicate, otherVariables = {}, keys, translationTem
   const pageSum = results?.reduce((acc, x) => acc + x.count, 0) ?? 0;
   // what is the difference between the total and the sum of the current page
   const otherOrEmptyCount = total - pageSum;
-  const otherCount = isNotNull ? isNotNull - pageSum : undefined;
+  const otherCount = isNotNull ? isNotNull - pageSum : total - pageSum;
   // how many entries have no value
   const emptyCount = isNotNull ? total - isNotNull : undefined;
 

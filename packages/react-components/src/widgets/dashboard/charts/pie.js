@@ -1,9 +1,27 @@
+function addLegendHeight(chart) {
+  // chart.setSize(null, 600);
+  var legendSpace = chart.legend.legendHeight -
+    chart.legend.padding;
+  console.log('legendHeight: ', legendSpace);
+  console.log('totatl: ', 400 + legendSpace);
+  if (legendSpace) {
+    window.setTimeout(function () {
+      chart.setSize(null, 800 + legendSpace);
+    }, 3000);
+  }
+}
+
 export function getPieOptions({ serie, onClick, interactive }) {
   const options = {
     chart: {
       height: 400,
       animation: false,
       type: 'pie',
+      events: {
+        load: function () {
+          // addLegendHeight(this);
+        }
+      }
     },
     tooltip: {
       pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -20,7 +38,7 @@ export function getPieOptions({ serie, onClick, interactive }) {
         point: interactive ? {
           events: {
             click: function () {
-              onClick({filter: this.filter, name: this.name, count: this.y}, this)
+              onClick({ filter: this.filter, name: this.name, count: this.y }, this)
             }
           }
         } : {}
@@ -47,6 +65,7 @@ export function getPieOptions({ serie, onClick, interactive }) {
       }
     },
     legend: {
+      floating: false,
       itemStyle: {
         width: '200px',
         textOverflow: 'ellipsis',
@@ -55,29 +74,4 @@ export function getPieOptions({ serie, onClick, interactive }) {
     }
   }
   return options;
-}
-
-function getSerie(data, translations) {
-  // Map data and keep empty slices. We could remove empty slices, but that would mean that the legend would change on updates
-  var d = data.results.map(function (e) {
-    return {
-      name: e.displayName,
-      filter: e.filter,
-      y: e.count,
-      visible: e.count > 0 // disable empty pie slices - this is to make it easier to read the legend.
-    };
-  });
-
-  if (data.diff > 0) {
-    d.push({
-      name: translations.otherOrUknown || 'other or unknown',
-      y: data.diff
-    });
-  }
-
-  var serie = {
-    name: translations.occurrences || 'Occurrences',
-    data: d
-  };
-  return serie;
 }
