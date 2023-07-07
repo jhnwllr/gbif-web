@@ -1,4 +1,5 @@
 export { OccurrenceSummary } from './OccurrenceSummary';
 export { DataQuality } from './DataQuality';
-export { Months, Licenses, BasisOfRecord, OccurrenceIssue, Datasets as Datasets2 } from './OneDimensionalChart';
+export { Datasets as Datasets2 } from './charts/keyCharts';
+export { Months, Licenses, BasisOfRecord, OccurrenceIssue } from './charts/enumCharts';
 export * from './Datasets';

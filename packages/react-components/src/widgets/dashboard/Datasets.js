@@ -1,14 +1,11 @@
 import { jsx, css } from '@emotion/react';
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { Card, CardTitle } from './shared';
-import { GroupByTable } from './GroupByTable';
+import { GroupBy, useFacets } from './charts/GroupByTable';
 import { Button, ResourceLink, Classification, DropdownButton, Tooltip, Skeleton } from '../../components';
 import { formatAsPercentage } from '../../utils/util';
 
-import { useDeepCompareEffect } from 'react-use';
-import { useQuery } from '../../dataManagement/api';
-
-import Highcharts from './highcharts'
+import Highcharts from './charts/highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import { getPieOptions } from './charts/pie';
 import { useIntl, FormattedMessage } from 'react-intl';
@@ -319,118 +316,4 @@ function IucnCategory({ code, category }) {
       {code}
     </span>
   </Tooltip>
-}
-
-
-export function GroupBy({ facetResults, transform, ...props }) {
-  const { data, results, loading, error, next, prev, first, isLastPage, isFirstPage, total, distinct } = facetResults;
-  const mappedResults = transform ? transform(data) : results;
-  return <>
-    <div css={css`font-size: 13px; color: #888; margin-bottom: 8px;`}>
-      {loading && <Skeleton as="div" width="100px" />}
-      {!loading && <>{distinct} results</>}
-    </div>
-    <GroupByTable results={mappedResults} total={total} {...props} loading={loading} />
-  </>
-}
-
-export function Pagging({ facetResults, ...props }) {
-  const { next, prev, isLastPage, isFirstPage } = facetResults;
-  if (isFirstPage && isLastPage) return null;
-  return <div css={css`margin-left: auto; font-size: 12px;`}>
-    {!(isLastPage && isFirstPage) && <Button look="ghost" onClick={prev} css={css`margin-right: 8px; `} disabled={isFirstPage}>Previous</Button>}
-    {!isLastPage && <Button look="ghost" onClick={next}>Next</Button>}
-  </div>
-}
-
-export function useFacets({ predicate, otherVariables = {}, keys, translationTemplate, query, size = 10 }) {
-  const [from = 0, setFrom] = useState(0);
-  const intl = useIntl();
-  const { data, error, loading, load } = useQuery(query, { lazyLoad: true });
-
-  useDeepCompareEffect(() => {
-    load({
-      keepDataWhileLoading: true,
-      variables: {
-        predicate,
-        ...otherVariables,
-        from,
-        size,
-      },
-      queue: { name: 'dashboard' }
-    });
-  }, [predicate, query, from, size]);
-
-  const next = useCallback(() => {
-    setFrom(Math.max(0, from + size));
-  });
-
-  const prev = useCallback(() => {
-    setFrom(Math.max(0, from - size));
-  });
-
-  const first = useCallback(() => {
-    setFrom(0);
-  });
-
-  let results = data?.occurrenceSearch?.facet?.results?.map(x => {
-    return {
-      key: x.key,
-      title: x?.entity?.title || x?.key,
-      count: x.count,
-      description: x?.entity?.description
-    }
-  });
-
-  // If an explicit list of keys is provided, then use that order and fill missing results with count=0
-  if (keys && Array.isArray(keys)) {
-    results = keys.map(key => {
-      const result = results ? results.find(x => x.key.toString() === key.toString()) : undefined;
-      if (result) {
-        return result;
-      }
-      return {
-        key,
-        title: key,
-        count: 0,
-        description: null
-      }
-    });
-  }
-
-  // if a translationTemplate of the form "something.else.{key}" is provided, then use that to translate the title
-  if (translationTemplate && results?.length > 0) {
-    results = results.map(x => {
-      return {
-        ...x,
-        title: intl.formatMessage({ id: translationTemplate.replace('{key}', x.key) })
-      }
-    });
-  }
-
-  const distinct = data?.occurrenceSearch?.cardinality?.total ?? data?.occurrenceSearch?.facet?.results?.length ?? 0;
-
-  const total = data?.occurrenceSearch?.documents?.total ?? 0;
-  const isNotNull = data?.isNotNull?.documents?.total;
-  // what is the sum of values in the current page. Sum the data?.occurrenceSearch?.facet?.results
-  const pageSum = results?.reduce((acc, x) => acc + x.count, 0) ?? 0;
-  // what is the difference between the total and the sum of the current page
-  const otherOrEmptyCount = total - pageSum;
-  const otherCount = isNotNull ? isNotNull - pageSum : total - pageSum;
-  // how many entries have no value
-  const emptyCount = isNotNull ? total - isNotNull : undefined;
-
-  return {
-    data, results, loading, error,
-    next, prev, first,
-    isLastPage: distinct <= from + size,
-    isFirstPage: from === 0,
-    total,
-    distinct,
-    otherCount,
-    emptyCount,
-    isNotNull,
-    pageSum,
-    otherOrEmptyCount
-  };
 }

@@ -32,7 +32,7 @@ export function Progress({
   more = more.sort((a,b) => a.percent < b.percent);
   return <div css={styles.progress({ color, theme, unknown })} {...props} role="progressbar">
     <div style={{ width: `${percent}%` }}></div>
-    {more.length > 0 && more.map((x, i) => <div style={{ width: `${x.percent}%`, background: x.color }}></div>)}
+    {more.length > 0 && more.map((x, i) => <div key={i} style={{ width: `${x.percent}%`, background: x.color }}></div>)}
   </div>
 };
 
