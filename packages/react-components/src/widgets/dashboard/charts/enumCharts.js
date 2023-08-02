@@ -54,7 +54,7 @@ export function Months({
     fieldName: 'month',
     facetSize: 12,
     disableUnknown: false,
-    hideUnknownInChart: false,
+    showUnknownInChart: true,
     disableOther: true,
     title: <FormattedMessage id="filters.month.name" defaultMessage="Month" />,
     subtitleKey: "dashboard.numberOfOccurrences"

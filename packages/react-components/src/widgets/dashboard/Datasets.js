@@ -10,7 +10,7 @@ import HighchartsReact from 'highcharts-react-official'
 import { getPieOptions } from './charts/pie';
 import { useIntl, FormattedMessage } from 'react-intl';
 
-export function Preparations({
+export function Preparations2({
   predicate,
   ...props
 }) {

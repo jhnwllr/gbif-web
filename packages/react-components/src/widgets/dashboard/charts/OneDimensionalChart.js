@@ -49,7 +49,7 @@ export function OneDimensionalChart({
   options = ['PIE', 'COLUMN', 'TABLE'],
   defaultOption,
   disableUnknown,
-  hideUnknownInChart,
+  showUnknownInChart,
   messages = [],
   title,
   subtitleKey,
@@ -108,7 +108,7 @@ export function OneDimensionalChart({
         visible: true
       });
     }
-    if (!hideUnknownInChart && emptyCount) {
+    if (showUnknownInChart && emptyCount) {
       data.push({
         y: emptyCount,
         name: 'Unknown',

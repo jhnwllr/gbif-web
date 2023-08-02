@@ -397,6 +397,13 @@ export default {
     },
     occurrences: facetOccurrenceSearch,
   },
+  OccurrenceFacetResult_establishmentMeans: {
+    concept: ({ key }, _args, { dataSources }) => {
+      if (typeof key === 'undefined') return null;
+      return dataSources.vocabularyAPI.getConcept({ vocabulary: 'establishmentMeans', concept: key });
+    },
+    occurrences: facetOccurrenceSearch,
+  },
   OccurrenceFacetResult_node: {
     node: ({ key }, _args, { dataSources }) => {
       if (typeof key === 'undefined') return null;

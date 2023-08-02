@@ -1,10 +1,11 @@
 import { jsx, css } from '@emotion/react';
-import React from 'react';
+import React, { useContext } from 'react';
 import { ResourceLink } from '../../../components';
 import { MdLink } from 'react-icons/md';
 import { OneDimensionalChart } from './OneDimensionalChart';
 import { FormattedMessage } from 'react-intl';
 import { KeyChartGenerator } from './KeyChartGenerator';
+import LocaleContext from '../../../dataManagement/LocaleProvider/LocaleContext';
 
 export function Datasets({
   predicate,
@@ -59,6 +60,34 @@ export function Publishers({
           count: x.count,
           description: x.entity.description,
           filter: { must: { publishingOrg: [x.key] } },
+        }
+      });
+    }
+  }} {...props} />
+}
+
+export function HostingOrganizations({
+  predicate,
+  detailsRoute,
+  currentFilter = {}, //excluding root predicate
+  ...props
+}) {
+  return <KeyChartGenerator {...{
+    predicate, detailsRoute, currentFilter,
+    fieldName: 'hostingOrganizationKey',
+    disableUnknown: true,
+    disableOther: false,
+    facetSize: 10,
+    gqlEntity: `publisher {title}`,
+    title: <FormattedMessage id="filters.hostingOrganizationKey.name" defaultMessage="Hosting organization" />,
+    subtitleKey: "dashboard.numberOfOccurrences",
+    transform: data => {
+      return data?.occurrenceSearch?.facet?.results?.map(x => {
+        return {
+          key: x.key,
+          title: <span>{x?.entity?.title} <ResourceLink discreet type="publisherKey" id={x.key}><MdLink /></ResourceLink></span>,
+          count: x.count,
+          filter: { must: { hostingOrganizationKey: [x.key] } },
         }
       });
     }
@@ -146,6 +175,38 @@ export function Networks({
           count: x.count,
           description: x.entity.description,
           filter: { must: { networkKey: [x.key] } },
+        }
+      });
+    }
+  }} {...props} />
+}
+
+export function EstablishmentMeans({
+  predicate,
+  detailsRoute,
+  currentFilter = {}, //excluding root predicate
+  ...props
+}) {
+  const localeContext = useContext(LocaleContext);
+  const vocabularyLocale = localeContext?.localeMap?.vocabulary || 'en';
+
+  return <KeyChartGenerator {...{
+    predicate, detailsRoute, currentFilter,
+    fieldName: 'establishmentMeans',
+    disableUnknown: true,
+    disableOther: true,
+    facetSize: 10,
+    gqlEntity: `concept {title: uiLabel(language: "${vocabularyLocale}")}`,
+    title: <FormattedMessage id="filters.establishmentMeans.name" defaultMessage="establishmentMeans" />,
+    subtitleKey: "dashboard.numberOfOccurrences",
+    transform: data => {
+      return data?.occurrenceSearch?.facet?.results?.map(x => {
+        return {
+          key: x.key,
+          title: x?.entity?.title,
+          count: x.count,
+          description: x.entity.description,
+          filter: { must: { establishmentMeans: [x.key] } },
         }
       });
     }

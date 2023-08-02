@@ -1,7 +1,7 @@
 import { jsx, css } from '@emotion/react';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { OccurrenceMap } from '../../../components';
-import { OccurrenceSummary, DataQuality, Datasets, Collections, Institutions, Networks, Publishers, Taxa, Iucn, Preparations, Months, Licenses, BasisOfRecord, OccurrenceIssue } from '../../../widgets/dashboard';
+import * as charts from '../../../widgets/dashboard';
 import useBelow from '../../../utils/useBelow';
 import RouteContext from '../../../dataManagement/RouteContext';
 
@@ -25,11 +25,27 @@ export function Dashboard({
   return <div>
     <button onClick={() => setCount(count + 1)}>counter: {count}</button>
     <DashBoardLayout>
-      <Datasets predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
+      <charts.CollectionCodes predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
+      <charts.InstitutionCodes predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
+      <charts.StateProvince predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
+      <charts.IdentifiedBy predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
+      <charts.RecordedBy predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
+      <charts.Preparations predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="PIE" />
+      <charts.EstablishmentMeans predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="PIE" />
+      <charts.Months predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="COLUMN" currentFilter={{
+        must: {
+          taxonKey: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        }
+      }} />
+      {/* <charts.Preparations2 predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" /> */}
+      
+      {/* <Datasets predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
       <Publishers predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
+      <HostingOrganizations predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
       <Collections predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
       <Institutions predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
-      <Networks predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
+      <Networks predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" /> */}
+
       {/* <OccurrenceIssue predicate={predicate} detailsRoute={specimenSearchRoute} />
       <BasisOfRecord predicate={predicate} detailsRoute={specimenSearchRoute} />
       <Licenses predicate={predicate} detailsRoute={specimenSearchRoute} />
