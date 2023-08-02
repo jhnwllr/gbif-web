@@ -10,52 +10,6 @@ import HighchartsReact from 'highcharts-react-official'
 import { getPieOptions } from './charts/pie';
 import { useIntl, FormattedMessage } from 'react-intl';
 
-export function Datasets({
-  predicate,
-  ...props
-}) {
-  const facetResults = useFacets({ predicate, query: DATASET_FACETS });
-  return <Card {...props}>
-    <CardTitle>Datasets</CardTitle>
-    <GroupBy {...{
-      facetResults,
-      predicate,
-      query: DATASET_FACETS,
-      transform: data => {
-        return data?.occurrenceSearch?.facet?.results?.map(x => {
-          return {
-            key: x.key,
-            title: <ResourceLink discreet type="datasetKey" id={x.key}>{x?.entity?.title}</ResourceLink>,
-            count: x.count,
-            description: x.entity.description
-          }
-        });
-      }
-    }} />
-  </Card>
-};
-const DATASET_FACETS = `
-query summary($predicate: Predicate, $size: Int, $from: Int){
-  occurrenceSearch(predicate: $predicate) {
-    documents(size: 0) {
-      total
-    }
-    cardinality {
-      total: datasetKey
-    }
-    facet {
-      results: datasetKey(size: $size, from: $from) {
-        key
-        count
-        entity: dataset {
-          title
-        }
-      }
-    }
-  }
-}
-`;
-
 export function Preparations({
   predicate,
   ...props

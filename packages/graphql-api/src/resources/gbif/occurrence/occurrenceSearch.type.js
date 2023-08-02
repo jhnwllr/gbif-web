@@ -83,7 +83,10 @@ const typeDef = gql`
     basisOfRecord: Int!
     issue: Int!
     collectionKey: Int!
+    institutionKey: Int!
     collectionCode: Int!
+    networkKey: Int!
+    programme: Int!
     taxonKey: Int!
     classKey: Int!
     familyKey: Int!
@@ -135,7 +138,7 @@ const typeDef = gql`
     organismQuantityType(size: Int, from: Int): [OccurrenceFacetResult_string]
     parentEventId(size: Int, from: Int): [OccurrenceFacetResult_string]
     preparations(size: Int, from: Int): [OccurrenceFacetResult_string]
-    programmeAcronym(size: Int, from: Int): [OccurrenceFacetResult_string]
+    programme(size: Int, from: Int): [OccurrenceFacetResult_string]
     projectId(size: Int, from: Int): [OccurrenceFacetResult_string]
     protocol(size: Int, from: Int): [OccurrenceFacetResult_string]
     publishingCountry(size: Int, from: Int): [OccurrenceFacetResult_string]

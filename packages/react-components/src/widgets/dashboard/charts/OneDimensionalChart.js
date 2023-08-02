@@ -47,6 +47,7 @@ export function OneDimensionalChart({
   detailsRoute,
   disableOther,
   options = ['PIE', 'COLUMN', 'TABLE'],
+  defaultOption,
   disableUnknown,
   hideUnknownInChart,
   messages = [],
@@ -58,7 +59,7 @@ export function OneDimensionalChart({
 }) {
   const location = useLocation();
   const facetResults = useFacets(facetQuery);
-  const [view, setView] = useState(options?.[0] ?? 'TABLE');
+  const [view, setView] = useState(defaultOption ?? options?.[0] ?? 'TABLE');
   const [redirect, setRedirect] = useState();
 
   const handleRedirect = useCallback(({ filter }) => {
@@ -134,7 +135,7 @@ export function OneDimensionalChart({
   const filledPercentage = facetResults?.data?.isNotNull?.documents?.total / facetResults?.data?.occurrenceSearch?.documents?.total;
 
   if (!disableUnknown) {
-    messages.push(<div>{formatAsPercentage(filledPercentage)}% of all records have this field filled</div>);
+    messages.push(<div>{formatAsPercentage(filledPercentage)}% of all records have a value</div>);
   }
   const renderedView = singleValue ? 'TABLE' : view;
 

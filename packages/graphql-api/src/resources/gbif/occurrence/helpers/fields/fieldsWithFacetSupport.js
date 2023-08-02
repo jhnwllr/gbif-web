@@ -52,7 +52,7 @@ export default [
   'organismQuantityType',
   'parentEventId',
   'preparations',
-  'programmeAcronym',
+  'programme',
   'projectId',
   'protocol',
   // "publisherTitle",

@@ -95,7 +95,7 @@ export function Pagging({ facetResults, ...props }) {
 export function useFacets({ predicate, otherVariables = {}, keys, translationTemplate, query, size = 10 }) {
   const [from = 0, setFrom] = useState(0);
   const intl = useIntl();
-  const { data, error, loading, load } = useQuery(query, { lazyLoad: true });
+  const { data, error, loading, load } = useQuery(query, { lazyLoad: true, queue: 'dashboard' });
 
   useDeepCompareEffect(() => {
     load({

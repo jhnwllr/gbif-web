@@ -336,8 +336,8 @@
     "description": "The scientific name as provided by the data publisher without any normalisation."
   },
   "networkKey": {
-    "name": "Network key",
-    "count": "{num, plural, one { Network key } other {# Network keys}}",
+    "name": "Network",
+    "count": "{num, plural, one { Network } other {# Networks}}",
     "description": "A short description of the component should be placed here"
   },
   "literatureType": {

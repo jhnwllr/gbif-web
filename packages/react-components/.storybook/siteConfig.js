@@ -2,11 +2,11 @@ import env from '../.env.json';
 
 const routeConfig = {
   occurrenceSearch: {
-    // url: ({ queryString }) => {
-    //   return `/?path=/story/search-occurrencesearch--example&viewMode=story&${queryString}`;
-    // },
-    url: ({route, queryString, basename}) => `${basename ? `/${basename}` : ''}${route}${queryString ? `?${queryString}` : ''}`,
-    isHref: false,
+    url: ({ queryString }) => {
+      return `/?path=/story/search-occurrencesearch--example&viewMode=story&${queryString}`;
+    },
+    // url: ({route, queryString, basename}) => `${basename ? `/${basename}` : ''}${route}${queryString ? `?${queryString}` : ''}`,
+    isHref: true,
     route: '/occurrence/search',
   },
 
@@ -120,6 +120,11 @@ const routeConfig = {
     url: ({ key }) => `https://bie.ala.org.au/species/${key}`,
     isHref: true,
     route: '/taxon/:key'
+  },
+  networkKey: {
+    isHref: true,
+    url: ({key}) => `${env.GBIF_ORG}/network/${key}`,
+    route: '/'
   },
 };
 
