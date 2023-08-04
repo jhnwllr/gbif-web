@@ -112,7 +112,7 @@ export function IucnCounts({
     facetSize: 10,
     disableOther: true,
     disableUnknown: true,
-    options: ['PIE'],
+    options: ['PIE', 'TABLE', 'COLUMN'],
     title: <FormattedMessage id="filters.iucnRedListCategory.name" defaultMessage="iucnRedListCategory" />,
     subtitleKey: "dashboard.numberOfOccurrences",
   }} {...props} />

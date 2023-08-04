@@ -33,5 +33,6 @@ export default [
   "orderKey",
   "phylumKey",
   "speciesKey",
-  'taxonKey'
+  'taxonKey',
+  'gadmGid',
 ];

@@ -42,7 +42,6 @@ export function Card({ padded = true, loading, error, children, ...props }) {
       border-radius: var(--borderRadiusPx);
       padding: 18px;
       display: block !important;
-      overflow: hidden;
       position: relative;
     `}
     {...props}>

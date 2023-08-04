@@ -10,6 +10,7 @@ import HighchartsReact from 'highcharts-react-official'
 import { getPieOptions } from './charts/pie';
 import { useIntl, FormattedMessage } from 'react-intl';
 
+const majorRanks = ['kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species'];
 export function Taxa({
   predicate,
   ...props
@@ -18,27 +19,13 @@ export function Taxa({
   const [rank, setRank] = useState('FAMILY');
   const facetResults = useFacets({ predicate, query });
   return <Card {...props}>
-    <CardTitle css={css`display: flex;`}>
-      <div css={css`flex: 1 1 auto;`}>{rank}</div>
-      <div css={css`flex: 0 0 auto; font-size: 13px;`}>
-        <DropdownButton
-          look="primaryOutline"
-          menuItems={menuState => [
-            <DropdownButton.MenuAction onClick={e => { setRank('KINGDOM'); setQuery(getTaxonQuery('kingdomKey')); menuState.hide() }}>Kingdoms</DropdownButton.MenuAction>,
-            <DropdownButton.MenuAction onClick={e => { setRank('PHYLUM'); setQuery(getTaxonQuery('phylumKey')); menuState.hide() }}>Phyla</DropdownButton.MenuAction>,
-            <DropdownButton.MenuAction onClick={e => { setRank('CLASS'); setQuery(getTaxonQuery('classKey')); menuState.hide() }}>Classes</DropdownButton.MenuAction>,
-            <DropdownButton.MenuAction onClick={e => { setRank('ORDER'); setQuery(getTaxonQuery('orderKey')); menuState.hide() }}>Orders</DropdownButton.MenuAction>,
-            <DropdownButton.MenuAction onClick={e => { setRank('FAMILY'); setQuery(getTaxonQuery('familyKey')); menuState.hide() }}>Families</DropdownButton.MenuAction>,
-            <DropdownButton.MenuAction onClick={e => { setRank('GENUS'); setQuery(getTaxonQuery('genusKey')); menuState.hide() }}>Genera</DropdownButton.MenuAction>,
-            <DropdownButton.MenuAction onClick={e => { setRank('SPECIES'); setQuery(getTaxonQuery('speciesKey')); menuState.hide() }}>Species</DropdownButton.MenuAction>,
-            <DropdownButton.MenuAction onClick={e => { setRank('ANY_RANK'); setQuery(getTaxonQuery('taxonKey')); menuState.hide() }}>Any taxon</DropdownButton.MenuAction>,
-          ]}>
-          <Button onClick={e => {
-            setRank('FAMILY');
-            setQuery(getTaxonQuery('familyKey'));
-          }}>Family</Button>
-        </DropdownButton>
-      </div>
+    <CardTitle options={<DropdownButton
+      look="primaryOutline"
+      menuItems={menuState => majorRanks.map(rank => <DropdownButton.MenuAction onClick={e => { setRank(rank); setQuery(getTaxonQuery(`${rank}Key`)); menuState.hide() }}>
+        <FormattedMessage id={`enums.taxonRank.${rank.toUpperCase()}`} defaultMessage={rank} />
+      </DropdownButton.MenuAction>)}>
+    </DropdownButton>}>
+      <FormattedMessage id={`enums.taxonRank.${rank.toUpperCase()}`} defaultMessage={rank} />
     </CardTitle>
     <GroupBy {...{
       facetResults,
@@ -49,7 +36,7 @@ export function Taxa({
             title: x?.entity?.title,
             count: x.count,
             description: <Classification>
-              {['kingdom', 'phylum', 'class', 'order', 'family', 'genus'].map(rank => {
+              {majorRanks.map(rank => {
                 if (!x?.entity?.[rank]) return null;
                 return <span key={rank}>{x?.entity?.[rank]}</span>
               })}
@@ -109,7 +96,7 @@ export function Iucn({
     <CardTitle>
       IUCN Threat Status
       <div css={css`font-weight: 400; color: var(--color300); font-size: 0.95em;`}>
-        <div>Specimens that are near threatened or more vulnerable according to the Global IUCN Redlist</div>
+        <div>Species that are near threatened or more vulnerable according to the Global IUCN Redlist</div>
       </div>
     </CardTitle>
     <GroupBy {...{

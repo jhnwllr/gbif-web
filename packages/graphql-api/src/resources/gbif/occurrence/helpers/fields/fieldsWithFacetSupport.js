@@ -114,4 +114,5 @@ export default [
   'gbifClassification_usageParsedName_basionymAuthorship_year',
   'gbifClassification_usageParsedName_combinationAuthorship_empty',
   'gbifClassification_usageParsedName_combinationAuthorship_year',
+  'gadmGid',
 ];

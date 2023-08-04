@@ -101,6 +101,7 @@ const typeDef = gql`
     iucnRedListCategory: Int!
     establishmentMeans: Int!
     countryCode: Int!
+    gadmGid: Int!
   }
 
   type OccurrenceHistogram {
@@ -171,6 +172,7 @@ const typeDef = gql`
     gbifClassification_usageParsedName_basionymAuthorship_year(size: Int, from: Int): [OccurrenceFacetResult_string]
     gbifClassification_usageParsedName_combinationAuthorship_year(size: Int, from: Int): [OccurrenceFacetResult_string]
     iucnRedListCategory(size: Int, from: Int): [OccurrenceFacetResult_string]
+    gadmGid(size: Int, from: Int): [OccurrenceFacetResult_string]
 
     coordinatePrecision(size: Int, from: Int): [OccurrenceFacetResult_float]
     coordinateUncertaintyInMeters(size: Int, from: Int): [OccurrenceFacetResult_float]
