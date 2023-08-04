@@ -10,96 +10,6 @@ import HighchartsReact from 'highcharts-react-official'
 import { getPieOptions } from './charts/pie';
 import { useIntl, FormattedMessage } from 'react-intl';
 
-export function Preparations2({
-  predicate,
-  ...props
-}) {
-  const facetResults = useFacets({
-    size: 10,
-    predicate,
-    query: PREPARATIONS_FACETS,
-    otherVariables: {
-      hasPredicate: {
-        type: 'and',
-        predicates: [
-          predicate,
-          {
-            type: 'isNotNull',
-            key: 'preparations'
-          }
-        ]
-      }
-    }
-  });
-
-  const showChart = !facetResults.loading && facetResults?.data?.occurrenceSearch?.facet?.results?.length > 0;
-
-  const data = facetResults?.data?.occurrenceSearch?.facet?.results?.map(x => {
-    return {
-      y: x.count,
-      name: x.key,
-    }
-  });
-  const serie = {
-    name: 'Occurrences',
-    colorByPoint: true,
-    data
-  };
-
-  const options = getPieOptions({ serie, clickCallback: ({ filter } = {}) => console.log(filter), interactive: true });
-
-  const filledPercentage = facetResults?.data?.isNotNull?.documents?.total / facetResults?.data?.occurrenceSearch?.documents?.total;
-  return <Card {...props}>
-    <CardTitle>
-      Preparations
-      <div css={css`font-weight: 400; color: var(--color300); font-size: 0.95em;`}>
-        <div>{formatAsPercentage(filledPercentage)}% filled</div>
-      </div>
-    </CardTitle>
-
-    {showChart && <div style={{ margin: '24px auto' }}>
-      {/* <div id="chart" style={{ maxWidth: 450, width: 'calc(100% - 1px)', margin: '0 auto' }}>
-        <Chart theme={state.theme} options={state.options} series={state.series} type="pie" />
-      </div> */}
-
-      <HighchartsReact
-        highcharts={Highcharts}
-        options={options}
-      />
-
-    </div>}
-    <GroupBy facetResults={facetResults} />
-
-    <div css={css`font-weight: 400; color: var(--color300); font-size: 0.95em;`}>
-      <p>Non-interpreted values - same concept might appear with different names.</p>
-    </div>
-  </Card>
-};
-const PREPARATIONS_FACETS = `
-query summary($predicate: Predicate, $hasPredicate: Predicate, $size: Int, $from: Int){
-  occurrenceSearch(predicate: $predicate) {
-    documents(size: 0) {
-      total
-    }
-    cardinality {
-      total: preparations
-    }
-    facet {
-      results: preparations(size: $size, from: $from) {
-        key
-        count
-      }
-    }
-  }
-  isNotNull: occurrenceSearch(predicate: $hasPredicate) {
-    documents(size: 0) {
-      total
-    }
-  }
-}
-`;
-
-
 export function Taxa({
   predicate,
   ...props
@@ -199,7 +109,7 @@ export function Iucn({
     <CardTitle>
       IUCN Threat Status
       <div css={css`font-weight: 400; color: var(--color300); font-size: 0.95em;`}>
-        <div>Specimens in the collection that are near threatened or more vulnerable according to the Global IUCN Redlist</div>
+        <div>Specimens that are near threatened or more vulnerable according to the Global IUCN Redlist</div>
       </div>
     </CardTitle>
     <GroupBy {...{

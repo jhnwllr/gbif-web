@@ -79,3 +79,41 @@ export function OccurrenceIssue({
     subtitleKey: "dashboard.numberOfOccurrences",
   }} {...props} />
 }
+
+export function Country({
+  predicate,
+  detailsRoute,
+  currentFilter = {}, //excluding root predicate
+  ...props
+}) {
+  return <EnumChartGenerator {...{
+    predicate, detailsRoute, currentFilter,
+    fieldName: 'countryCode',
+    translationTemplate: 'enums.countryCode.{key}',
+    facetSize: 10,
+    disableOther: true,
+    disableUnknown: true,
+    options: ['TABLE'],
+    title: <FormattedMessage id="filters.country.name" defaultMessage="Country" />,
+    subtitleKey: "dashboard.numberOfOccurrences",
+  }} {...props} />
+}
+
+export function IucnCounts({
+  predicate,
+  detailsRoute,
+  currentFilter = {}, //excluding root predicate
+  ...props
+}) {
+  return <EnumChartGenerator {...{
+    predicate, detailsRoute, currentFilter,
+    fieldName: 'iucnRedListCategory',
+    translationTemplate: 'enums.iucnRedListCategory.{key}',
+    facetSize: 10,
+    disableOther: true,
+    disableUnknown: true,
+    options: ['PIE'],
+    title: <FormattedMessage id="filters.iucnRedListCategory.name" defaultMessage="iucnRedListCategory" />,
+    subtitleKey: "dashboard.numberOfOccurrences",
+  }} {...props} />
+}

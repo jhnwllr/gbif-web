@@ -9,6 +9,7 @@ import HighchartsReact from 'highcharts-react-official'
 import { getPieOptions } from './pie';
 import { FormattedMessage } from 'react-intl';
 import { getColumnOptions } from './column';
+// import { getTimeSeriesOptions } from './area';
 import { GroupBy, Pagging, useFacets } from './GroupByTable';
 import { MdLink, MdViewStream } from 'react-icons/md';
 import { BsFillBarChartFill, BsPieChartFill } from 'react-icons/bs';
@@ -130,7 +131,13 @@ export function OneDimensionalChart({
     onClick: handleRedirect,
     interactive: true
   });
-  const columnOptions = getColumnOptions({ serie, clickCallback: ({ filter } = {}) => console.log(filter), interactive: true });
+  const columnOptions = getColumnOptions({ serie, onClick: handleRedirect, interactive: true });
+  
+  // if time series then create the area chart options
+  // let timeSeriesOptions;
+  // if (view === 'TIME') {
+  //   timeSeriesOptions = getTimeSeriesOptions({ serie, clickCallback: ({ filter } = {}) => console.log(filter), interactive: true });
+  // }
 
   const filledPercentage = facetResults?.data?.isNotNull?.documents?.total / facetResults?.data?.occurrenceSearch?.documents?.total;
 
@@ -158,6 +165,10 @@ export function OneDimensionalChart({
         {renderedView === 'COLUMN' && <HighchartsReact
           highcharts={Highcharts}
           options={columnOptions}
+        />}
+        {renderedView === 'TIME' && <HighchartsReact
+          highcharts={Highcharts}
+          options={timeSeriesOptions}
         />}
       </div>}
       {renderedView === 'TABLE' && <GroupBy facetResults={facetResults} transform={transform} onClick={handleRedirect} />}

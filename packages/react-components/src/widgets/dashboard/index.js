@@ -2,5 +2,6 @@ export { OccurrenceSummary } from './OccurrenceSummary';
 export { DataQuality } from './DataQuality';
 export * from './charts/keyCharts';
 export * from './charts/stringCharts';
-export { Months, Licenses, BasisOfRecord, OccurrenceIssue } from './charts/enumCharts';
-export * from './Datasets';
+export * from './charts/enumCharts';
+// export * from './charts/timeCharts';
+export * from './Custom';

@@ -5,6 +5,7 @@ import { FormattedNumber as Number } from 'react-intl';
 
 export function Card({ padded = true, loading, error, children, ...props }) {
   if (error) {
+    console.error(error);
     return <div css={css`
       background: white;//rgb(224,87,51);
       /* background: linear-gradient(175deg, rgba(224,87,51,1) 0%, rgba(239,106,70,1) 59%, rgba(255,126,90,1) 100%); */

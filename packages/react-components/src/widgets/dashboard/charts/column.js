@@ -1,4 +1,4 @@
-export function getColumnOptions({ serie, clickCallback, interactive }) {
+export function getColumnOptions({ serie, onClick, interactive }) {
   const categories = serie?.data?.map(x => x.name);
   const options = {
     chart: {
@@ -43,7 +43,7 @@ export function getColumnOptions({ serie, clickCallback, interactive }) {
         point: interactive ? {
           events: {
             click: function () {
-              clickCallback({ filter: this.filter, name: this.name, count: this.y }, this)
+              onClick({ filter: this.filter, name: this.name, count: this.y }, this)
             }
           }
         } : {}

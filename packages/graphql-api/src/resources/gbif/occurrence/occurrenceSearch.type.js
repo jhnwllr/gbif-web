@@ -100,6 +100,7 @@ const typeDef = gql`
     preparations: Int!
     iucnRedListCategory: Int!
     establishmentMeans: Int!
+    countryCode: Int!
   }
 
   type OccurrenceHistogram {

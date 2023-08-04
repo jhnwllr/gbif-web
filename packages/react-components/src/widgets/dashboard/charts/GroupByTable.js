@@ -122,11 +122,13 @@ export function useFacets({ predicate, otherVariables = {}, keys, translationTem
     setFrom(0);
   });
 
-  let results = data?.occurrenceSearch?.facet?.results?.map(x => {
+  let buckets = Array.isArray(data?.occurrenceSearch?.facet?.results) ? data?.occurrenceSearch?.facet?.results : data?.occurrenceSearch?.facet?.results?.buckets;
+
+  let results = buckets?.map(x => {
     return {
       key: x.key,
       title: x?.entity?.title || x?.key,
-      count: x.count,
+      count: x.count ?? x.doc_count,
       description: x?.entity?.description
     }
   });
@@ -157,7 +159,7 @@ export function useFacets({ predicate, otherVariables = {}, keys, translationTem
     });
   }
 
-  const distinct = data?.occurrenceSearch?.cardinality?.total ?? data?.occurrenceSearch?.facet?.results?.length ?? 0;
+  const distinct = data?.occurrenceSearch?.cardinality?.total ?? buckets?.length ?? 0;
 
   const total = data?.occurrenceSearch?.documents?.total ?? 0;
   const isNotNull = data?.isNotNull?.documents?.total;

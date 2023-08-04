@@ -24,6 +24,7 @@ export default [
   'preparations',
   'iucnRedListCategory',
   'establishmentMeans',
+  'countryCode',
   'programme',
   "classKey",
   "familyKey",
