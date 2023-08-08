@@ -80,5 +80,5 @@ export function ChartWrapper({
     }
   };
 
-  return <OneDimensionalChart {...{ facetQuery, disableOther, disableUnknown, predicateKey }} {...props} />
+  return <OneDimensionalChart {...{ facetQuery, disableOther, disableUnknown, predicateKey, currentFilter }} {...props} />
 }

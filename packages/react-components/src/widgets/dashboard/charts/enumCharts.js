@@ -89,6 +89,7 @@ export function Country({
   return <EnumChartGenerator {...{
     predicate, detailsRoute, currentFilter,
     fieldName: 'countryCode',
+    filterKey: 'country',
     translationTemplate: 'enums.countryCode.{key}',
     facetSize: 10,
     disableOther: true,

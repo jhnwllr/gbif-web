@@ -6,7 +6,7 @@ import { Dashboard as DashboardPresentation } from './Dashboard';
 
 function Dashboard() {
   const currentFilterContext = useContext(FilterContext);
-  const { rootPredicate, predicateConfig, tableConfig, defaultTableColumns } = useContext(OccurrenceContext);
+  const { rootPredicate, predicateConfig } = useContext(OccurrenceContext);
   const [searchPredicate, setSearchPredicate] = useState();
 
   useEffect(() => {
@@ -17,6 +17,7 @@ function Dashboard() {
         filter2predicate(currentFilterContext.filter, predicateConfig)
       ].filter(x => x)
     }
+    console.log('update search predicate');
     setSearchPredicate(predicate);
   }, [currentFilterContext.filterHash, rootPredicate]);
 

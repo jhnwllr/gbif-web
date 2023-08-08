@@ -32,8 +32,8 @@ export const InstitutionCodes = getStringChart({
 });
 
 export const CollectionCodes = getStringChart({
-  fieldName: 'institutionCode', 
-  title: <FormattedMessage id="filters.institutionCode.name" defaultMessage="collection code" />
+  fieldName: 'collectionCode', 
+  title: <FormattedMessage id="filters.collectionCode.name" defaultMessage="collection code" />
 });
 
 export const StateProvince = getStringChart({

@@ -1,5 +1,5 @@
 import { jsx, css } from '@emotion/react';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Card, CardTitle } from '../shared';
 import { Button, ResourceLink } from '../../../components';
 import { formatAsPercentage } from '../../../utils/util';
@@ -13,7 +13,8 @@ import { getColumnOptions } from './column';
 import { GroupBy, Pagging, useFacets } from './GroupByTable';
 import { MdLink, MdViewStream } from 'react-icons/md';
 import { BsFillBarChartFill, BsPieChartFill } from 'react-icons/bs';
-import { useLocation, Redirect } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
+import { FilterContext } from '../../Filter/state';
 
 // Component to control the view options: table, pie chart, bar chart
 function ViewOptions({ view, setView, options = ['COLUMN', 'PIE', 'TABLE'] }) {
@@ -56,30 +57,36 @@ export function OneDimensionalChart({
   subtitleKey,
   transform,
   currentFilter = {}, //excluding root predicate
+  filterKey,
   ...props
 }) {
   const location = useLocation();
+  const history = useHistory();
   const facetResults = useFacets(facetQuery);
   const [view, setView] = useState(defaultOption ?? options?.[0] ?? 'TABLE');
-  const [redirect, setRedirect] = useState();
+
+  const { filter: filterContext, setField, setFilter, filterHash } = useContext(FilterContext);
 
   const handleRedirect = useCallback(({ filter }) => {
     if (!filter) return;
-    const f = filter.must || filter.must_not ? { filter: btoa(JSON.stringify(mergeDeep({}, currentFilter, filter))) } : filter;
-    setRedirect({
-      pathname: detailsRoute || location.pathname,
-      search: `?${qs.stringify(f)}`
-    });
-  }, []);
 
-  if (redirect) {
-    return <Redirect to={redirect} />
-  }
+    const mergedFilter = mergeDeep({}, filterContext, { must: filter });
+    if (detailsRoute) {
+      const newLocation = `${detailsRoute || location.pathname}?${qs.stringify(filter)}`;
+      history.push(newLocation);
+    } else {
+      setFilter(mergedFilter);
+    }
+    
+    // const f = (filter.must || filter.must_not) ? { filter: btoa(JSON.stringify(mergedFilter)) } : filter;
+    // const newLocation = `${detailsRoute || location.pathname}?${qs.stringify(f)}`;
+    // history.push(newLocation);
+  }, [detailsRoute, location.pathname, filterContext, currentFilter]);
 
   const showChart = facetResults?.results?.length > 0;
   const { otherCount, emptyCount, distinct } = facetResults;
 
-  facetResults?.forEach?.map(x => x.filter = { must: { [predicateKey]: [x.key] } });
+  facetResults?.results?.forEach(x => x.filter = { [filterKey ?? predicateKey]: [x.key] });
   const data = facetResults?.results?.map(x => {
     return {
       y: x.count,
@@ -92,7 +99,6 @@ export function OneDimensionalChart({
 
   // count how many results have data
   const notEmptyResults = data?.filter(x => x.y > 0);
-  const singleValue = notEmptyResults?.length === 1 ? notEmptyResults[0] : null;
 
   if (view === 'PIE') {
     // if the series have less than 5 items, then use every 2th color from the default palette Highcharts?.defaultOptions?.colors
@@ -132,7 +138,7 @@ export function OneDimensionalChart({
     interactive: true
   });
   const columnOptions = getColumnOptions({ serie, onClick: handleRedirect, interactive: true });
-  
+
   // if time series then create the area chart options
   // let timeSeriesOptions;
   // if (view === 'TIME') {
@@ -144,10 +150,14 @@ export function OneDimensionalChart({
   if (!disableUnknown) {
     messages.push(<div>{formatAsPercentage(filledPercentage)}% of all records have a value</div>);
   }
-  const renderedView = singleValue ? 'TABLE' : view;
+  const renderedView = view;
+  // the idea with this was that it looks odd with a pie chart with only one value, but it looks even worse with a table with only one value. Similar for column charts. But in reality it was also confusing changing the layout when changing filters, so we removed this.
+  // const singleValue = notEmptyResults?.length === 1 ? notEmptyResults[0] : null;
+  // const renderedView = singleValue ? 'TABLE' : view;
 
   return <Card {...props} loading={facetResults.loading} error={facetResults.error}>
-    <CardTitle options={(singleValue || distinct === 0) ? null : <ViewOptions options={options} view={view} setView={setView} />}>
+    {/* <CardTitle options={(singleValue || (distinct === 0)) ? null : <ViewOptions options={options} view={view} setView={setView} />}> */}
+    <CardTitle options={<ViewOptions options={options} view={view} setView={setView} />}>
       {title && <div css={css`font-weight: bold;`}>{title}</div>}
       {subtitleKey && <div css={css`color: #888; font-size: 13px;`}><FormattedMessage id={subtitleKey} defaultMessage="Number of occurrences" /></div>}
     </CardTitle>

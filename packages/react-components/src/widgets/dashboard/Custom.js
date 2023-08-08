@@ -92,6 +92,9 @@ export function Iucn({
       ]
     }, query: IUCN_FACETS
   });
+  // consider a chart option where the chart is hidden if there is less than x results. e.g. zero or one result. Or perhaps even just a , "is meaningful" option, where to component itself evaluates wether it adds information. In some cases it would be nice just to add charts, but only having them show if there is rich data.
+  //if (facetResults?.data?.occurrenceSearch?.facet?.results?.length === 0) return null;
+  
   return <Card {...props}>
     <CardTitle>
       IUCN Threat Status

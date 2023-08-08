@@ -15,7 +15,7 @@ export function Dashboard({
   ...props
 }) {
   const routeContext = useContext(RouteContext);
-  const [count, setCount] = React.useState(0);
+  const [count, setCount] = React.useState(1);
   const predicate = {
     type: "equals",
     key: "taxonKey",
@@ -36,11 +36,12 @@ export function Dashboard({
       <charts.RecordedBy predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
       <charts.Preparations predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="PIE" />
       <charts.EstablishmentMeans predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="PIE" />
+      */}
       <charts.Months predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="COLUMN" currentFilter={{
         must: {
           taxonKey: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         }
-      }} /> */}
+      }} />
       {/* <charts.Preparations2 predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" /> */}
       
       {/* <Datasets predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />

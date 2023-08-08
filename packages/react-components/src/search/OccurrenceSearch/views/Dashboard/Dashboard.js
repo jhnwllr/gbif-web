@@ -9,25 +9,20 @@ export function Dashboard({
   ...props
 }) {
   const routeContext = useContext(RouteContext);
-  const specimenSearchRoute = routeContext.occurrenceSearch.route;
   return <div>
     <DashBoardLayout>
-      <charts.Taxa predicate={predicate} detailsRoute={specimenSearchRoute} />
+      {/* <charts.Taxa predicate={predicate} detailsRoute={specimenSearchRoute} />
       <charts.Iucn predicate={predicate} detailsRoute={specimenSearchRoute} />
-      <charts.IucnCounts predicate={predicate} detailsRoute={specimenSearchRoute} />
-      <charts.Country predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
-      {/* <charts.CollectionCodes predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
+      <charts.IucnCounts predicate={predicate} detailsRoute={specimenSearchRoute} /> */}
+      {/* <charts.Country predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
+      <charts.CollectionCodes predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
       <charts.InstitutionCodes predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
       <charts.StateProvince predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
       <charts.IdentifiedBy predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
       <charts.RecordedBy predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" /> */}
-      <charts.Preparations predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="PIE" />
-      <charts.EstablishmentMeans predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="PIE" />
-      <charts.Months predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="COLUMN" currentFilter={{
-        must: {
-          taxonKey: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        }
-      }} />
+      {/* <charts.Preparations predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="PIE" />
+      <charts.EstablishmentMeans predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="PIE" />*/}
+      <charts.Months predicate={predicate} defaultOption="COLUMN" /> 
       {/* <charts.Preparations2 predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" /> */}
       
       {/* <Datasets predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
