@@ -2,7 +2,7 @@ import { jsx, css } from '@emotion/react';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Card, CardTitle } from '../shared';
 import { Button, ResourceLink } from '../../../components';
-import { formatAsPercentage } from '../../../utils/util';
+import { formatAsPercentage, mergeDeep } from '../../../utils/util';
 import qs from 'query-string';
 import Highcharts from './highcharts';
 import HighchartsReact from 'highcharts-react-official'
@@ -58,30 +58,26 @@ export function OneDimensionalChart({
   transform,
   currentFilter = {}, //excluding root predicate
   filterKey,
+  handleRedirect,
   ...props
 }) {
-  const location = useLocation();
-  const history = useHistory();
   const facetResults = useFacets(facetQuery);
   const [view, setView] = useState(defaultOption ?? options?.[0] ?? 'TABLE');
 
-  const { filter: filterContext, setField, setFilter, filterHash } = useContext(FilterContext);
+  // const location = useLocation();
+  // const history = useHistory();
+  // const { filter: filterContext, setFilter } = useContext(FilterContext);
+  // const handleRedirect = useCallback(({ filter }) => {
+  //   if (!filter) return;
 
-  const handleRedirect = useCallback(({ filter }) => {
-    if (!filter) return;
-
-    const mergedFilter = mergeDeep({}, filterContext, { must: filter });
-    if (detailsRoute) {
-      const newLocation = `${detailsRoute || location.pathname}?${qs.stringify(filter)}`;
-      history.push(newLocation);
-    } else {
-      setFilter(mergedFilter);
-    }
-    
-    // const f = (filter.must || filter.must_not) ? { filter: btoa(JSON.stringify(mergedFilter)) } : filter;
-    // const newLocation = `${detailsRoute || location.pathname}?${qs.stringify(f)}`;
-    // history.push(newLocation);
-  }, [detailsRoute, location.pathname, filterContext, currentFilter]);
+  //   const mergedFilter = mergeDeep({}, filterContext, { must: filter });
+  //   if (detailsRoute) {
+  //     const newLocation = `${detailsRoute || location.pathname}?${qs.stringify(filter)}`;
+  //     history.push(newLocation);
+  //   } else {
+  //     setFilter(mergedFilter);
+  //   }
+  // }, [detailsRoute, location.pathname, filterContext, currentFilter]);
 
   const showChart = facetResults?.results?.length > 0;
   const { otherCount, emptyCount, distinct } = facetResults;
@@ -203,36 +199,3 @@ export function OneDimensionalChart({
   </Card>
 };
 
-
-// From https://stackoverflow.com/questions/27936772/how-to-deep-merge-instead-of-shallow-merge
-/**
- * Simple object check.
- * @param item
- * @returns {boolean}
- */
-export function isObject(item) {
-  return (item && typeof item === 'object' && !Array.isArray(item));
-}
-
-/**
- * Deep merge two objects.
- * @param target
- * @param ...sources
- */
-export function mergeDeep(target, ...sources) {
-  if (!sources.length) return target;
-  const source = sources.shift();
-
-  if (isObject(target) && isObject(source)) {
-    for (const key in source) {
-      if (isObject(source[key])) {
-        if (!target[key]) Object.assign(target, { [key]: {} });
-        mergeDeep(target[key], source[key]);
-      } else {
-        Object.assign(target, { [key]: source[key] });
-      }
-    }
-  }
-
-  return mergeDeep(target, ...sources);
-}

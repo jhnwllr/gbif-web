@@ -8,34 +8,35 @@ export function Dashboard({
   predicate,
   ...props
 }) {
-  const routeContext = useContext(RouteContext);
   return <div>
     <DashBoardLayout>
-      {/* <charts.Taxa predicate={predicate} detailsRoute={specimenSearchRoute} />
-      <charts.Iucn predicate={predicate} detailsRoute={specimenSearchRoute} />
-      <charts.IucnCounts predicate={predicate} detailsRoute={specimenSearchRoute} /> */}
-      {/* <charts.Country predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
-      <charts.CollectionCodes predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
-      <charts.InstitutionCodes predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
-      <charts.StateProvince predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
-      <charts.IdentifiedBy predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
-      <charts.RecordedBy predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" /> */}
-      {/* <charts.Preparations predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="PIE" />
-      <charts.EstablishmentMeans predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="PIE" />*/}
-      <charts.Months predicate={predicate} defaultOption="COLUMN" /> 
-      {/* <charts.Preparations2 predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" /> */}
+      {/* <charts.Taxa predicate={predicate} /> */}
+      <charts.Iucn predicate={predicate} />
+      {/* <charts.IucnCounts predicate={predicate} /> */}
       
-      {/* <Datasets predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
-      <Publishers predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
-      <HostingOrganizations predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
-      <Collections predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
-      <Institutions predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
-      <Networks predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" /> */}
+      {/* <charts.Country predicate={predicate} defaultOption="TABLE" />
+      <charts.CollectionCodes predicate={predicate} defaultOption="TABLE" />
+      <charts.InstitutionCodes predicate={predicate} defaultOption="TABLE" />
+      <charts.StateProvince predicate={predicate} defaultOption="TABLE" />
+      <charts.IdentifiedBy predicate={predicate} defaultOption="TABLE" />
+      <charts.RecordedBy predicate={predicate} defaultOption="TABLE" />
+      <charts.Preparations predicate={predicate} defaultOption="PIE" />
+      <charts.EstablishmentMeans predicate={predicate} defaultOption="PIE" />
+      <charts.Months predicate={predicate} defaultOption="COLUMN" /> */}
 
-      {/* <OccurrenceIssue predicate={predicate} detailsRoute={specimenSearchRoute} />
-      <BasisOfRecord predicate={predicate} detailsRoute={specimenSearchRoute} />
-      <Licenses predicate={predicate} detailsRoute={specimenSearchRoute} />
-      <Months predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="COLUMN" currentFilter={{
+      {/* <charts.Preparations2 predicate={predicate} defaultOption="TABLE" /> */}
+
+      {/* <Datasets predicate={predicate} defaultOption="TABLE" />
+      <Publishers predicate={predicate} defaultOption="TABLE" />
+      <HostingOrganizations predicate={predicate} defaultOption="TABLE" />
+      <Collections predicate={predicate} defaultOption="TABLE" />
+      <Institutions predicate={predicate} defaultOption="TABLE" />
+      <Networks predicate={predicate} defaultOption="TABLE" /> */}
+
+      {/* <OccurrenceIssue predicate={predicate} />
+      <BasisOfRecord predicate={predicate} />
+      <Licenses predicate={predicate} />
+      <Months predicate={predicate} defaultOption="COLUMN" currentFilter={{
         must: {
           taxonKey: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         }

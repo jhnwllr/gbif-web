@@ -1,6 +1,7 @@
 import { jsx } from '@emotion/react';
 import React from 'react';
 import { OneDimensionalChart } from './OneDimensionalChart';
+import ChartClickWrapper from './ChartClickWrapper';
 
 export function EnumChartGenerator({
   predicate,
@@ -80,5 +81,7 @@ export function ChartWrapper({
     }
   };
 
-  return <OneDimensionalChart {...{ facetQuery, disableOther, disableUnknown, predicateKey, currentFilter }} {...props} />
+  return <ChartClickWrapper detailsRoute={props.detailsRoute}>
+    <OneDimensionalChart {...{ facetQuery, disableOther, disableUnknown, predicateKey, currentFilter }} {...props} />
+  </ChartClickWrapper>
 }

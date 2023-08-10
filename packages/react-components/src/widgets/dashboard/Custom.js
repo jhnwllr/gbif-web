@@ -2,17 +2,14 @@ import { jsx, css } from '@emotion/react';
 import React, { useState } from 'react';
 import { Card, CardTitle } from './shared';
 import { GroupBy, useFacets } from './charts/GroupByTable';
-import { Button, ResourceLink, Classification, DropdownButton, Tooltip, Skeleton } from '../../components';
-import { formatAsPercentage } from '../../utils/util';
-
-import Highcharts from './charts/highcharts'
-import HighchartsReact from 'highcharts-react-official'
-import { getPieOptions } from './charts/pie';
+import { Classification, DropdownButton, Tooltip } from '../../components';
 import { useIntl, FormattedMessage } from 'react-intl';
+import ChartClickWrapper from './charts/ChartClickWrapper';
 
 const majorRanks = ['kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species'];
-export function Taxa({
+function TaxaMain({
   predicate,
+  handleRedirect,
   ...props
 }) {
   const [query, setQuery] = useState(getTaxonQuery('familyKey'));
@@ -29,12 +26,14 @@ export function Taxa({
     </CardTitle>
     <GroupBy {...{
       facetResults,
+      onClick: handleRedirect,
       transform: data => {
         return data?.occurrenceSearch?.facet?.results?.map(x => {
           return {
             key: x.key,
             title: x?.entity?.title,
             count: x.count,
+            filter: { taxonKey: [x.key] },
             description: <Classification>
               {majorRanks.map(rank => {
                 if (!x?.entity?.[rank]) return null;
@@ -47,6 +46,13 @@ export function Taxa({
     }} />
   </Card>
 };
+
+export function Taxa(props) {
+  return <ChartClickWrapper {...props}>
+    <TaxaMain />
+  </ChartClickWrapper>
+}
+
 const getTaxonQuery = rank => `
 query summary($predicate: Predicate, $size: Int, $from: Int){
   occurrenceSearch(predicate: $predicate) {
@@ -75,8 +81,9 @@ query summary($predicate: Predicate, $size: Int, $from: Int){
 }
 `;
 
-export function Iucn({
+function IucnMain({
   predicate,
+  handleRedirect,
   ...props
 }) {
   const facetResults = useFacets({
@@ -94,7 +101,7 @@ export function Iucn({
   });
   // consider a chart option where the chart is hidden if there is less than x results. e.g. zero or one result. Or perhaps even just a , "is meaningful" option, where to component itself evaluates wether it adds information. In some cases it would be nice just to add charts, but only having them show if there is rich data.
   //if (facetResults?.data?.occurrenceSearch?.facet?.results?.length === 0) return null;
-  
+
   return <Card {...props}>
     <CardTitle>
       IUCN Threat Status
@@ -104,6 +111,7 @@ export function Iucn({
     </CardTitle>
     <GroupBy {...{
       facetResults,
+      onClick: handleRedirect,
       transform: data => {
         return data?.occurrenceSearch?.facet?.results?.map(x => {
           return {
@@ -112,6 +120,7 @@ export function Iucn({
               <IucnCategory code={x?.entity?.iucnRedListCategory?.code} category={x?.entity?.iucnRedListCategory?.category} />
               {x?.entity?.title}</div>,
             count: x.count,
+            filter: { taxonKey: [x.key] },
             description: <Classification>
               {['kingdom', 'phylum', 'class', 'order', 'family', 'genus'].map(rank => {
                 if (!x?.entity?.[rank]) return null;
@@ -155,6 +164,11 @@ query summary($predicate: Predicate, $size: Int, $from: Int){
   }
 }
 `;
+export function Iucn(props) {
+  return <ChartClickWrapper {...props}>
+    <IucnMain />
+  </ChartClickWrapper>
+}
 
 function IucnCategory({ code, category }) {
   return <Tooltip title={<FormattedMessage id={`enums.threatStatus.${category}`} />}>
