@@ -22,6 +22,7 @@ export function Dashboard({
     value: count
   };
   const specimenSearchRoute = routeContext.collectionKeySpecimens.route.replace(':key', collection.key);
+  // add chart for recognised names that are not accepted. synonyms 
   return <div>
     <button onClick={() => setCount(count + 1)}>counter: {count}</button>
     <DashBoardLayout>
