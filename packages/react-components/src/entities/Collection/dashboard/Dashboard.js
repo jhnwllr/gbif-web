@@ -26,9 +26,9 @@ export function Dashboard({
   return <div>
     <button onClick={() => setCount(count + 1)}>counter: {count}</button>
     <DashBoardLayout>
-      <charts.Taxa predicate={predicate} detailsRoute={specimenSearchRoute} />
+      {/* <charts.Taxa predicate={predicate} detailsRoute={specimenSearchRoute} />
       <charts.Iucn predicate={predicate} detailsRoute={specimenSearchRoute} />
-      <charts.IucnCounts predicate={predicate} detailsRoute={specimenSearchRoute} />
+      <charts.IucnCounts predicate={predicate} detailsRoute={specimenSearchRoute} /> */}
       {/* <charts.Country predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
       <charts.CollectionCodes predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
       <charts.InstitutionCodes predicate={predicate} detailsRoute={specimenSearchRoute} defaultOption="TABLE" />
