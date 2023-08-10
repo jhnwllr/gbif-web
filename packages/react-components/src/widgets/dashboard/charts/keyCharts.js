@@ -1,8 +1,7 @@
 import { jsx, css } from '@emotion/react';
 import React, { useContext } from 'react';
-import { ResourceLink } from '../../../components';
+import { Classification, ResourceLink } from '../../../components';
 import { MdLink } from 'react-icons/md';
-import { OneDimensionalChart } from './OneDimensionalChart';
 import { FormattedMessage } from 'react-intl';
 import { KeyChartGenerator } from './KeyChartGenerator';
 import LocaleContext from '../../../dataManagement/LocaleProvider/LocaleContext';
@@ -213,6 +212,60 @@ export function EstablishmentMeans({
   }} {...props} />
 }
 
+const majorRanks = ['kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species'];
+export function Synonyms({
+  predicate: providedPredicate,
+  detailsRoute,
+  currentFilter = {}, //excluding root predicate
+  ...props
+}) {
+  const predicate = {
+    type: 'and',
+    predicates: [
+      providedPredicate,
+      {
+        type: 'equals',
+        key: 'gbifClassification_synonym',
+        value: true
+      }
+    ]
+  }
+  return <KeyChartGenerator {...{
+    predicate, detailsRoute, currentFilter,
+    fieldName: 'gbifClassification_usage_key',
+    disableUnknown: true,
+    disableOther: true,
+    facetSize: 10,
+    options: ['TABLE'],
+    gqlEntity: `taxon {
+      title: scientificName
+      kingdom
+      phylum
+      class
+      order
+      family
+      genus
+    }`,
+    title: <FormattedMessage id="filters.synonyms.name" defaultMessage="Synonyms" />,
+    subtitleKey: "dashboard.numberOfOccurrences",
+    transform: data => {
+      return data?.occurrenceSearch?.facet?.results?.map(x => {
+        return {
+          key: x.key,
+          title: x?.entity?.title,
+          count: x.count,
+          filter: { taxonKey: [x.key] },
+          description: <Classification>
+            {majorRanks.map(rank => {
+              if (!x?.entity?.[rank]) return null;
+              return <span key={rank}>{x?.entity?.[rank]}</span>
+            })}
+          </Classification>
+        }
+      });
+    }
+  }} {...props} />
+}
 
 // export function Datasets2({
 //   predicate,

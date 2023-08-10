@@ -11,6 +11,7 @@ export default [
   'samplingProtocol',
   'sampleSizeUnit',
   'verbatimScientificName',
+  'gbifClassification_usage_key',
   'eventId',
   'month',
   'license',

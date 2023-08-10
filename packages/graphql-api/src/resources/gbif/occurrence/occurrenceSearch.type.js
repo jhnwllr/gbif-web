@@ -97,6 +97,7 @@ const typeDef = gql`
     orderKey: Int!
     phylumKey: Int!
     speciesKey: Int!
+    gbifClassification_usage_key: Int!
     preparations: Int!
     iucnRedListCategory: Int!
     establishmentMeans: Int!

@@ -12,6 +12,7 @@ export function Dashboard({
     <DashBoardLayout>
       {/* <charts.Taxa predicate={predicate} /> */}
       <charts.Iucn predicate={predicate} />
+      <charts.Synonyms predicate={predicate} />
       {/* <charts.IucnCounts predicate={predicate} /> */}
       
       {/* <charts.Country predicate={predicate} defaultOption="TABLE" />
