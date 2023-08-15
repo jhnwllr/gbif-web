@@ -29,8 +29,9 @@ export function GroupByTable({
     </div>
   }
 
-  return <Table>
-    {columnTitle && <thead css={css`
+  return <div style={{overflow: 'auto'}}>
+    <Table>
+      {columnTitle && <thead css={css`
       th {
         text-align: start;
         font-size: 0.95em;
@@ -38,13 +39,13 @@ export function GroupByTable({
         padding: 8px 0;
       }
     `}>
-      <tr>
-        <th>{columnTitle}</th>
-        <th>{columnCount}</th>
-        <th></th>
-      </tr>
-    </thead>}
-    <tbody css={css`
+        <tr>
+          <th>{columnTitle}</th>
+          <th>{columnCount}</th>
+          <th></th>
+        </tr>
+      </thead>}
+      <tbody css={css`
         tr {
           td {
             vertical-align: initial;
@@ -54,21 +55,22 @@ export function GroupByTable({
           }
         }
         `}>
-      {results.map((e, i) => {
-        return <tr key={e.key}>
-          <td>
-            {e.filter && <div onClick={() => onClick({filter: e.filter})}>{e.title}</div>}
-            {!e.filter && <div>{e.title}</div>}
-            <div css={css`color: var(--color400); font-size: 13px; margin-top: 4px;`}>{e.description}</div>
-          </td>
-          <td css={css`text-align: end;`}><FormattedNumber value={e.count} /></td>
-          <td>
-            <Progress color="var(--primary200)" overlays={[{ percent: 100 * e.count / total, color: 'var(--primary)' }]} percent={100 * e.count / maxCount} style={{ height: '1em', marginLeft: 'auto' }} />
-          </td>
-        </tr>
-      })}
-    </tbody>
-  </Table>
+        {results.map((e, i) => {
+          return <tr key={e.key}>
+            <td>
+              {e.filter && <div onClick={() => onClick({ filter: e.filter })}>{e.title}</div>}
+              {!e.filter && <div>{e.title}</div>}
+              <div css={css`color: var(--color400); font-size: 13px; margin-top: 4px;`}>{e.description}</div>
+            </td>
+            <td css={css`text-align: end;`}><FormattedNumber value={e.count} /></td>
+            <td>
+              <Progress color="var(--primary200)" overlays={[{ percent: 100 * e.count / total, color: 'var(--primary)' }]} percent={100 * e.count / maxCount} style={{ height: '1em', marginLeft: 'auto' }} />
+            </td>
+          </tr>
+        })}
+      </tbody>
+    </Table>
+  </div>
 };
 
 export function GroupBy({ facetResults, transform, ...props }) {
@@ -126,6 +128,7 @@ export function useFacets({ predicate, otherVariables = {}, keys, translationTem
 
   let results = buckets?.map(x => {
     return {
+      ...x,
       key: x.key,
       title: x?.entity?.title || x?.key,
       count: x.count ?? x.doc_count,

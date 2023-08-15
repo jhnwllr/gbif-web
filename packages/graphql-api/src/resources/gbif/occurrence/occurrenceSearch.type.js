@@ -107,15 +107,38 @@ const typeDef = gql`
 
   type OccurrenceHistogram {
     decimalLongitude(interval: Float): LongitudeHistogram!
+    year(interval: Float): JSON
   }
 
   type OccurrenceAutoDateHistogram {
-    eventDate(buckets: Float): JSON!
+    eventDate(buckets: Float, minimum_interval: String): AutoDateHistogramResult!
+  }
+
+  type AutoDateHistogramResult {
+    bucketSize: Int!
+    buckets: [AutoDateHistogramBucket]
+    interval: String!
+  }
+
+  type AutoDateHistogramBucket {
+    date: DateTime!
+    key: ID!
+    count: Long!
   }
 
   type LongitudeHistogram {
     buckets: JSON!
     bounds: JSON
+  }
+
+  type Histogram {
+    interval: Int
+    buckets: [HistogramBucket]
+  }
+
+  type HistogramBucket {
+    key: ID!
+    count: Long!
   }
 
   type OccurrenceFacet {

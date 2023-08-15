@@ -1,6 +1,7 @@
 import { jsx } from '@emotion/react';
 import React from 'react';
 import { ChartWrapper } from './EnumChartGenerator';
+import { FormattedDate } from 'react-intl';
 
 // this is for generating charts for fields that are foreign keys like taxonKey, collectionKey, datasetKey, etc.
 // for some fields there will always be a value like datasetKey, but e.g. collectionKey is only sparsely filled.
@@ -23,7 +24,16 @@ export function Year({
           total
         }
         facet: autoDateHistogram {
-          results: eventDate(buckets: 10)
+          results: eventDate(buckets: 50) {
+            interval
+            buckets {
+              key: date
+              utc: key
+              date
+              title: date
+              count
+            }
+          }
         }
       }
       ${!disableUnknown ? `isNotNull: occurrenceSearch(predicate: $hasPredicate) {
@@ -37,13 +47,14 @@ export function Year({
     predicate, detailsRoute, gqlQuery: GQL_QUERY, currentFilter,
     disableOther,
     disableUnknown,
+    title: 'Event date',
     predicateKey: 'eventDate',
     facetSize,
     transform: data => {
       return data?.occurrenceSearch?.facet?.results?.buckets?.map(x => {
         return {
           ...x,
-          title: 'h2j',
+          title: x.date
         }
       });
     }

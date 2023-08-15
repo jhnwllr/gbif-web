@@ -41,6 +41,8 @@ async function query({ query, aggs, size = 20, from = 0, metrics, req }) {
     aggs
   }
 
+  console.log(JSON.stringify(esQuery, null, 2));
+
   let response = await search({ client, index: searchIndex, query: esQuery, req });
   let body = response.body;
   body.hits.hits = body.hits.hits.map(n => reduce(n));

@@ -1,4 +1,4 @@
-export function getColumnOptions({ serie, onClick, interactive }) {
+export function getTimeSeriesOptions({ serie, onClick, interactive }) {
   const categories = serie?.data?.map(x => x.name);
   const options = {
     chart: {
@@ -7,7 +7,8 @@ export function getColumnOptions({ serie, onClick, interactive }) {
       type: 'column'
     },
     tooltip: {
-      pointFormat: '{series.name}: <b>{point.y}</b>'
+      pointFormat: '{series.name}: <b>{point.y}</b>',
+      followPointer: false
     },
     plotOptions: {
       series: {
@@ -57,9 +58,8 @@ export function getColumnOptions({ serie, onClick, interactive }) {
     },
     xAxis: {
       type: 'datetime',
-      // categories: categories,
       labels: { 
-        enabled: true,
+        enabled: true
     },
       // crosshair: true,//!!categories && data.results.length > 1,
       // labels: {
@@ -94,42 +94,4 @@ export function getColumnOptions({ serie, onClick, interactive }) {
     }
   }
   return options;
-}
-
-function getSerie(data, translations) {
-  // Map data and keep empty slices. We could remove empty slices, but that would mean that the legend would change on updates
-  var d = data.results.map(function (e) {
-    return {
-      name: e.displayName,
-      filter: e.filter,
-      y: e.count,
-      visible: e.count > 0 // disable empty pie slices - this is to make it easier to read the legend.
-    };
-  });
-
-  if (data.diff > 0) {
-    d.push({
-      name: translations.otherOrUknown || 'other or unknown',
-      y: data.diff
-    });
-  }
-
-  var serie = {
-    name: translations.occurrences || 'Occurrences',
-    data: d
-  };
-  return serie;
-}
-
-// function to truncate long strings so that they end with an ellipsis
-function truncate(str, maxLength) {
-  // test that it is a string, else do nothing
-  if (typeof str !== 'string') {
-    return str;
-  }
-  if (str.length <= maxLength) {
-    return str;
-  }
-
-  return str.substring(0, maxLength) + '...';
 }

@@ -13,6 +13,10 @@ export default function ChartClickWrapper({children, ...props}) {
   
   const handleRedirect = useCallback(({ filter }) => {
     if (!filter) return;
+    if (!detailsRoute && !setFilter) {
+      console.warn('ChartClickWrapper: no detailsRoute or setFilter provided');
+      return;
+    }
 
     const mergedFilter = mergeDeep({}, filterContext, { must: filter });
     if (detailsRoute) {

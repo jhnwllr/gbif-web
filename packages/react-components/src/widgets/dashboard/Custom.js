@@ -10,11 +10,15 @@ const majorRanks = ['kingdom', 'phylum', 'class', 'order', 'family', 'genus', 's
 function TaxaMain({
   predicate,
   handleRedirect,
+  visibilityThreshold,
   ...props
 }) {
   const [query, setQuery] = useState(getTaxonQuery('familyKey'));
   const [rank, setRank] = useState('FAMILY');
   const facetResults = useFacets({ predicate, query });
+  
+  if (facetResults?.data?.occurrenceSearch?.facet?.results?.length <= visibilityThreshold) return null;
+
   return <Card {...props}>
     <CardTitle options={<DropdownButton
       look="primaryOutline"
@@ -84,6 +88,7 @@ query summary($predicate: Predicate, $size: Int, $from: Int){
 function IucnMain({
   predicate,
   handleRedirect,
+  visibilityThreshold,
   ...props
 }) {
   const facetResults = useFacets({
@@ -99,8 +104,7 @@ function IucnMain({
       ]
     }, query: IUCN_FACETS
   });
-  // consider a chart option where the chart is hidden if there is less than x results. e.g. zero or one result. Or perhaps even just a , "is meaningful" option, where to component itself evaluates wether it adds information. In some cases it would be nice just to add charts, but only having them show if there is rich data.
-  //if (facetResults?.data?.occurrenceSearch?.facet?.results?.length === 0) return null;
+  if (facetResults?.data?.occurrenceSearch?.facet?.results?.length <= visibilityThreshold) return null;
 
   return <Card {...props}>
     <CardTitle>

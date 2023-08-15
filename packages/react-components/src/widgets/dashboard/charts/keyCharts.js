@@ -1,6 +1,5 @@
-import { jsx, css } from '@emotion/react';
 import React, { useContext } from 'react';
-import { Classification, ResourceLink } from '../../../components';
+import { ResourceLink } from '../../../components';
 import { MdLink } from 'react-icons/md';
 import { FormattedMessage } from 'react-intl';
 import { KeyChartGenerator } from './KeyChartGenerator';
@@ -14,7 +13,6 @@ export function Datasets({
 }) {
   return <KeyChartGenerator {...{
     predicate, detailsRoute, currentFilter,
-    // enumKeys: basisOfRecordEnum,
     fieldName: 'datasetKey',
     disableUnknown: true,
     disableOther: false,
@@ -27,6 +25,7 @@ export function Datasets({
         return {
           key: x.key,
           title: <span>{x?.entity?.title} <ResourceLink discreet type="datasetKey" id={x.key}><MdLink /></ResourceLink></span>,
+          plainTextTitle: x?.entity?.title,
           count: x.count,
           description: x.entity.description,
           filter: { must: { datasetKey: [x.key] } },
@@ -56,6 +55,7 @@ export function Publishers({
         return {
           key: x.key,
           title: <span>{x?.entity?.title} <ResourceLink discreet type="publisherKey" id={x.key}><MdLink /></ResourceLink></span>,
+          plainTextTitle: x?.entity?.title,
           count: x.count,
           description: x.entity.description,
           filter: { must: { publishingOrg: [x.key] } },
@@ -85,6 +85,7 @@ export function HostingOrganizations({
         return {
           key: x.key,
           title: <span>{x?.entity?.title} <ResourceLink discreet type="publisherKey" id={x.key}><MdLink /></ResourceLink></span>,
+          plainTextTitle: x?.entity?.title,
           count: x.count,
           filter: { must: { hostingOrganizationKey: [x.key] } },
         }
@@ -113,6 +114,7 @@ export function Collections({
         return {
           key: x.key,
           title: <span>{x?.entity?.title} <ResourceLink discreet type="collectionKey" id={x.key}><MdLink /></ResourceLink></span>,
+          plainTextTitle: x?.entity?.title,
           count: x.count,
           description: x.entity.description,
           filter: { must: { collectionKey: [x.key] } },
@@ -142,6 +144,7 @@ export function Institutions({
         return {
           key: x.key,
           title: <span>{x?.entity?.title} <ResourceLink discreet type="institutionKey" id={x.key}><MdLink /></ResourceLink></span>,
+          plainTextTitle: x?.entity?.title,
           count: x.count,
           description: x.entity.description,
           filter: { must: { institutionKey: [x.key] } },
@@ -171,6 +174,7 @@ export function Networks({
         return {
           key: x.key,
           title: <span>{x?.entity?.title} <ResourceLink discreet type="networkKey" id={x.key}><MdLink /></ResourceLink></span>,
+          plainTextTitle: x?.entity?.title,
           count: x.count,
           description: x.entity.description,
           filter: { must: { networkKey: [x.key] } },
@@ -212,7 +216,6 @@ export function EstablishmentMeans({
   }} {...props} />
 }
 
-const majorRanks = ['kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species'];
 export function Synonyms({
   predicate: providedPredicate,
   detailsRoute,
@@ -239,12 +242,8 @@ export function Synonyms({
     options: ['TABLE'],
     gqlEntity: `taxon {
       title: scientificName
-      kingdom
-      phylum
-      class
-      order
-      family
-      genus
+      accepted
+      acceptedKey
     }`,
     title: <FormattedMessage id="filters.synonyms.name" defaultMessage="Synonyms" />,
     subtitleKey: "dashboard.numberOfOccurrences",
@@ -252,80 +251,13 @@ export function Synonyms({
       return data?.occurrenceSearch?.facet?.results?.map(x => {
         return {
           key: x.key,
-          title: x?.entity?.title,
+          title: <span>{x?.entity?.title} <ResourceLink discreet type="taxonKey" id={x.key}><MdLink /></ResourceLink></span>,
+          plainTextTitle: x?.entity?.title,
           count: x.count,
           filter: { taxonKey: [x.key] },
-          description: <Classification>
-            {majorRanks.map(rank => {
-              if (!x?.entity?.[rank]) return null;
-              return <span key={rank}>{x?.entity?.[rank]}</span>
-            })}
-          </Classification>
+          description: <div>Accepted name: <span>{x?.entity?.accepted} <ResourceLink discreet type="taxonKey" id={x?.entity?.acceptedKey}><MdLink /></ResourceLink></span></div>
         }
       });
     }
   }} {...props} />
 }
-
-// export function Datasets2({
-//   predicate,
-//   detailsRoute,
-//   translationTemplate,
-//   predicateKey,
-//   facetSize,
-//   disableOther,
-//   disableUnknown,
-//   currentFilter = {}, //excluding root predicate
-//   ...props
-// }) {
-//   const GQL_QUERY = `
-//     query summary($predicate: Predicate, $size: Int, $from: Int){
-//       occurrenceSearch(predicate: $predicate) {
-//         documents(size: 0) {
-//           total
-//         }
-//         cardinality {
-//           total: datasetKey
-//         }
-//         facet {
-//           results: datasetKey(size: $size, from: $from) {
-//             key
-//             count
-//             entity: dataset {
-//               title
-//             }
-//           }
-//         }
-//       }
-//     }
-//   `;
-
-//   const facetQuery = {
-//     size: facetSize,
-//     translationTemplate,
-//     predicate,
-//     query: GQL_QUERY
-//   };
-
-//   return <OneDimensionalChart {...{
-//     facetQuery,
-//     detailsRoute,
-//     disableOther: false,
-//     disableUnknown: true,
-//     predicateKey: 'datasetKey',
-//     title: 'Datasets',
-//     subtitleKey: 'dashboard.numberOfOccurrences',
-//     options: ['PIE', 'TABLE', 'COLUMN'],
-//     transform: data => {
-//       return data?.occurrenceSearch?.facet?.results?.map(x => {
-//         return {
-//           key: x.key,
-//           title: <span>{x?.entity?.title} <ResourceLink discreet type="datasetKey" id={x.key}><MdLink /></ResourceLink></span>,
-//           count: x.count,
-//           description: x.entity.description,
-//           filter: { must: { datasetKey: [x.key] } },
-//         }
-//       });
-//     }
-//   }} {...props} />
-// }
