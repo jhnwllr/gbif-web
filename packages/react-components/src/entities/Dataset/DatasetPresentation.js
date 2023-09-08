@@ -29,6 +29,7 @@ export function DatasetPresentation({
   error,
   loading,
   disableCatalog,
+  style = {},
   ...props
 }) {
   const isBelowNarrow = useBelow(800);
@@ -70,7 +71,7 @@ export function DatasetPresentation({
     tabs: ['EVENTS']
   };
 
-  return <div style={{minHeight: '80vh', background: 'var(--background)'}} {...props}>
+  return <div style={{...style, minHeight: '80vh', background: 'var(--background)'}} {...props}>
     <DataHeader
       availableCatalogues={disableCatalog ? [] : undefined}
       right={<div css={styles.headerIcons}>
