@@ -53,7 +53,7 @@ export function DatasetSidebar({
           <Col shrink={false} grow={false} css={css.detailDrawerContent({ theme })} >
             <TabPanel tabId='details'>
               <Row direction="column">
-                <Dataset id={id} disableCatalog />
+                <Dataset id={id} disableCatalog style={{maxWidth: '100%'}}/>
               </Row>
             </TabPanel>
           </Col>

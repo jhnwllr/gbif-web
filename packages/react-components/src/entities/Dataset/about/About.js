@@ -75,7 +75,7 @@ export function About({
     <div css={sharedStyles.withSideBar({ hasSidebar: !isBelowSidebar })}>
       <div style={{ width: '100%', overflow: 'auto' }}>
 
-        {siteOccurrences.documents.total - total < 0 && <Alert as="a" href={`https://www.gbif.org/dataset/${dataset.key}`} tagText="Info" tagType="info">Not all records from the dataset is included on this site. Visit GBIF.org to learn more.</Alert>}
+        {siteOccurrences.documents.total - total < 0 && <Alert style={{width: '100%', marginTop: 12}} as="a" href={`https://www.gbif.org/dataset/${dataset.key}`} tagText="Info" tagType="info">Not all records from the dataset is included on this site. Visit GBIF.org to learn more.</Alert>}
 
         {isBelowSidebar && <div css={css`
           display: flex;
