@@ -32,7 +32,6 @@ export function DatasetPresentation({
   style = {},
   ...props
 }) {
-  const isBelowNarrow = useBelow(800);
   let { url, path } = useRouteMatch();
 
   if (error) {
