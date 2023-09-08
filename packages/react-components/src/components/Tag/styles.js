@@ -82,12 +82,16 @@ const types = {
 
 export const alert = ({type}) => css`
   display: inline-flex;
-  background-color: ${bgColors[type]}aa;
+  background-color: ${bgColors[type]}dd;
   color: ${colors[type]};
   padding: 0.5rem;
   align-items: center;
   border-radius: var(--borderRadiusPx);
   text-decoration: none;
+  &:hover {
+    color: ${colors[type]};
+    text-decoration: none;
+  }
   > div {
     margin: 0 0.5rem;
     flex: 1 1 auto;
