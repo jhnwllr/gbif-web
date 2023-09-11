@@ -22,16 +22,8 @@ export function DatasetSidebar({
   ...props
 }) {
   const routeConfig = useContext(RouteContext);
-  const { data, error, loading, load } = useQuery(DATASET, { lazyLoad: true });
   const [activeId, setTab] = useState(defaultTab || 'details');
   const theme = useContext(ThemeContext);
-
-  useEffect(() => {
-    if (typeof id !== 'undefined') {
-      load({ variables: { key: id } });
-    }
-  }, [id]);
-
 
   return <RouteContext.Provider value={{ ...routeConfig, alwaysUseHrefs: true }}>
     <MemoryRouter initialEntries={['/']}>
@@ -45,9 +37,6 @@ export function DatasetSidebar({
                 </Tab>
                 <TapSeperator vertical />
               </>}
-              <Tab tabId="details" direction="left">
-                <MdInfo />
-              </Tab>
             </TabList>
           </Col>
           <Col shrink={false} grow={false} css={css.detailDrawerContent({ theme })} >
@@ -62,62 +51,3 @@ export function DatasetSidebar({
     </MemoryRouter>
   </RouteContext.Provider>
 };
-
-const DATASET = `
-query dataset($key: ID!){
-  dataset(key: $key) {
-    title
-    created
-    description
-    temporalCoverages
-    logoUrl
-    publishingOrganizationKey
-    publishingOrganizationTitle
-    volatileContributors {
-      firstName
-      lastName
-      position
-      organization
-      address
-      userId
-      type
-      _highlighted
-      roles
-    }
-    geographicCoverages {
-      description
-      boundingBox {
-        minLatitude
-        maxLatitude
-        minLongitude
-        maxLongitude
-        globalCoverage
-      }
-    }
-    taxonomicCoverages {
-      description
-      coverages {
-        scientificName
-        rank {
-          interpreted
-        }
-      }
-    }
-    bibliographicCitations {
-      identifier
-      text
-    }
-    samplingDescription {
-      studyExtent
-      sampling
-      qualityControl
-      methodSteps
-    } 
-    citation {
-      text
-    }
-    license
-  }
-}
-`;
-
