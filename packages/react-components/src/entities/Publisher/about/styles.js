@@ -35,6 +35,19 @@ export const sideBarNav = ({ ...props }) => css`
   }
 `;
 
+export const coverageItem_common = ({ ...props }) => css`
+  color: #888;
+  margin-left: 4px;
+`;
+
+export const coverageItem = ({ ...props }) => css`
+  margin: 3px;
+  padding: 1px 3px;
+  border: 1px solid #ddd;
+  display: inline-block;
+  background: #efefef;
+`;
+
 export const sideBar = ({ ...props }) => css`
   flex: 0 0 250px;
   padding-top: 12px;
@@ -46,9 +59,36 @@ export const sideBar = ({ ...props }) => css`
   height: 100%;
 `;
 
+
+
+export const navItem = ({ ...props }) => css`
+  padding: 8px 12px;
+  line-height: 1em;
+  display: block;
+  color: inherit;
+  width: 100%;
+  text-align: left;
+  text-decoration: none;
+  &.isActive {
+    background: #e0e7ee;
+    font-weight: 500;
+  }
+`;
+
+export const area = css`
+  background: white;
+  border-radius: var(--borderRadiusPx);
+  margin-bottom: 8px;
+  border: 1px solid var(--paperBorderColor);
+`;
+
 export const sidebarCard = css`
   padding: 12px;
   display: flex;
+  /* box-shadow: 0 2px 3px 3px rgba(0,0,0,.02); */
+  /* background: white;
+  margin-bottom: 8px;
+  border-radius: 4px; */
 `;
 
 export const sidebarIcon = css`
@@ -67,6 +107,18 @@ export const sidebarIcon = css`
     text-align: center;
     padding-top: 2px;
   }
+`;
+
+export const progress = css`
+  height: 4px;
+  border-radius: 2px;
+  background: #ddd;
+  > div {
+    background: var(--primary500);
+    height: 4px;
+    border-radius: 2px;
+  }
+  margin-bottom: 12px;
 `;
 
 export const sidebarOccurrenceCardWrapper = ({isHorisontal}) => css`
@@ -107,6 +159,25 @@ export const sidebarCardContent = css`
     margin-top: 8px;
   }
 `;
+
+export const thumbnail = css`
+  position: relative;
+  height: 0;
+  padding-bottom: 50%;
+  width: 100%;
+  background: #ddd;
+  > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    > img {
+      width: 50%;
+      display: inline-block;
+    }
+  }
+`;
+
 
 const galleryHeight = '200';
 export const galleryBar = css`

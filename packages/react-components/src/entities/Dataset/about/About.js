@@ -3,7 +3,7 @@ import { jsx, css as css } from '@emotion/react';
 import React, { useContext, useState } from 'react';
 import * as styles from './styles';
 import * as sharedStyles from '../../shared/styles';
-import { Prose, Properties, HyperText, Toc, ContactList, OccurrenceMap, ResourceSearchLink, Alert, Button, Tooltip } from "../../../components";
+import { Prose, Properties, HyperText, Toc, ContactList, OccurrenceMap, ResourceSearchLink, Alert, Button, Tooltip, Progress } from "../../../components";
 import { Images, ThumbnailMap, TaxonomicCoverages, GeographicCoverages, TemporalCoverages, Registration, BibliographicCitations, SamplingDescription, Citation } from './details';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link, useRouteMatch } from 'react-router-dom';
@@ -91,16 +91,16 @@ export function About({
             </a>
             <>
               <p><FormattedMessage id="counts.nAcceptedNames" values={{ total: accepted.count }} /></p>
-              <div css={styles.progress}><div style={{ width: `${acceptedPercentage}%` }}></div></div>
+              <Progress percent={acceptedPercentage} />
 
               <p><FormattedMessage id="counts.nSynonyms" values={{ total: synonyms.count }} /></p>
-              <div css={styles.progress}><div style={{ width: `${synonymsPercentage}%` }}></div></div>
+              <Progress percent={synonymsPercentage} />
 
               <p><FormattedMessage id="counts.gbifOverlapPercent" values={{ percent: gbifOverlap }} /></p>
-              <div css={styles.progress}><div style={{ width: `${gbifOverlap}%` }}></div></div>
+              <Progress percent={gbifOverlap} />
 
               <p><FormattedMessage id="counts.colOverlapPercent" values={{ percent: colOverlap }} /></p>
-              <div css={styles.progress}><div style={{ width: `${colOverlap}%` }}></div></div>
+              <Progress percent={colOverlap} />
             </>
           </div>
         </div>
@@ -124,13 +124,13 @@ export function About({
             </ResourceSearchLink>
             {total > 0 && <>
               <p><FormattedMessage id="counts.percentWithCoordinates" values={{ percent: withCoordinatesPercentage }} /></p>
-              <div css={styles.progress}><div style={{ width: `${withCoordinatesPercentage}%` }}></div></div>
+              <Progress percent={100 * withCoordinates / total} />
 
               <p><FormattedMessage id="counts.percentWithYear" values={{ percent: withYearPercentage }} /></p>
-              <div css={styles.progress}><div style={{ width: `${withYearPercentage}%` }}></div></div>
+              <Progress percent={100 * withYear / total} />
 
               <p><FormattedMessage id="counts.percentWithTaxonMatch" values={{ percent: withTaxonMatchPercentage }} /></p>
-              <div css={styles.progress}><div style={{ width: `${withTaxonMatchPercentage}%` }}></div></div>
+              <Progress percent={100 * withTaxonMatch / total} />
             </>}
           </div>
         </div>
