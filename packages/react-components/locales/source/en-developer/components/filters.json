@@ -44,6 +44,36 @@
     "count": "{num, plural, one { event date } other {# event dates}}",
     "description": "When was the record collected or observed."
   },
+  "alternativeCode": {
+    "name": "Alternative code",
+    "count": "{num, plural, one { Alternative code } other {# Alternative codes}}",
+    "description": "What alternative codes are the record using. This could be previos codes, or codes from merged collections."
+  },
+  "identifier": {
+  "name": "Identifier",
+  "count": "{num, plural, one { Identifier } other {# Identifiers}}",
+  "description": "A short description of the component should be placed here"
+},
+  "institutionType": {
+    "name": "Type",
+    "count": "{num, plural, one { type } other {# types}}",
+    "description": "What type of institution is it."
+  },
+  "discipline": {
+    "name": "Discipline",
+    "count": "{num, plural, one { Discipline } other {# Disciplines}}",
+    "description": "What disciplines is the institution working with."
+  },
+  "collectionContentType": {
+    "name": "Content type",
+    "count": "{num, plural, one { Content type } other {# Content types}}",
+    "description": "What type of collection is it"
+  },
+  "preservationType": {
+    "name": "Preservation type",
+    "count": "{num, plural, one { Preservation type } other {# Preservation types}}",
+    "description": "How are the specimens in the collection preserved."
+  },
   "taxonKey": {
     "name": "Scientific name",
     "count": "{num, plural, one {scientific name} other {# scientific names}}",
@@ -79,7 +109,7 @@
     "description": "The types of issues or flags of potential interest discovered in processing the data."
   },
   "occurrenceCountry": {
-    "name": "Country",
+    "name": "Country or area",
     "count": "{num, plural, one {country} other {# countries}}",
     "description": "The country or territory where the event occurred"
   },
@@ -353,7 +383,7 @@
   "name": {
     "name": "Name",
     "count": "{num, plural, one { Name } other {# Names}}",
-    "description": "A short description of the component should be placed here"
+    "description": "The name of the institution or collection"
   },
   "city": {
     "name": "City",
