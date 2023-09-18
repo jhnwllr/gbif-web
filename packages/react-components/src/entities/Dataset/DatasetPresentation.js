@@ -1,6 +1,6 @@
 import { jsx, css } from '@emotion/react';
 import React from 'react';
-import { Tabs, Eyebrow, LicenseTag, Doi, ResourceLink, Tooltip } from '../../components';
+import { Tabs, Eyebrow, LicenseTag, Doi, ResourceLink, Tooltip, Button } from '../../components';
 import { About } from './about/About';
 import { Project } from './project/Project';
 import { Activity } from './activity/Activity';
@@ -13,8 +13,7 @@ import { Homepage, FeatureList, GenericFeature } from '../../components/IconFeat
 import { DataHeader, HeaderWrapper, ContentWrapper, Headline, DeletedMessage, HeaderInfoWrapper, HeaderInfoMain } from '../shared/header';
 import { Page404, PageLoader } from '../shared';
 
-import { headerIcons } from './styles';
-import { MdPeople, MdLink } from 'react-icons/md';
+import { MdPeople, MdLink, MdFormatQuote, MdOutlineCode, MdOutlineHelpOutline } from 'react-icons/md';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 
 const { TabList, RouterTab, Tab } = Tabs;
@@ -59,15 +58,13 @@ export function DatasetPresentation({
   return <div style={{ ...style, minHeight: '80vh', background: 'var(--background)' }} {...props}>
     <DataHeader
       availableCatalogues={disableCatalog ? [] : undefined}
-      right={<div css={headerIcons}>
+      right={<>
         <Doi id={dataset.doi} />
-
         {/* The idea is that these should provide information on how to cite, how to access by API and a general help about this page */}
         {/* <Button look="text"><MdFormatQuote /></Button>
         <Button look="text"><MdOutlineCode /></Button>
         <Button look="text"><MdOutlineHelpOutline /></Button> */}
-
-      </div>}
+      </>}
     />
 
     <HeaderWrapper>

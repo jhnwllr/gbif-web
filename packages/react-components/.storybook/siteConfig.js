@@ -100,8 +100,8 @@ const routeConfig = {
   publisherKey: {
     isHref: true,
     url: ({ key }) => {
-      // return `/iframe.html?id=entities-publisher-page--example&viewMode=story&knob-publisherUUID=${key}`;
-      return `https://www.gbif.org/publisher/${key}`;
+      return `/iframe.html?id=entities-publisher-page--example&viewMode=story&knob-publisherUUID=${key}`;
+      // return `https://www.gbif.org/publisher/${key}`;
     },
     route: '/publisher/:key'
   },

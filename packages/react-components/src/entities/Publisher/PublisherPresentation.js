@@ -10,8 +10,6 @@ import env from '../../../.env.json';
 import { Homepage, FeatureList, GenericFeature, OccurrenceCount } from '../../components/IconFeatures/IconFeatures';
 import { DataHeader, HeaderWrapper, ContentWrapper, Headline, DeletedMessage, ErrorMessage, HeaderInfoWrapper, HeaderInfoMain } from '../shared/header';
 import { Page404, PageLoader } from '../shared';
-
-import * as styles from './styles';
 import { MdPeople, MdLink, MdFormatQuote as CitationIcon } from 'react-icons/md';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import { Citations } from './citations';
@@ -63,6 +61,9 @@ export function PublisherPresentation({
   return <div style={{...style, minHeight: '80vh', background: 'var(--background)'}} {...props}>
     <DataHeader
       availableCatalogues={disableCatalog ? [] : undefined}
+      right={<>
+        {/* At some point we should add faq and api access here */}
+      </>}
     />
 
     <HeaderWrapper>

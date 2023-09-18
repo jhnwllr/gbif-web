@@ -59,4 +59,4 @@ const siteConfig = {
   availableCatalogues: ['OCCURRENCE', 'DATASET', 'PUBLISHER', 'LITERATURE', 'COLLECTION', 'INSTITUTION'],
 };
 
-export const StandaloneExample = () => <Standalone siteConfig={siteConfig} id="2985efd1-45b1-46de-b6db-0465d2834a5a"></Standalone>;
+export const StandaloneExample = () => <Standalone siteConfig={siteConfig} id={text('datasetUUID', '82b2e911-9636-47e1-ba1b-e8ab3fb93f9e')}></Standalone>;

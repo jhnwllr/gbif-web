@@ -1,7 +1,6 @@
 
 import { jsx, css as css } from '@emotion/react';
 import React, { useContext, useState } from 'react';
-import * as styles from './styles';
 import * as sharedStyles from '../../shared/styles';
 import { Prose, HyperText, Toc, ContactList, ResourceSearchLink, Alert, Tooltip, Image, OptImage } from "../../../components";
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -9,8 +8,8 @@ import { Link, useRouteMatch } from 'react-router-dom';
 import useBelow from '../../../utils/useBelow';
 import env from '../../../../.env.json';
 
-import { MdDownload, MdLink } from 'react-icons/md';
-import { Card, CardHeader2, SideBarCard } from '../../shared';
+import { MdDownload, MdLink, MdMap, MdPlaylistAddCheck } from 'react-icons/md';
+import { Card, CardHeader2, SideBarCard, SideBarCardContentWrap } from '../../shared';
 import SiteContext from '../../../dataManagement/SiteContext';
 
 const A = Prose.A;
@@ -41,43 +40,48 @@ export function About({
   const sideBarMetrics = <div>
 
     <SideBarCard>
-      <div css={styles.sidebarCard}>
-        <div css={styles.sidebarIcon}>
+      <SideBarCardContentWrap>
+        <div css={sharedStyles.sidebarIcon}>
           <div><MdDownload /></div>
         </div>
-        <div css={styles.sidebarCardContent}>
+        <div css={sharedStyles.sidebarCardContent}>
           <h5>
             <a href={`${env.API_V1}/occurrence/download/statistics/export?publishingOrgKey=${publisher.key}`} >
               <FormattedMessage id="publisher.getDownloadReport" />
             </a>
           </h5>
         </div>
-      </div>
+      </SideBarCardContentWrap>
     </SideBarCard>
 
     {publisher.logoUrl && <SideBarCard>
-      <div css={styles.sidebarCardWrapper}>
-        <div css={styles.sidebarCard}>
-          <div css={styles.sidebarLogo}>
+      <SideBarCardContentWrap>
+        <div css={sharedStyles.sidebarCard}>
+          <div css={css`
+            img {
+              max-width: 100%;
+              max-height: 300px;
+            }
+          `}>
             <OptImage src={publisher.logoUrl} alt="" />
           </div>
         </div>
-      </div>
+      </SideBarCardContentWrap>
     </SideBarCard>}
     <SideBarCard>
-      <div css={styles.sidebarCardWrapper}>
-        {publisher.longitude && <div>
+      <div css={sharedStyles.sidebarCardWrapper}>
+        {publisher.longitude && <a href={`http://www.google.com/maps/place/${publisher.latitude},${publisher.longitude}`} target="_blank" rel="noopener noreferrer">
           <img style={{ width: '100%', display: 'block' }} src={`https://api.mapbox.com/styles/v1/mapbox/streets-v9/static/pin-s-circle+285A98(${publisher.longitude},${publisher.latitude})/${publisher.longitude},${publisher.latitude},15,0/300x150@2x?access_token=pk.eyJ1IjoiaG9mZnQiLCJhIjoiY2llaGNtaGRiMDAxeHNxbThnNDV6MG95OSJ9.p6Dj5S7iN-Mmxic6Z03BEA`} />
-        </div>}
-        <div css={styles.sidebarCard}>
-          {/* <div css={styles.sidebarIcon}>
-            <div><MdPlaylistAddCheck /></div>
-          </div> */}
-          <div css={styles.sidebarCardContent}>
-            <h5>
-              {publisher.address}
-            </h5>
+        </a>}
+        <SideBarCardContentWrap>
+          <div css={sharedStyles.sidebarIcon}>
+            <div><MdMap /></div>
+          </div>
+          <div css={sharedStyles.sidebarCardContent}>
             <address style={{ fontStyle: 'normal' }}>
+              <div>
+                {publisher.address.length > 0 ? <>{publisher.address.map(x => <div>{x}</div>)}</> : <span style={{color: '#aaa'}}>No known postal address</span>}
+              </div>
               {publisher.city && <div>{publisher.city}</div>}
               {publisher.province && <div>{publisher.province}</div>}
               {publisher.postalCode && <div>{publisher.postalCode}</div>}
@@ -86,13 +90,13 @@ export function About({
               {publisher.phone && <div><A href={`tel:${publisher.phone}`}>{publisher.phone}</A></div>}
             </address>
           </div>
-        </div>
+        </SideBarCardContentWrap>
       </div>
     </SideBarCard>
     <SideBarCard>
-      <div css={styles.sidebarCardWrapper}>
-        <div css={styles.sidebarCard}>
-          <div css={styles.sidebarCardContent}>
+      <div css={sharedStyles.sidebarCardWrapper}>
+        <div css={sharedStyles.sidebarCard}>
+          <div css={sharedStyles.sidebarCardContent}>
             {publisher.endorsementApproved && <div style={{ marginBottom: 18 }}>
               <h5>Endorsed by: <A href="/country/FR">{publisher.endorsingNode.title}</A></h5>
               <p>
