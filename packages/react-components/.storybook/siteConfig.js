@@ -90,7 +90,7 @@ const routeConfig = {
   datasetSearch: {
     // url: () => `/dataset-search/`,
     url: ({ queryString }) => {
-      return `/iframe.html?id=search-datasetsearch--example&viewMode=story`;
+      return `/iframe.html?id=search-datasetsearch--example&viewMode=story&${queryString}`;
       // return `/?path=/story/search-datasetsearch--example`;
     },
     isHref: true,
@@ -108,7 +108,7 @@ const routeConfig = {
   publisherSearch: {
     // url: () => `/publisher-search/`,
     url: ({ queryString }) => {
-      return `/iframe.html?id=search-publishersearch--example&viewMode=story`;
+      return `/iframe.html?id=search-publishersearch--example&viewMode=story&${queryString}`;
     },
     isHref: true,
     route: '/publisher/search',

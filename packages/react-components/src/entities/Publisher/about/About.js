@@ -80,7 +80,7 @@ export function About({
           <div css={sharedStyles.sidebarCardContent}>
             <address style={{ fontStyle: 'normal' }}>
               <div>
-                {publisher.address.length > 0 ? <>{publisher.address.map(x => <div>{x}</div>)}</> : <span style={{color: '#aaa'}}>No known postal address</span>}
+                {publisher.address.length > 0 ? <>{publisher.address.map(x => <div>{x}</div>)}</> : <span style={{ color: '#aaa' }}>No known postal address</span>}
               </div>
               {publisher.city && <div>{publisher.city}</div>}
               {publisher.province && <div>{publisher.province}</div>}
@@ -94,42 +94,40 @@ export function About({
       </div>
     </SideBarCard>
     <SideBarCard>
-      <div css={sharedStyles.sidebarCardWrapper}>
-        <div css={sharedStyles.sidebarCard}>
-          <div css={sharedStyles.sidebarCardContent}>
-            {publisher.endorsementApproved && <div style={{ marginBottom: 18 }}>
-              <h5>Endorsed by: <A href="/country/FR">{publisher.endorsingNode.title}</A></h5>
-              <p>
-                Publishers need to be endorsed by a GBIF Participant Node. This endorsement confirms that the publisher is a legitimate organization and that it is committed to sharing biodiversity data through GBIF.
-              </p>
-            </div>}
-            {publisher?.installation?.count === 1 && <div style={{ marginBottom: 18 }}>
-              <h5>Installations: {publisher?.installation.results.map(x => <A href="/installation/1234-1234-1234-1234">{x.title} </A>)}</h5>
-              <p>
-                Some publishers run their own technical installations through which data is published to GBIF. Some installations are collaborations and may be shared by multiple publishers.
-              </p>
-            </div>}
-            {publisher?.installation?.count > 1 && <div style={{ marginBottom: 18 }}>
-              <h5>Installations: <ul>{publisher?.installation.results.map(x => <li><A href="/installation/1234-1234-1234-1234">{x.title} </A></li>)}</ul></h5>
-              <p>
-                Some publishers run their own technical installations through which data is published to GBIF. Some installations are collaborations and may be shared by multiple publishers.
-              </p>
-            </div>}
-            {technicalContact?.email && <div style={{ marginBottom: 18 }}>
-              <h5>Techincal contact: <A href={`mailto:${technicalContact.email}`}>{technicalContact.firstName} {technicalContact.lastName}</A></h5>
-              <p>
-                Who to get in contact with in case of IT related questions. Not for biodiversity specific questions.
-              </p>
-            </div>}
-            {publisher.country && <div style={{ marginBottom: 18 }}>
-              <h5>Country or area: <A href="/installation/1234-1234-1234-1234"><FormattedMessage id={`enums.countryCode.${publisher.country}`} /></A></h5>
-              <p>
-                The country or area where the publisher is located. For international organizations, this is the country where the main office is located.
-              </p>
-            </div>}
-          </div>
+      <SideBarCardContentWrap>
+        <div css={sharedStyles.sidebarCardContent}>
+          {publisher.endorsementApproved && <div style={{ marginBottom: 18 }}>
+            <h5>Endorsed by: <A href="/country/FR">{publisher.endorsingNode.title}</A></h5>
+            <p>
+              Publishers need to be endorsed by a GBIF Participant Node. This endorsement confirms that the publisher is a legitimate organization and that it is committed to sharing biodiversity data through GBIF.
+            </p>
+          </div>}
+          {publisher?.installation?.count === 1 && <div style={{ marginBottom: 18 }}>
+            <h5>Installations: {publisher?.installation.results.map(x => <A href="/installation/1234-1234-1234-1234">{x.title} </A>)}</h5>
+            <p>
+              Some publishers run their own technical installations through which data is published to GBIF. Some installations are collaborations and may be shared by multiple publishers.
+            </p>
+          </div>}
+          {publisher?.installation?.count > 1 && <div style={{ marginBottom: 18 }}>
+            <h5>Installations: <ul>{publisher?.installation.results.map(x => <li><A href="/installation/1234-1234-1234-1234">{x.title} </A></li>)}</ul></h5>
+            <p>
+              Some publishers run their own technical installations through which data is published to GBIF. Some installations are collaborations and may be shared by multiple publishers.
+            </p>
+          </div>}
+          {technicalContact?.email && <div style={{ marginBottom: 18 }}>
+            <h5>Techincal contact: <A href={`mailto:${technicalContact.email}`}>{technicalContact.firstName} {technicalContact.lastName}</A></h5>
+            <p>
+              Who to get in contact with in case of IT related questions. Not for biodiversity specific questions.
+            </p>
+          </div>}
+          {publisher.country && <div style={{ marginBottom: 18 }}>
+            <h5>Country or area: <A href="/installation/1234-1234-1234-1234"><FormattedMessage id={`enums.countryCode.${publisher.country}`} /></A></h5>
+            <p>
+              The country or area where the publisher is located. For international organizations, this is the country where the main office is located.
+            </p>
+          </div>}
         </div>
-      </div>
+      </SideBarCardContentWrap>
     </SideBarCard >
   </div >;
 
