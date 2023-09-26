@@ -9,6 +9,8 @@ const includeList = ['authors', 'countriesOfCoverage', 'countriesOfResearcher', 
 
 function reduce(item) {
   const source = item._source;
+  // source.keywords = source.keywords && source.keywords.length > 0 ? 2 : undefined;
+  // source.title = 123;
   return source;
   // return _.pick(item._source, includeList);
 }
