@@ -95,7 +95,7 @@ export const defaultContext = {
     route: '/dataset/:key/project'
   },
   datasetSearch: {
-    url: ({queryString, basenamePrefix = ''}) => `${basenamePrefix}/dataset/search?${queryString}`,
+    url: ({queryString, basenamePrefix = ''}) => `${basenamePrefix}/dataset/search${queryString ? `?${queryString}` : ''}`,
     gbifUrl: ({route, queryString, gbifOrgLocalePrefix}) => `${gbifOrg}${gbifOrgLocalePrefix}/dataset/search${queryString ? `?${queryString}` : ''}`,
     isHref: false,
     route: '/dataset/search'
@@ -108,14 +108,14 @@ export const defaultContext = {
     route: '/publisher/:key'
   },
   publisherSearch: {
-    url: ({queryString, basenamePrefix = ''}) => `${basenamePrefix}/publisher/search`,
+    url: ({queryString, basenamePrefix = ''}) => `${basenamePrefix}/publisher/search${queryString ? `?${queryString}` : ''}`,
     gbifUrl: ({route, queryString, gbifOrgLocalePrefix}) => `${gbifOrg}${gbifOrgLocalePrefix}/publisher/search${queryString ? `?${queryString}` : ''}`,
     isHref: false,
     route: '/publisher/search'
   },
 
   literatureSearch: {
-    url: ({queryString, basenamePrefix = ''}) => `${basenamePrefix}/literature/search`,
+    url: ({queryString, basenamePrefix = ''}) => `${basenamePrefix}/literature/search${queryString ? `?${queryString}` : ''}`,
     gbifUrl: ({route, queryString, gbifOrgLocalePrefix}) => `${gbifOrg}${gbifOrgLocalePrefix}/resource/search?contentType=literature&${queryString ? `${queryString}` : ''}`,
     isHref: false,
     route: '/literature/search'
