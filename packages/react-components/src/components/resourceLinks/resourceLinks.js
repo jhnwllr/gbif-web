@@ -2,7 +2,7 @@ import { jsx, css } from '@emotion/react';
 import React, { useContext } from "react";
 import RouteContext from '../../dataManagement/RouteContext';
 import LocaleContext from '../../dataManagement/LocaleProvider/LocaleContext';
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export const ResourceLink = React.forwardRef(({ id, type, forceHref = false, queryString, otherIds, discreet, bold, localeContext: localeOverwrite, routeContext: routeOverwrite, ...props }, ref) => {
   const localeSettings = useContext(LocaleContext);
@@ -29,13 +29,15 @@ export const ResourceLink = React.forwardRef(({ id, type, forceHref = false, que
 
   const urlBuilder = useGBIF ? (gbifUrl ?? url) : (url ?? gbifUrl);
 
-  const to = urlBuilder({ key: id, otherIds, queryString, route, basename, gbifOrgLocalePrefix: gbifOrgLocale ? `/${gbifOrgLocale}` : '' });
   let style = isDiscreetLink;
   if (discreet) style = isDiscreet;
   if (bold) style = isBoldLink;
   if (forceHref || useGBIF || alwaysUseHrefs || isHref) {
+    const basenamePrefix = basename ? `/${basename}` : '';
+    const to = urlBuilder({ key: id, otherIds, queryString, route, basenamePrefix, basename, gbifOrgLocalePrefix: gbifOrgLocale ? `/${gbifOrgLocale}` : '' });
     return <a href={to} css={style} ref={ref} {...props} />
   } else {
+    const to = urlBuilder({ key: id, otherIds, queryString, route, gbifOrgLocalePrefix: gbifOrgLocale ? `/${gbifOrgLocale}` : '' });
     return <Link to={to} css={style} ref={ref} {...props} />
   }
 });
