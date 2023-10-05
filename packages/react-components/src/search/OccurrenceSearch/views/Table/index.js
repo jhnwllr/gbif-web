@@ -152,7 +152,7 @@ function Table() {
     console.log(availableColumns);
     const colMap = keyBy(availableColumns, 'name');
     // now create the list of visible columns (name/key only)
-    const columnNames = [...(visibleColumnNames ?? defaultTableColumns ?? tableConfig.defaultColumns)];
+    const columnNames = [...(visibleColumnNames ?? defaultTableColumns ?? availableTableColumns ?? tableConfig.defaultColumns)];
     // remove duplicates and add scientificName as the first entry
     const distinctVisibleColumns = [...new Set(['scientificName'].concat(columnNames))]
     // remove any columns that are not available
