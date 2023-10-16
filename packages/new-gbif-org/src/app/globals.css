@@ -1,0 +1,8 @@
+:root {
+  --header-hight: 70px;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+}

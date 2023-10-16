@@ -1,0 +1,38 @@
+.header {
+    background: linear-gradient(#78b578,#71b171);
+    height: var(--header-height);
+    position: fixed;
+    width: 100%;
+    color: #fafafa;
+    box-shadow: 0 2px 2px rgba(0,0,0,.2);
+}
+
+.headerContentContainer {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.left {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.menu {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    display: flex;
+    gap: 30px;
+}
+
+.menuItem {
+    float: left;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
