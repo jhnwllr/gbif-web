@@ -1,11 +1,14 @@
-import styles from './page.module.css'
+import Link from "next/link";
 
 export default function Home() {
   return (
     <>
-      <h1 className={styles.title}>
+      <h1>
         GBIF.org
       </h1>
+      <Link href="/occurrence/search">
+        Occurrence search
+      </Link>
     </>
   )
 }
