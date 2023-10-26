@@ -1,11 +1,10 @@
 import React from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { config } from '../config';
 import { useI18n } from '../i18n';
 import { Map } from '../components/Map';
 import { Helmet } from 'react-helmet-async';
 
-export function DetailedOccurencePage() {
+export function DetailedOccurrencePage() {
   const data = useLoaderData();
   const { locale } = useI18n();
 
@@ -22,10 +21,11 @@ export function DetailedOccurencePage() {
   );
 }
 
-export async function loader({ params }) {
+export async function loader({ request, params, config }) {
   const key = params.key;
 
-  const response = await fetch(config.GRAPHQL_API, {
+  const response = await fetch(config.graphqlEndpoint, {
+    signal: request.signal,
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

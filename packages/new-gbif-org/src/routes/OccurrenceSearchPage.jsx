@@ -1,6 +1,5 @@
 import React from 'react';
 import { useLoaderData, useSearchParams } from 'react-router-dom';
-import { config } from '../config';
 import { useI18n, LocalizedLink } from '../i18n';
 import { Helmet } from 'react-helmet-async';
 
@@ -32,31 +31,32 @@ export function OccurrenceSearchPage() {
   );
 }
 
-export async function loader({ request }) {
+export async function loader({ request, config, locale }) {
   const url = new URL(request.url);
   const from = parseInt(url.searchParams.get('from') ?? 0);
 
-  const response = await fetch(config.GRAPHQL_API, {
+  const response = await fetch(config.graphqlEndpoint, {
+    signal: request.signal,
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       query: `
-        query OccurrenceSearch($from: Int, $predicate: Predicate) {
-          occurrenceSearch(predicate: $predicate) {
-            documents(from: $from) {
-              from
-              size
-              total
-              results {
-                key
-                scientificName
-                eventDate
+          query OccurrenceSearch($from: Int, $predicate: Predicate) {
+            occurrenceSearch(predicate: $predicate) {
+              documents(from: $from) {
+                from
+                size
+                total
+                results {
+                  key
+                  scientificName
+                  eventDate
+                }
               }
             }
           }
-        }
-      `,
-      variables: { from, predicate: config.OCCURRENCE_PREDICATE },
+        `,
+      variables: { from, predicate: config.occurrencePredicate },
       oprationName: 'OccurrenceSearch',
     }),
   });

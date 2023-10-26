@@ -6,8 +6,12 @@ import {
   StaticRouterProvider,
 } from 'react-router-dom/server';
 import { HelmetProvider } from 'react-helmet-async';
-import { routes } from './routes';
+import { createRoutes } from './routes';
+import { gbifConfig } from './gbifConfig';
+import { ConfigProvider } from './config';
 
+// Create routes based on config
+const routes = createRoutes(gbifConfig);
 const { query, dataRoutes } = createStaticHandler(routes);
 
 export async function render(req) {
@@ -26,11 +30,20 @@ export async function render(req) {
 
   const appHtml = ReactDOMServer.renderToString(
     <React.StrictMode>
-      <HelmetProvider context={helmetContext}>
-        <StaticRouterProvider router={router} context={context} nonce="the-nonce" />
-      </HelmetProvider>
+      <ConfigProvider config={gbifConfig}>
+        <HelmetProvider context={helmetContext}>
+          <StaticRouterProvider router={router} context={context} nonce="the-nonce" />
+        </HelmetProvider>
+      </ConfigProvider>
     </React.StrictMode>
   );
+
+  return {
+    appHtml,
+    headHtml: '',
+    htmlAttributes: '',
+    bodyAttributes: '',
+  };
 
   const headHtml = createHeadHtml(helmetContext.helmet);
 

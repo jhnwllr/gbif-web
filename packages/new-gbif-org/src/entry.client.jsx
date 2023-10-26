@@ -2,11 +2,16 @@ import React from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import { createBrowserRouter, matchRoutes, RouterProvider } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { routes } from './routes';
+import { createRoutes } from './routes';
+import { ConfigProvider } from './config';
+import { gbifConfig } from './gbifConfig';
 
 hydrate();
 
 async function hydrate() {
+  // Create routes based on the config
+  const routes = createRoutes(gbifConfig);
+
   // Determine if any of the initial routes are lazy
   const lazyMatches = matchRoutes(routes, window.location)?.filter((m) => m.route.lazy);
 
@@ -26,9 +31,11 @@ async function hydrate() {
   hydrateRoot(
     document.getElementById('app'),
     <React.StrictMode>
-      <HelmetProvider>
-        <RouterProvider router={router} fallbackElement={null} />
-      </HelmetProvider>
+      <ConfigProvider config={gbifConfig}>
+        <HelmetProvider>
+          <RouterProvider router={router} fallbackElement={null} />
+        </HelmetProvider>
+      </ConfigProvider>
     </React.StrictMode>
   );
 }

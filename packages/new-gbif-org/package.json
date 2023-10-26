@@ -1,15 +1,17 @@
 {
-  "name": "first",
+  "name": "new-gbif-org",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "type": "module",
   "scripts": {
+    "build": "npm run build:gbif:client && npm run build:gbif:server && npm run build:hp",
     "develop": "NODE_ENV=development node server.js",
-    "build": "npm run build:client && npm run build:server",
-    "build:client": "vite build --outDir dist/client --ssrManifest",
-    "build:server": "vite build --ssr src/entry.server.jsx --outDir dist/server",
-    "start": "NODE_ENV=production node server.js"
+    "build:client": "vite build --outDir dist/client --ssrManifest --config vite.gbif.config.js",
+    "build:server": "vite build --ssr src/entry.server.jsx --outDir dist/server --config vite.gbif.config.js",
+    "start": "NODE_ENV=production node server.js",
+    "build:hp": "vite build --outDir dist/lib --config vite.hp.config.js",
+    "start:hp": "node server.hp.js"
   },
   "keywords": [],
   "author": "",

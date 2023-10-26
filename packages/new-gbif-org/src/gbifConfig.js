@@ -1,6 +1,6 @@
-export const config = Object.freeze({
-  GRAPHQL_API: 'http://localhost:4001/graphql',
-  LANGUAGES: [
+export const gbifConfig = {
+  graphqlEndpoint: 'http://localhost:4001/graphql',
+  languages: [
     {
       code: 'en',
       label: 'English',
@@ -20,7 +20,7 @@ export const config = Object.freeze({
       textDirection: 'rtl',
     },
   ],
-  OCCURRENCE_PREDICATE: {
+  occurrencePredicate: {
     type: 'and',
     predicates: [
       {
@@ -33,4 +33,4 @@ export const config = Object.freeze({
       },
     ],
   },
-});
+};
