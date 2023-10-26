@@ -1,7 +1,8 @@
 import React from 'react';
 import { useLoaderData, useSearchParams } from 'react-router-dom';
-import { useI18n, LocalizedLink } from '../i18n';
 import { Helmet } from 'react-helmet-async';
+import { useI18n } from '../i18n';
+import { LocalizedLink } from '../components/LocalizedLink';
 
 export function OccurrenceSearchPage() {
   const data = useLoaderData();

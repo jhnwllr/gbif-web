@@ -1,10 +1,9 @@
 import React from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import { createBrowserRouter, matchRoutes, RouterProvider } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
 import { createRoutes } from './routes';
-import { ConfigProvider } from './config';
 import { gbifConfig } from './gbifConfig';
+import { Root } from './components/Root';
 
 hydrate();
 
@@ -30,12 +29,8 @@ async function hydrate() {
 
   hydrateRoot(
     document.getElementById('app'),
-    <React.StrictMode>
-      <ConfigProvider config={gbifConfig}>
-        <HelmetProvider>
-          <RouterProvider router={router} fallbackElement={null} />
-        </HelmetProvider>
-      </ConfigProvider>
-    </React.StrictMode>
+    <Root config={gbifConfig}>
+      <RouterProvider router={router} fallbackElement={null} />
+    </Root>
   );
 }

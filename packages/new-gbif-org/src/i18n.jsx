@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDefaultLocale } from './hooks/useDefaultLocale';
 
 const I18nContext = React.createContext({
@@ -42,17 +42,4 @@ export function I18nProvider({ locale, children }) {
 
 export function useI18n() {
   return React.useContext(I18nContext);
-}
-
-export function LocalizedLink(props) {
-  const { locale } = useI18n();
-  const defaultLocale = useDefaultLocale();
-
-  // Create localized Link
-  const isDefaultLocale = defaultLocale.code === locale.code;
-  const isAbsoluteLink = props.to.startsWith('/');
-  const to = isAbsoluteLink && !isDefaultLocale ? `/${locale.code}${props.to}` : props.to;
-
-  const LinkComponent = props.as ?? Link;
-  return <LinkComponent {...props} to={to} />;
 }
