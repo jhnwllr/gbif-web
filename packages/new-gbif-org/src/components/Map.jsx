@@ -8,7 +8,7 @@ import { useOnMountUnsafe } from '../hooks/useOnMountUnsafe';
 
 useGeographic();
 
-export function Map({ coordinates }) {
+export default function Map({ coordinates }) {
   const mapRef = React.useRef();
 
   useOnMountUnsafe(() => {

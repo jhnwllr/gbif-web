@@ -1,8 +1,8 @@
 import React from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { useI18n } from '../i18n';
-import { Map } from '../components/Map';
 import { Helmet } from 'react-helmet-async';
+const Map = React.lazy(() => import('../components/Map'));
 
 export function DetailedOccurrencePage() {
   const data = useLoaderData();
@@ -16,7 +16,11 @@ export function DetailedOccurrencePage() {
 
       <p>Current language: {locale.code}</p>
       <pre>{JSON.stringify(data, null, 2)}</pre>
-      {data.coordinates && <Map coordinates={data.coordinates} />}
+      {data.coordinates && (
+        <React.Suspense fallback={<div>Loading map...</div>}>
+          <Map coordinates={data.coordinates} />
+        </React.Suspense>
+      )}
     </>
   );
 }
