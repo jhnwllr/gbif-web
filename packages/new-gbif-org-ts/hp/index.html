@@ -14,54 +14,45 @@
     </header>
     <div id="root"></div>
 
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script
-      crossorigin
-      src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
-    ></script>
-    <script src="/gbif-lib.iife.js"></script>
+    <script type="module">
+      import { render } from '/gbif-lib.js';
 
-    <script>
-      ReactDOM.createRoot(document.getElementById('root')).render(
-        React.createElement(GbifLib.HostedPortalApp, {
-          config: {
-            graphqlEndpoint: 'http://localhost:4001/graphql',
-            languages: [
-              {
-                code: 'en',
-                label: 'English',
-                default: true,
-                textDirection: 'ltr',
-              },
-              {
-                code: 'da',
-                label: 'Dansk',
-                default: false,
-                textDirection: 'ltr',
-              },
-              {
-                code: 'ar',
-                label: 'العربية',
-                default: false,
-                textDirection: 'rtl',
-              },
-            ],
-            occurrencePredicate: {
-              type: 'and',
-              predicates: [
-                {
-                  type: 'range',
-                  key: 'year',
-                  value: {
-                    gte: '2009',
-                    lte: '2012',
-                  },
-                },
-              ],
-            },
+      render(document.getElementById('root'), {
+        graphqlEndpoint: 'http://localhost:4001/graphql',
+        languages: [
+          {
+            code: 'en',
+            label: 'English',
+            default: true,
+            textDirection: 'ltr',
           },
-        })
-      );
+          {
+            code: 'da',
+            label: 'Dansk',
+            default: false,
+            textDirection: 'ltr',
+          },
+          {
+            code: 'ar',
+            label: 'العربية',
+            default: false,
+            textDirection: 'rtl',
+          },
+        ],
+        occurrencePredicate: {
+          type: 'and',
+          predicates: [
+            {
+              type: 'range',
+              key: 'year',
+              value: {
+                gte: '2009',
+                lte: '2012',
+              },
+            },
+          ],
+        },
+      });
     </script>
   </body>
 </html>

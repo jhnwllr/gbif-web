@@ -6,28 +6,14 @@ export default defineConfig({
   define: {
     'process.env.NODE_ENV': JSON.stringify('production'),
   },
-  plugins: [
-    react({
-      jsxRuntime: 'classic',
-    }),
-  ],
+  plugins: [react()],
   root: 'hp',
   build: {
     emptyOutDir: true,
     lib: {
       entry: '../src/hp/entry.tsx',
-      formats: ['iife'],
-      name: 'GbifLib',
+      formats: ['es'],
       fileName: 'gbif-lib',
-    },
-    rollupOptions: {
-      external: ['react', 'react-dom'],
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-        },
-      },
     },
   },
 });
