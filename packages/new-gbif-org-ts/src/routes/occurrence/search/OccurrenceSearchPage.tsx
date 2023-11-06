@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLoaderData, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { useI18n } from '../../../i18n';
+import { useI18n } from '../../../contexts/i18n';
 import { LocalizedLink } from '../../../components/LocalizedLink';
 import { LoaderArgs } from '../../../types';
 

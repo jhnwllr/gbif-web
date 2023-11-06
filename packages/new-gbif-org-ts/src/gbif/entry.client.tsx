@@ -1,17 +1,19 @@
 import { hydrateRoot } from 'react-dom/client';
 import { createBrowserRouter, matchRoutes, RouterProvider } from 'react-router-dom';
-import { createRoutes } from './routes';
-import { gbifConfig } from './gbifConfig';
-import { Root } from './components/Root';
+import { configureGbifRoutes } from './routes';
+import { Root } from '../components/Root';
+import { gbifConfig } from './config';
 
 hydrate();
 
 async function hydrate() {
-  // Create routes based on the config
-  const routes = createRoutes(gbifConfig);
+  // Configure the routes
+  const gbifRoutes = configureGbifRoutes(gbifConfig);
 
   // Determine if any of the initial routes are lazy
-  const lazyMatches = matchRoutes(routes, window.location)?.filter((m) => typeof m.route.lazy === 'function');
+  const lazyMatches = matchRoutes(gbifRoutes, window.location)?.filter(
+    (m) => typeof m.route.lazy === 'function'
+  );
 
   // Load the lazy matches and update the routes before creating your router
   // so we can hydrate the SSR-rendered content synchronously
@@ -24,7 +26,7 @@ async function hydrate() {
     );
   }
 
-  const router = createBrowserRouter(routes);
+  const router = createBrowserRouter(gbifRoutes);
 
   const root = document.getElementById('app');
   if (root == null) throw new Error("Couldn't find root element");

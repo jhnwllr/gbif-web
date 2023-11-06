@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { useI18n } from '../../../i18n';
+import { useI18n } from '../../../contexts/i18n';
 import { Helmet } from 'react-helmet-async';
 import { LoaderArgs } from '../../../types';
 const Map = React.lazy(() => import('../../../components/Map'));

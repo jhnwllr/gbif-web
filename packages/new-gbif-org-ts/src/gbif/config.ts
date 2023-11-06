@@ -1,10 +1,8 @@
-// import { GbifRootLayout } from './components/GbifRootLayout';
-import { Config } from './config';
+import { Config } from '../contexts/config';
 
 export const gbifConfig: Config = {
   defaultTitle: 'GBIF',
   graphqlEndpoint: 'http://localhost:4001/graphql',
-  // rootLayout: GbifRootLayout,
   languages: [
     {
       code: 'en',

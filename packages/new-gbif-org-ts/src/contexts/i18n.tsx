@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDefaultLocale } from './hooks/useDefaultLocale';
+import { useDefaultLocale } from '../hooks/useDefaultLocale';
 import { Config } from './config';
 
 type I18n = {

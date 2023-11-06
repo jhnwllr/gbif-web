@@ -1,5 +1,5 @@
 import React from 'react';
-import { Config, ConfigProvider } from '../config';
+import { Config, ConfigProvider } from '../contexts/config';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 type Props = {

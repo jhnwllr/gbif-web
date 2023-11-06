@@ -1,5 +1,5 @@
 import React from 'react';
-import { useI18n } from '../i18n';
+import { useI18n } from '../contexts/i18n';
 import { Helmet } from 'react-helmet-async';
 
 export function HomePage(): React.ReactElement {

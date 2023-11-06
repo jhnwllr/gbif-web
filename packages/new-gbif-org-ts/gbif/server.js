@@ -23,7 +23,7 @@ async function main() {
 
     app.use(viteDevServer.middlewares);
   } else {
-    app.use(express.static('dist/client', { index: false }));
+    app.use(express.static('dist/gbif/client', { index: false }));
     app.use(express.static('public', { index: false }));
   }
 
@@ -36,12 +36,12 @@ async function main() {
       let render;
 
       if (!IS_PRODUCTION) {
-        template = await fsp.readFile('index.html', 'utf8');
+        template = await fsp.readFile('gbif/index.html', 'utf8');
         template = await viteDevServer.transformIndexHtml(url, template);
-        render = (await viteDevServer.ssrLoadModule('src/entry.server.tsx')).render;
+        render = (await viteDevServer.ssrLoadModule('src/gbif/entry.server.tsx')).render;
       } else {
-        template = await fsp.readFile('dist/client/index.html', 'utf8');
-        render = (await import('./dist/server/entry.server.js')).render;
+        template = await fsp.readFile('dist/gbif/client/index.html', 'utf8');
+        render = (await import('../dist/gbif/server/entry.server.js')).render;
       }
 
       try {

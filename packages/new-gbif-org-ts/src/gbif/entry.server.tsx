@@ -1,18 +1,17 @@
-// import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import {
   createStaticHandler,
   createStaticRouter,
   StaticRouterProvider,
 } from 'react-router-dom/server';
-import { createRoutes } from './routes';
 import type { Request as ExpressRequest } from 'express';
 import { FilledContext, HelmetServerState } from 'react-helmet-async';
-import { gbifConfig } from './gbifConfig';
-import { Root } from './components/Root';
+import { configureGbifRoutes } from './routes';
+import { gbifConfig } from './config';
+import { Root } from '../components/Root';
 
 // Create routes based on config
-const routes = createRoutes(gbifConfig);
+const routes = configureGbifRoutes(gbifConfig);
 const { query, dataRoutes } = createStaticHandler(routes);
 
 export async function render(req: ExpressRequest) {

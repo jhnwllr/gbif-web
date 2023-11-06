@@ -11,9 +11,11 @@ export default defineConfig({
       jsxRuntime: 'classic',
     }),
   ],
+  root: 'hp',
   build: {
+    emptyOutDir: true,
     lib: {
-      entry: 'src/entry.hp.jsx',
+      entry: '../src/hp/entry.tsx',
       formats: ['iife'],
       name: 'GbifLib',
       fileName: 'gbif-lib',
