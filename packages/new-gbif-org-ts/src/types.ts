@@ -12,3 +12,6 @@ export type MyRouteObject = Omit<RouteObject, 'loader' | 'children'> & {
   loader?: (args: LoaderArgs) => Promise<any>;
   children?: MyRouteObject[];
 };
+
+export type ExtractPaginatedResult<T extends { documents: { results: any[] } } | null | undefined> =
+  NonNullable<NonNullable<T>['documents']['results'][number]>;

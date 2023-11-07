@@ -1,25 +1,41 @@
 import React from 'react';
-import { useLoaderData } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useI18n } from '@/contexts/i18n';
 import { LoaderArgs } from '@/types';
+import { graphql } from '@/gql';
+import { createGraphQLHelpers } from '@/utils/createGraphQLHelpers';
 const Map = React.lazy(() => import('@/components/Map'));
 
+const { query, useTypedLoaderData } = createGraphQLHelpers(
+  graphql(/* GraphQL */ `
+    query Occurrence($key: ID!) {
+      occurrence(key: $key) {
+        eventDate
+        scientificName
+        coordinates
+      }
+    }
+  `)
+);
+
 export function DetailedOccurrencePage() {
-  const data = useLoaderData() as any;
+  const data = useTypedLoaderData();
   const { locale } = useI18n();
+
+  if (data.occurrence == null) throw new Error('404');
+  const occurrence = data.occurrence;
 
   return (
     <>
       <Helmet>
-        <title>{data.scientificName}</title>
+        <title>{occurrence.scientificName}</title>
       </Helmet>
 
       <p>Current language: {locale.code}</p>
       <pre>{JSON.stringify(data, null, 2)}</pre>
-      {data.coordinates && (
+      {occurrence.coordinates && (
         <React.Suspense fallback={<div>Loading map...</div>}>
-          <Map coordinates={data.coordinates} />
+          <Map coordinates={occurrence.coordinates} />
         </React.Suspense>
       )}
     </>
@@ -30,26 +46,9 @@ export async function loader({ request, params, config }: LoaderArgs) {
   const key = params.key;
   if (key == null) throw new Error('No key provided in the url');
 
-  const response = await fetch(config.graphqlEndpoint, {
-    signal: request.signal,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      query: `
-        query Occurrence($key: ID!) {
-            occurrence(key: $key) {
-            eventDate
-            scientificName
-            coordinates
-            }
-        }
-      `,
-      variables: { key },
-      oprationName: 'Occurrence',
-    }),
+  return query({
+    url: config.graphqlEndpoint,
+    request,
+    variables: { key },
   });
-
-  const data = await response.json();
-
-  return data.data.occurrence;
 }

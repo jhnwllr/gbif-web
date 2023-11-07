@@ -1,9 +1,9 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { Occurrence } from '@/routes/occurrence/search/OccurrenceSearchPage';
+import { SingleOccurrenceSearchResult } from '@/routes/occurrence/search/OccurrenceSearchPage';
 import { LocalizedLink } from '@/components/LocalizedLink';
 import { useI18n } from '@/contexts/i18n';
 
-export const columns: ColumnDef<Occurrence>[] = [
+export const columns: ColumnDef<SingleOccurrenceSearchResult>[] = [
   {
     accessorKey: 'scientificName',
     header: 'Scientific name',
