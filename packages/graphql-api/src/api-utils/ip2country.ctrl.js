@@ -11,6 +11,9 @@ router.get('/get-country', (req, res, next) => {
   // const clientIP = req.ip;
   const clientIP = req.header('x-forwarded-for') || req.socket.remoteAddress;
 
+  // res.setHeader('Cache-Control', 'private, max-age=0');
+  res.setHeader('Cache-Control', 'no-cache');
+
   // Check if the IP address is "localhost" or "127.0.0.1" and handle it
   if (clientIP === '::1' || clientIP === '127.0.0.1') {
     return res.json({ country: null, error: 'Localhost' });
