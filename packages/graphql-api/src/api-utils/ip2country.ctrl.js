@@ -24,28 +24,27 @@ router.get('/user-info', async (req, res, next) => {
   // Get the country code for the client's IP address
   try {
     const countryCode = ip3country.lookupStr(clientIP);
-    const debugInfo = {
-      forwardedFor: req.header('x-forwarded-for'),
-      reqIp: req.ip,
-      remoteAddress: req.socket.remoteAddress
-    }
     res.setHeader('Cache-Control', 'private, max-age=' + 10 * minute);
     if (countryCode) {
       const translation = {};
+      let countryName;
+
+      // get the country name for the given language code
       if (lang) {
-        let countryName = await getCountryName(lang, countryCode);
-        if (!countryName) {
-          countryName = await getCountryName('en', countryCode);
-        }
-        if (!countryName) {
-          translation.error = 'Unable to find a translation for that language code and language'
-        } else {
-          translation.countryName = countryName;
-        }
+        countryName = await getCountryName(lang, countryCode);
       }
-      res.json({ country: countryCode, ip: clientIP, ...debugInfo, translation });
+      // if no language code is provided or it doesn't exist, get the country name in English
+      if (!countryName) {
+        countryName = await getCountryName('en', countryCode);
+      }
+      if (!countryName) {
+        translation.translationError = 'Unable to find a translation for that language code and language'
+      } else {
+        translation.countryName = countryName;
+      }
+      res.json({ country: countryCode, ...translation });
     } else {
-      res.json({ country: null, ip: clientIP, ...debugInfo, error: 'No country code found' });
+      res.json({ country: null, error: 'No country code found' });
     }
   } catch (err) {
     res.setHeader('Cache-Control', 'no-cache');
