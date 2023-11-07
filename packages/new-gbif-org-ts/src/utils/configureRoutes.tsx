@@ -1,8 +1,8 @@
 import { Outlet, RouteObject } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { Config } from '../contexts/config';
-import { MyRouteObject } from '../types';
-import { I18nProvider } from '../contexts/i18n';
+import { Config } from '@/contexts/config';
+import { I18nProvider } from '@/contexts/i18n';
+import { MyRouteObject } from '@/types';
 
 // This function will change the base routes based on the provided config
 // It will do the following:

@@ -4,7 +4,7 @@ import { OSM, Vector as VectorSource } from 'ol/source.js';
 import { Point } from 'ol/geom.js';
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer.js';
 import { useGeographic } from 'ol/proj.js';
-import { useOnMountUnsafe } from '../hooks/useOnMountUnsafe';
+import { useOnMountUnsafe } from '@/hooks/useOnMountUnsafe';
 
 useGeographic();
 

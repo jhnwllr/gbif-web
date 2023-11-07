@@ -1,6 +1,6 @@
 import React from 'react';
-import { useI18n } from '../contexts/i18n';
 import { Helmet } from 'react-helmet-async';
+import { useI18n } from '@/contexts/i18n';
 
 export function HomePage(): React.ReactElement {
   const { locale } = useI18n();

@@ -1,4 +1,4 @@
-import { Config } from '../contexts/config';
+import { Config } from '@/contexts/config';
 
 export const gbifConfig: Config = {
   defaultTitle: 'GBIF',

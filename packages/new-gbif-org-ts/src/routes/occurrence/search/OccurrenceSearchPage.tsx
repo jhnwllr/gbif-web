@@ -1,9 +1,17 @@
 import React from 'react';
 import { useLoaderData, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { useI18n } from '../../../contexts/i18n';
-import { LocalizedLink } from '../../../components/LocalizedLink';
-import { LoaderArgs } from '../../../types';
+import { useI18n } from '@/contexts/i18n';
+import { LocalizedLink } from '@/components/LocalizedLink';
+import { LoaderArgs } from '@/types';
+import { DataTable } from '@/components/ui/data-table';
+import { columns } from '@/routes/occurrence/search/columns';
+
+export type Occurrence = {
+  key: string;
+  scientificName: string;
+  eventDate: string;
+};
 
 export function OccurrenceSearchPage(): React.ReactElement {
   const data = useLoaderData() as any;
@@ -18,15 +26,9 @@ export function OccurrenceSearchPage(): React.ReactElement {
       </Helmet>
 
       <p>Current language: {locale.code}</p>
-      <ul>
-        {data.documents.results.map((occurrence: any) => (
-          <li key={occurrence.key}>
-            <LocalizedLink to={`/occurrence/${occurrence.key}`}>
-              {occurrence.scientificName} - {occurrence.eventDate}
-            </LocalizedLink>
-          </li>
-        ))}
-      </ul>
+
+      <DataTable columns={columns} data={data.documents.results} />
+
       {from >= 20 && <LocalizedLink to={`?from=${from - 20}`}>Prev</LocalizedLink>}
       <LocalizedLink to={`?from=${from + 20}`}>Next</LocalizedLink>
     </>

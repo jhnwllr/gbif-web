@@ -1,12 +1,12 @@
 import React from 'react';
-import { Config, ConfigProvider } from '../contexts/config';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { Config, ConfigProvider } from '@/contexts/config';
 
 type Props = {
   config: Config;
   children: React.ReactNode;
   helmetContext?: {};
-}
+};
 
 export function Root({ config, helmetContext, children }: Props) {
   return (

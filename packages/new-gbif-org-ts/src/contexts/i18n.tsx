@@ -1,19 +1,19 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDefaultLocale } from '../hooks/useDefaultLocale';
-import { Config } from './config';
+import { useDefaultLocale } from '@/hooks/useDefaultLocale';
+import { Config } from '@/contexts/config';
 
 type I18n = {
   locale: Config['languages'][number];
   changeLocale: (targetLocaleCode: string) => void;
-}
+};
 
 const I18nContext = React.createContext<I18n | null>(null);
 
 type Props = {
   locale: Config['languages'][number];
   children?: React.ReactNode;
-}
+};
 
 export function I18nProvider({ locale, children }: Props): React.ReactElement {
   const navigate = useNavigate();

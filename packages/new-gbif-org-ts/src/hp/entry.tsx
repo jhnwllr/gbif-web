@@ -1,10 +1,10 @@
-import '../index.css';
+import '@/index.css';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { Root } from '../components/Root';
-import { Config } from '../contexts/config';
-import { configureHostedPortalRoutes } from './routes';
+import { Root } from '@/components/Root';
+import { Config } from '@/contexts/config';
+import { configureHostedPortalRoutes } from '@/hp/routes';
 
 type Props = {
   config: Config;

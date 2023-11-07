@@ -1,5 +1,5 @@
-import React from "react";
-import { z } from "zod";
+import React from 'react';
+import { z } from 'zod';
 
 const ConfigSchema = z.object({
   defaultTitle: z.string().optional(),
@@ -9,10 +9,10 @@ const ConfigSchema = z.object({
       code: z.string(),
       label: z.string(),
       default: z.boolean(),
-      textDirection: z.union([z.literal("ltr"), z.literal("rtl")]),
+      textDirection: z.union([z.literal('ltr'), z.literal('rtl')]),
     })
   ),
-  //? Does it add value to type this? 
+  //? Does it add value to type this?
   occurrencePredicate: z.any(),
 });
 
@@ -26,16 +26,14 @@ type Props = {
 };
 
 export function ConfigProvider({ config, children }: Props): React.ReactElement {
-  return (
-    <ConfigContext.Provider value={config}>{children}</ConfigContext.Provider>
-  );
+  return <ConfigContext.Provider value={config}>{children}</ConfigContext.Provider>;
 }
 
 export function useConfig(): Config {
   const ctx = React.useContext(ConfigContext);
 
   if (ctx == null) {
-    throw new Error("useConfig must be used within a ConfigProvider");
+    throw new Error('useConfig must be used within a ConfigProvider');
   }
 
   return ctx;

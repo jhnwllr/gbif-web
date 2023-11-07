@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useI18n } from '../contexts/i18n';
-import { useDefaultLocale } from '../hooks/useDefaultLocale';
+import { useI18n } from '@/contexts/i18n';
+import { useDefaultLocale } from '@/hooks/useDefaultLocale';
 
 type Props = {
   to: string;

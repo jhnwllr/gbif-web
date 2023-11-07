@@ -1,19 +1,19 @@
 import { Outlet } from 'react-router-dom';
-import { GbifRootLayout } from '../components/GbifRootLayout';
-import { MyRouteObject } from '../types';
-import { configureRoutes } from '../utils/configureRoutes';
-import { HomePage } from '../routes/HomePage';
-import { NotFound } from '../routes/NotFound';
-import { RootErrorPage } from '../routes/RootErrorPage';
+import { GbifRootLayout } from '@/components/GbifRootLayout';
+import { MyRouteObject } from '@/types';
+import { configureRoutes } from '@/utils/configureRoutes';
+import { HomePage } from '@/routes/HomePage';
+import { NotFound } from '@/routes/NotFound';
+import { RootErrorPage } from '@/routes/RootErrorPage';
 import {
   DetailedOccurrencePage,
   loader as detailedOccurrenceLoader,
-} from '../routes/occurrence/key/DetailedOccurrencePage';
+} from '@/routes/occurrence/key/DetailedOccurrencePage';
 import {
   OccurrenceSearchPage,
   loader as occurrenceSearchLoader,
-} from '../routes/occurrence/search/OccurrenceSearchPage';
-import { Config } from '../contexts/config';
+} from '@/routes/occurrence/search/OccurrenceSearchPage';
+import { Config } from '@/contexts/config';
 
 const baseRoutes: MyRouteObject[] = [
   {

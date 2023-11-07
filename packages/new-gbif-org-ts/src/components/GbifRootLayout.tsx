@@ -1,7 +1,7 @@
 import React from 'react';
-import { LanguageSelector } from './LanguageSelector';
 import { NavLink, useNavigation } from 'react-router-dom';
-import { LocalizedLink } from './LocalizedLink';
+import { LanguageSelector } from '@/components/LanguageSelector';
+import { LocalizedLink } from '@/components/LocalizedLink';
 
 type Props = {
   children: React.ReactNode;

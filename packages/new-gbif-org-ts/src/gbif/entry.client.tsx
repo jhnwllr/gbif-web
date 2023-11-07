@@ -1,8 +1,8 @@
 import { hydrateRoot } from 'react-dom/client';
 import { createBrowserRouter, matchRoutes, RouterProvider } from 'react-router-dom';
-import { configureGbifRoutes } from './routes';
-import { Root } from '../components/Root';
-import { gbifConfig } from './config';
+import { configureGbifRoutes } from '@/gbif/routes';
+import { gbifConfig } from '@/gbif/config';
+import { Root } from '@/components/Root';
 
 hydrate();
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import { useConfig } from '../contexts/config';
-import { useI18n } from '../contexts/i18n';
+import { useConfig } from '@/contexts/config';
+import { useI18n } from '@/contexts/i18n';
 
 export function LanguageSelector(): React.ReactElement {
   const { locale, changeLocale } = useI18n();
