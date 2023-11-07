@@ -17,6 +17,7 @@ async function main() {
   if (!IS_PRODUCTION) {
     const vite = await import('vite');
     viteDevServer = await vite.createServer({
+      root: process.cwd(),
       server: { middlewareMode: true },
       appType: 'custom',
       configFile: './gbif/vite.config.ts',
