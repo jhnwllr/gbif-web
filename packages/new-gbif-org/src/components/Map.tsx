@@ -1,9 +1,9 @@
 import React from 'react';
-import { Feature, Map as OpenLayersMap, View } from 'ol/index.js';
-import { OSM, Vector as VectorSource } from 'ol/source.js';
-import { Point } from 'ol/geom.js';
-import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer.js';
-import { useGeographic } from 'ol/proj.js';
+import { Feature, Map as OpenLayersMap, View } from 'ol';
+import { OSM, Vector as VectorSource } from 'ol/source';
+import { Point } from 'ol/geom';
+import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
+import { useGeographic } from 'ol/proj';
 import { useOnMountUnsafe } from '@/hooks/useOnMountUnsafe';
 
 useGeographic();
