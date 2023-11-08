@@ -11,6 +11,7 @@ export default defineConfig({
   root: 'hp',
   build: {
     emptyOutDir: true,
+    outDir: '../dist/hp',
     lib: {
       entry: '../src/hp/entry.tsx',
       formats: ['es'],

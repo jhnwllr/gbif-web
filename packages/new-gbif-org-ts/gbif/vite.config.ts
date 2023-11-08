@@ -11,6 +11,7 @@ export default defineConfig({
   root: 'gbif',
   build: {
     emptyOutDir: true,
+    outDir: '../dist/gbif/client',
   },
   resolve: {
     alias: [{ find: '@', replacement: fileURLToPath(new URL('../src', import.meta.url)) }],
