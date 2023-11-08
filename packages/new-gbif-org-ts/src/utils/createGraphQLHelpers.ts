@@ -1,23 +1,39 @@
 import { useLoaderData } from 'react-router-dom';
-import request from 'graphql-request';
-import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
 
-export function createGraphQLHelpers<TResult, TVariabels>(
-  document: TypedDocumentNode<TResult, TVariabels>
-) {
-  const useTypedLoaderData = useLoaderData as () => TResult;
+export function createGraphQLHelpers<TResult, TVariabels>(query: string) {
+  const useTypedLoaderData = useLoaderData as () => { data: TResult };
 
-  function query(options: { url: string; request: Request; variables: TVariabels }) {
-    return request({
-      url: options.url,
+  const operationName = getOperationNameFromQuery(query);
+  if (typeof operationName !== 'string') {
+    throw new Error(`Could not find operation name in query: ${query}`);
+  }
+
+  function load(options: { endpoint: string; request: Request; variables: TVariabels }) {
+    return fetch(options.endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       signal: options.request.signal,
-      variables: options.variables as any,
-      document,
+      body: JSON.stringify({
+        query,
+        variables: options.variables,
+        operationName,
+      }),
     });
   }
 
   return {
-    query,
+    load,
     useTypedLoaderData,
   };
+}
+
+function getOperationNameFromQuery(query: string): string | null {
+  // This regex looks for the operation name pattern in the GraphQL query string.
+  // It finds the word immediately following the 'query' keyword.
+  const operationNameMatch = /^\s*query\s+(\w+)/.exec(query);
+  // If a match is found, return the first group (the operation name).
+  // Otherwise, return null.
+  return operationNameMatch ? operationNameMatch[1] : null;
 }

@@ -6,42 +6,42 @@ import { LocalizedLink } from '@/components/LocalizedLink';
 import { ExtractPaginatedResult, LoaderArgs } from '@/types';
 import { DataTable } from '@/components/ui/data-table';
 import { columns } from '@/routes/occurrence/search/columns';
-import { graphql } from '@/gql';
 import { notNull } from '@/utils/notNull';
-import { OccurrenceSearchQuery } from '@/gql/graphql';
+import { OccurrenceSearchQuery, OccurrenceSearchQueryVariables } from '@/gql/graphql';
 import { createGraphQLHelpers } from '@/utils/createGraphQLHelpers';
 
-const { query, useTypedLoaderData } = createGraphQLHelpers(
-  graphql(/* GraphQL */ `
-    query OccurrenceSearch($from: Int, $predicate: Predicate) {
-      occurrenceSearch(predicate: $predicate) {
-        documents(from: $from) {
-          from
-          size
-          total
-          results {
-            key
-            scientificName
-            eventDate
-          }
+const { load, useTypedLoaderData } = createGraphQLHelpers<
+  OccurrenceSearchQuery,
+  OccurrenceSearchQueryVariables
+>(/* GraphQL */ `
+  query OccurrenceSearch($from: Int, $predicate: Predicate) {
+    occurrenceSearch(predicate: $predicate) {
+      documents(from: $from) {
+        from
+        size
+        total
+        results {
+          key
+          scientificName
+          eventDate
         }
       }
     }
-  `)
-);
+  }
+`);
 
 export type SingleOccurrenceSearchResult = ExtractPaginatedResult<
   OccurrenceSearchQuery['occurrenceSearch']
 >;
 
 export function OccurrenceSearchPage(): React.ReactElement {
-  const data = useTypedLoaderData();
+  const { data } = useTypedLoaderData();
   const [searchParams] = useSearchParams();
   const from = parseInt(searchParams.get('from') ?? '0');
   const { locale } = useI18n();
 
   if (data.occurrenceSearch?.documents == null) throw new Error('No data');
-  const occurrences = data.occurrenceSearch.documents.results.filter(notNull);
+  const occurrences = data.occurrenceSearch?.documents.results.filter(notNull) ?? [];
 
   return (
     <>
@@ -63,11 +63,11 @@ export async function loader({ request, config }: LoaderArgs) {
   const url = new URL(request.url);
   const from = parseInt(url.searchParams.get('from') ?? '0');
 
-  return query({
-    url: config.graphqlEndpoint,
+  return load({
+    endpoint: config.graphqlEndpoint,
     request,
     variables: {
-      from: from,
+      from,
       predicate: config.occurrencePredicate,
     },
   });
