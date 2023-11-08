@@ -11,7 +11,7 @@ export const cssNavBar = ({theme, isActive}) => css`
   position: sticky;
   top: 0;
   background: white;
-  z-index: 100;
+  z-index: 1;
 `;
 
 export const cssViewArea = ({theme}) => css`
