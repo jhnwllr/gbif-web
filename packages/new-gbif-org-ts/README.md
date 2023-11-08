@@ -10,3 +10,6 @@ Run `npm run start`
 ### How to test the code in an environment simulating the Hosted Portals
 Run `npm run build:hp`  
 Run `npm run start:hp`
+
+### .env
+[Vite .env guide](https://vitejs.dev/guide/env-and-mode.html#env-files)
