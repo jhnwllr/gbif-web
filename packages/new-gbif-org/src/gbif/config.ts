@@ -35,8 +35,7 @@ export const gbifConfig: Config = {
         type: 'range',
         key: 'year',
         value: {
-          gte: '2009',
-          lte: '2012',
+          gte: '2012',
         },
       },
     ],

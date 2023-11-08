@@ -24,6 +24,11 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
           key
           scientificName
           eventDate
+          coordinates
+          county
+          basisOfRecord
+          datasetName
+          publisherTitle
         }
       }
     }
