@@ -12,7 +12,7 @@ export default {
   component: Collection,
 };
 
-export const Example = () => <Router initialEntries={[`/`]}>
+export const Example = () => <Router initialEntries={[`/specimens?view=CLUSTERS`]}>
   <QueryParamProvider ReactRouterRoute={Route}>
     <AddressBar />
     <div style={{ flex: '1 1 auto' }}></div>
