@@ -1,22 +1,16 @@
 import React from 'react';
-import { z } from 'zod';
 
-const ConfigSchema = z.object({
-  defaultTitle: z.string().optional(),
-  graphqlEndpoint: z.string(),
-  languages: z.array(
-    z.object({
-      code: z.string(),
-      label: z.string(),
-      default: z.boolean(),
-      textDirection: z.union([z.literal('ltr'), z.literal('rtl')]),
-    })
-  ),
-  //? Does it add value to type this?
-  occurrencePredicate: z.any(),
-});
-
-export type Config = z.infer<typeof ConfigSchema>;
+export type Config = {
+  defaultTitle?: string;
+  graphqlEndpoint: string;
+  languages: {
+    code: string;
+    label: string;
+    default: boolean;
+    textDirection: 'ltr' | 'rtl';
+  }[];
+  occurrencePredicate: any;
+};
 
 const ConfigContext = React.createContext<Config | null>(null);
 
