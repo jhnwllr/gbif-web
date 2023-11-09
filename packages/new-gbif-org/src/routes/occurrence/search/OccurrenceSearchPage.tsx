@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { useI18n } from '@/contexts/i18n';
 import { LocalizedLink } from '@/components/LocalizedLink';
 import { ExtractPaginatedResult, LoaderArgs } from '@/types';
 import { DataTable } from '@/components/ui/data-table';
@@ -43,7 +42,6 @@ export function OccurrenceSearchPage(): React.ReactElement {
   const { data } = useTypedLoaderData();
   const [searchParams] = useSearchParams();
   const from = parseInt(searchParams.get('from') ?? '0');
-  const { locale } = useI18n();
 
   if (data.occurrenceSearch?.documents == null) throw new Error('No data');
   const occurrences = data.occurrenceSearch?.documents.results.filter(notNull) ?? [];
@@ -54,9 +52,9 @@ export function OccurrenceSearchPage(): React.ReactElement {
         <title>Occurrence search</title>
       </Helmet>
 
-      <p>Current language: {locale.code}</p>
-
-      <DataTable columns={columns} data={occurrences} />
+      <div className="bg-gray-100 p-2" style={{ height: 1000 }}>
+        <DataTable className="bg-white" columns={columns} data={occurrences} />
+      </div>
 
       {from >= 20 && <LocalizedLink to={`?from=${from - 20}`}>Prev</LocalizedLink>}
       <LocalizedLink to={`?from=${from + 20}`}>Next</LocalizedLink>
