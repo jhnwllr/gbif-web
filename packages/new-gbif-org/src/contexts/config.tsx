@@ -1,5 +1,9 @@
 import React from 'react';
 
+type PageConfig = {
+  key: string;
+};
+
 export type Config = {
   defaultTitle?: string;
   graphqlEndpoint: string;
@@ -10,6 +14,7 @@ export type Config = {
     textDirection: 'ltr' | 'rtl';
   }[];
   occurrencePredicate: any;
+  pages?: PageConfig[];
 };
 
 const ConfigContext = React.createContext<Config | null>(null);

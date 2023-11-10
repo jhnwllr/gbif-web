@@ -8,9 +8,18 @@ export type LoaderArgs = {
   params: Record<string, string | undefined>;
 };
 
-export type MyRouteObject = Omit<RouteObject, 'loader' | 'children'> & {
+export type SourceRouteObject = Omit<RouteObject, 'loader' | 'children'> & {
+  key?: string;
   loader?: (args: LoaderArgs) => Promise<any>;
-  children?: MyRouteObject[];
+  children?: SourceRouteObject[];
+  gbifRedirect?: (params: Record<string, string | undefined>) => string;
+};
+
+export type RouteMetadata = {
+  path?: string;
+  key?: string;
+  gbifRedirect?: (params: Record<string, string | undefined>) => string;
+  children?: RouteMetadata[];
 };
 
 export type ExtractPaginatedResult<T extends { documents: { results: any[] } } | null | undefined> =

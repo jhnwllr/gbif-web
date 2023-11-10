@@ -19,6 +19,18 @@
 
       render(document.getElementById('root'), {
         graphqlEndpoint: 'http://localhost:4001/graphql',
+        pages: [
+          {
+            key: 'occurrence-search-page',
+          },
+          {
+            key: 'occurrence-page',
+          },
+          // Uncomment this object to enable the dataset page. Otherwise it will link to GBIF.org
+          // {
+          //   key: 'dataset-page',
+          // },
+        ],
         languages: [
           {
             code: 'en',

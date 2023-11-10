@@ -11,11 +11,11 @@ type Props = {
 };
 
 function HostedPortalApp({ config }: Props): React.ReactElement {
-  const routes = configureHostedPortalRoutes(config);
+  const { routes, metadataRoutes } = configureHostedPortalRoutes(config);
   const router = createBrowserRouter(routes);
 
   return (
-    <Root config={config}>
+    <Root config={config} metadataRoutes={metadataRoutes}>
       <RouterProvider router={router} fallbackElement={null} />
     </Root>
   );

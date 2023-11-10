@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { LoaderArgs } from '@/types';
 import { OccurrenceQuery, OccurrenceQueryVariables } from '@/gql/graphql';
 import { createGraphQLHelpers } from '@/utils/createGraphQLHelpers';
-import { LocalizedLink } from '@/components/LocalizedLink';
+import { MyLink } from '@/components/MyLink';
 const Map = React.lazy(() => import('@/components/Map'));
 
 const { load, useTypedLoaderData } = createGraphQLHelpers<
@@ -46,9 +46,7 @@ export function DetailedOccurrencePage() {
         <div>
           <p className="font-bold">Dataset: </p>
           <h2>
-            <LocalizedLink to={`/dataset/${occurrence.dataset.key}`}>
-              {occurrence.dataset.title}
-            </LocalizedLink>
+            <MyLink to={`/dataset/${occurrence.dataset.key}`}>{occurrence.dataset.title}</MyLink>
           </h2>
         </div>
       )}

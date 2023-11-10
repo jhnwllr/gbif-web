@@ -8,10 +8,10 @@ hydrate();
 
 async function hydrate() {
   // Configure the routes
-  const gbifRoutes = configureGbifRoutes(gbifConfig);
+  const { routes, metadataRoutes } = configureGbifRoutes(gbifConfig);
 
   // Determine if any of the initial routes are lazy
-  const lazyMatches = matchRoutes(gbifRoutes, window.location)?.filter(
+  const lazyMatches = matchRoutes(routes, window.location)?.filter(
     (m) => typeof m.route.lazy === 'function'
   );
 
@@ -26,14 +26,14 @@ async function hydrate() {
     );
   }
 
-  const router = createBrowserRouter(gbifRoutes);
+  const router = createBrowserRouter(routes);
 
   const root = document.getElementById('app');
   if (root == null) throw new Error("Couldn't find root element");
 
   hydrateRoot(
     root,
-    <Root config={gbifConfig}>
+    <Root config={gbifConfig} metadataRoutes={metadataRoutes}>
       <RouterProvider router={router} fallbackElement={null} />
     </Root>
   );

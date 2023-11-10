@@ -1,14 +1,12 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { SingleOccurrenceSearchResult } from '@/routes/occurrence/search/OccurrenceSearchPage';
-import { LocalizedLink } from '@/components/LocalizedLink';
+import { MyLink } from '@/components/MyLink';
 
 export const columns: ColumnDef<SingleOccurrenceSearchResult>[] = [
   {
     header: 'Scientific name',
     cell: ({ row }) => (
-      <LocalizedLink to={`/occurrence/${row.original.key}`}>
-        {row.original.scientificName}
-      </LocalizedLink>
+      <MyLink to={`/occurrence/${row.original.key}`}>{row.original.scientificName}</MyLink>
     ),
   },
   {

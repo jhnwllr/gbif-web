@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import { GbifRootLayout } from '@/components/GbifRootLayout';
-import { MyRouteObject } from '@/types';
+import { SourceRouteObject } from '@/types';
 import { configureRoutes } from '@/utils/configureRoutes';
 import { HomePage } from '@/routes/HomePage';
 import { NotFound } from '@/routes/NotFound';
@@ -16,7 +16,7 @@ import {
 import { Config } from '@/contexts/config';
 import { DatasetPage, datasetLoader } from '@/routes/dataset/key/DatasetPage';
 
-const baseRoutes: MyRouteObject[] = [
+const baseRoutes: SourceRouteObject[] = [
   {
     element: <GbifRootLayout children={<Outlet />} />,
     children: [
@@ -28,16 +28,23 @@ const baseRoutes: MyRouteObject[] = [
             element: <HomePage />,
           },
           {
+            key: 'occurrence-search-page',
             path: 'occurrence/search',
             loader: occurrenceSearchLoader,
             element: <OccurrenceSearchPage />,
           },
           {
+            key: 'occurrence-page',
             path: 'occurrence/:key',
             loader: detailedOccurrenceLoader,
             element: <DetailedOccurrencePage />,
           },
           {
+            key: 'dataset-page',
+            gbifRedirect: (params) => {
+              if (typeof params.key !== 'string') throw new Error('Invalid key');
+              return `https://www.gbif.org/dataset/${params.key}`;
+            },
             path: 'dataset/:key',
             loader: datasetLoader,
             element: <DatasetPage />,

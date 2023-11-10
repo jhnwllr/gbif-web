@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { LocalizedLink } from '@/components/LocalizedLink';
+import { MyLink } from '@/components/MyLink';
 import { ExtractPaginatedResult, LoaderArgs } from '@/types';
 import { DataTable } from '@/components/ui/data-table';
 import { columns } from '@/routes/occurrence/search/columns';
@@ -56,8 +56,8 @@ export function OccurrenceSearchPage(): React.ReactElement {
         <DataTable className="bg-white" columns={columns} data={occurrences} />
       </div>
 
-      {from >= 20 && <LocalizedLink to={`?from=${from - 20}`}>Prev</LocalizedLink>}
-      <LocalizedLink to={`?from=${from + 20}`}>Next</LocalizedLink>
+      {from >= 20 && <MyLink to={`?from=${from - 20}`}>Prev</MyLink>}
+      <MyLink to={`?from=${from + 20}`}>Next</MyLink>
     </>
   );
 }

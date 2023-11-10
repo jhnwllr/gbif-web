@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, useNavigation } from 'react-router-dom';
 import { LanguageSelector } from '@/components/LanguageSelector';
-import { LocalizedLink } from '@/components/LocalizedLink';
+import { MyLink } from '@/components/MyLink';
 
 type Props = {
   children: React.ReactNode;
@@ -16,12 +16,12 @@ export function GbifRootLayout({ children }: Props) {
       <header style={{ display: 'flex', gap: '10px' }}>
         <LanguageSelector />
         <nav style={{ display: 'flex', gap: '10px' }}>
-          <LocalizedLink as={NavLink} to="/">
+          <MyLink as={NavLink} to="/">
             Home
-          </LocalizedLink>
-          <LocalizedLink as={NavLink} to="/occurrence/search">
+          </MyLink>
+          <MyLink as={NavLink} to="/occurrence/search">
             Search
-          </LocalizedLink>
+          </MyLink>
         </nav>
       </header>
       <main>{children}</main>
