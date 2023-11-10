@@ -19,7 +19,8 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
       primaryImage {
         file {
           url
-          thumbor(width: 1200, height: 500)
+          normal: thumbor(width: 1200, height: 500)
+          mobile: thumbor(width: 800, height: 400)
         }
         description
         title
@@ -49,6 +50,7 @@ export function News() {
   if (data.news == null) throw new Error('404');
   const resource = data.news;
 
+  const { normal, mobile } = resource?.primaryImage?.file || {};
   return (
     <>
       <Helmet>
@@ -59,25 +61,41 @@ export function News() {
         <div className="max-w-3xl m-auto mt-2 mb-10">
           <div>
             {/* I need a way to access a theme color here */}
-            <p className="mb-2 text-sm leading-6 font-semibold text-sky-500 dark:text-sky-400">News</p>
-            <h1 className="text-3xl inline-block sm:text-4xl font-extrabold text-slate-900 tracking-tight dark:text-slate-200">{resource.title}</h1>
-            {resource.summary && <div className="mt-2 text-lg text-slate-700" dangerouslySetInnerHTML={{ __html: resource.summary }}></div>}
+            <p className="mb-2 text-sm leading-6 font-semibold text-sky-500 dark:text-sky-400">
+              News
+            </p>
+            <h1 className="text-3xl inline-block sm:text-4xl font-extrabold text-slate-900 tracking-tight dark:text-slate-200">
+              {resource.title}
+            </h1>
+            {resource.summary && (
+              <div
+                className="mt-2 text-lg text-slate-700"
+                dangerouslySetInnerHTML={{ __html: resource.summary }}
+              ></div>
+            )}
           </div>
         </div>
-        <div className="max-w-6xl m-auto mt-2">
-          {resource.primaryImage?.file?.url && (
-            <figure className="mt-8 mb-6">
-              <picture>
-                <img className="rounded-md" src={resource.primaryImage?.file?.url} 
-                alt="" />
+        <div className="max-w-6xl m-auto mt-8 mb-6">
+          {normal && mobile && (
+            <figure className="m-auto">
+              <picture className="rounded-md">
+                <source srcSet={normal} media="(min-width: 800px)" />
+                <img src={mobile} alt="A description of the image." />
               </picture>
-              {resource.primaryImage?.description && <figcaption className="text-slate-600 [&>a]:underline-offset-1 [&>a]:underline" dangerouslySetInnerHTML={{ __html: resource.primaryImage.description}}></figcaption>}
+              {resource.primaryImage?.description && (
+                <figcaption
+                  className="text-slate-600 [&>a]:underline-offset-1 [&>a]:underline"
+                  dangerouslySetInnerHTML={{ __html: resource.primaryImage.description }}
+                ></figcaption>
+              )}
             </figure>
           )}
         </div>
-        {resource.body && <div className="max-w-3xl m-auto mt-2 prose">
-          <div dangerouslySetInnerHTML={{ __html: resource.body }}></div>
-        </div>}
+        {resource.body && (
+          <div className="max-w-3xl m-auto mt-2 prose">
+            <div dangerouslySetInnerHTML={{ __html: resource.body }}></div>
+          </div>
+        )}
       </div>
     </>
   );
