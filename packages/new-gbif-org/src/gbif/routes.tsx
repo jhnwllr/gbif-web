@@ -14,6 +14,7 @@ import {
   loader as occurrenceSearchLoader,
 } from '@/routes/occurrence/search/OccurrenceSearchPage';
 import { Config } from '@/contexts/config';
+import { DatasetPage, datasetLoader } from '@/routes/dataset/key/DatasetPage';
 
 const baseRoutes: MyRouteObject[] = [
   {
@@ -35,6 +36,11 @@ const baseRoutes: MyRouteObject[] = [
             path: 'occurrence/:key',
             loader: detailedOccurrenceLoader,
             element: <DetailedOccurrencePage />,
+          },
+          {
+            path: 'dataset/:key',
+            loader: datasetLoader,
+            element: <DatasetPage />,
           },
           {
             path: '*',

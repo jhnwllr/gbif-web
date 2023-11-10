@@ -1,9 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useI18n } from '@/contexts/i18n';
 import { LoaderArgs } from '@/types';
 import { OccurrenceQuery, OccurrenceQueryVariables } from '@/gql/graphql';
 import { createGraphQLHelpers } from '@/utils/createGraphQLHelpers';
+import { LocalizedLink } from '@/components/LocalizedLink';
 const Map = React.lazy(() => import('@/components/Map'));
 
 const { load, useTypedLoaderData } = createGraphQLHelpers<
@@ -15,13 +15,16 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
       eventDate
       scientificName
       coordinates
+      dataset {
+        key
+        title
+      }
     }
   }
 `);
 
 export function DetailedOccurrencePage() {
   const { data } = useTypedLoaderData();
-  const { locale } = useI18n();
 
   if (data.occurrence == null) throw new Error('404');
   const occurrence = data.occurrence;
@@ -32,12 +35,22 @@ export function DetailedOccurrencePage() {
         <title>{occurrence.scientificName}</title>
       </Helmet>
 
-      <p>Current language: {locale.code}</p>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      <h1>{occurrence.scientificName}</h1>
       {occurrence.coordinates && (
         <React.Suspense fallback={<div>Loading map...</div>}>
           <Map coordinates={occurrence.coordinates} />
         </React.Suspense>
+      )}
+
+      {occurrence.dataset && (
+        <div>
+          <p className="font-bold">Dataset: </p>
+          <h2>
+            <LocalizedLink to={`/dataset/${occurrence.dataset.key}`}>
+              {occurrence.dataset.title}
+            </LocalizedLink>
+          </h2>
+        </div>
       )}
     </>
   );
