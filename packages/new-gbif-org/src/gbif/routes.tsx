@@ -15,6 +15,8 @@ import {
 } from '@/routes/occurrence/search/OccurrenceSearchPage';
 import { Config } from '@/contexts/config';
 
+import { News, newsLoader } from '@/routes/resource/key/news/news';
+
 const baseRoutes: MyRouteObject[] = [
   {
     element: <GbifRootLayout children={<Outlet />} />,
@@ -35,6 +37,11 @@ const baseRoutes: MyRouteObject[] = [
             path: 'occurrence/:key',
             loader: detailedOccurrenceLoader,
             element: <DetailedOccurrencePage />,
+          },
+          {
+            path: 'resource/:key',
+            loader: newsLoader,
+            element: <News />,
           },
           {
             path: '*',

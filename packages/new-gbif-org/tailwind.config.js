@@ -15,6 +15,14 @@ module.exports = {
         "2xl": "1400px",
       },
     },
+    fontFamily: {
+      sans: [
+        '"Inter var", ui-sans-serif, system-ui, -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+        {
+          fontFeatureSettings: '"cv02", "cv03", "cv04", "cv11"'
+        },
+      ],
+    },
     extend: {
       colors: {
         border: "hsl(var(--border))",

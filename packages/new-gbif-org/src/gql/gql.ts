@@ -15,6 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  query Occurrence($key: ID!) {\n    occurrence(key: $key) {\n      eventDate\n      scientificName\n      coordinates\n    }\n  }\n": types.OccurrenceDocument,
     "\n  query OccurrenceSearch($from: Int, $predicate: Predicate) {\n    occurrenceSearch(predicate: $predicate) {\n      documents(from: $from) {\n        from\n        size\n        total\n        results {\n          key\n          scientificName\n          eventDate\n          coordinates\n          county\n          basisOfRecord\n          datasetName\n          publisherTitle\n        }\n      }\n    }\n  }\n": types.OccurrenceSearchDocument,
+    "\n  query News($key: String!) {\n    news(id: $key) {\n      id\n      title\n      summary\n      body\n      primaryImage {\n        file {\n          url\n        }\n        description\n        title\n      }\n      primaryLink {\n        label\n        url\n      }\n      secondaryLinks {\n        label\n        url\n      }\n      countriesOfCoverage\n      topics\n      purposes\n      audiences\n      citation\n      createdAt\n    }\n  }\n": types.NewsDocument,
 };
 
 /**
@@ -39,6 +40,10 @@ export function graphql(source: "\n  query Occurrence($key: ID!) {\n    occurren
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query OccurrenceSearch($from: Int, $predicate: Predicate) {\n    occurrenceSearch(predicate: $predicate) {\n      documents(from: $from) {\n        from\n        size\n        total\n        results {\n          key\n          scientificName\n          eventDate\n          coordinates\n          county\n          basisOfRecord\n          datasetName\n          publisherTitle\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query OccurrenceSearch($from: Int, $predicate: Predicate) {\n    occurrenceSearch(predicate: $predicate) {\n      documents(from: $from) {\n        from\n        size\n        total\n        results {\n          key\n          scientificName\n          eventDate\n          coordinates\n          county\n          basisOfRecord\n          datasetName\n          publisherTitle\n        }\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query News($key: String!) {\n    news(id: $key) {\n      id\n      title\n      summary\n      body\n      primaryImage {\n        file {\n          url\n        }\n        description\n        title\n      }\n      primaryLink {\n        label\n        url\n      }\n      secondaryLinks {\n        label\n        url\n      }\n      countriesOfCoverage\n      topics\n      purposes\n      audiences\n      citation\n      createdAt\n    }\n  }\n"): (typeof documents)["\n  query News($key: String!) {\n    news(id: $key) {\n      id\n      title\n      summary\n      body\n      primaryImage {\n        file {\n          url\n        }\n        description\n        title\n      }\n      primaryLink {\n        label\n        url\n      }\n      secondaryLinks {\n        label\n        url\n      }\n      countriesOfCoverage\n      topics\n      purposes\n      audiences\n      citation\n      createdAt\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
