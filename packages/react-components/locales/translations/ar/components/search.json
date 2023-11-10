@@ -4,14 +4,40 @@
     "gallery": "معرض صور",
     "map": "خارطة",
     "datasets": "مجموعات البيانات",
-    "download": "تنزيل"
+    "events": "أحداث",
+    "download": "تنزيل",
+    "clusters": "",
+    "sites": "أرشيف شروح \"جيبف\""
   },
   "table": {
     "lockColumn": ""
   },
   "placeholders": {
     "default": "بحث",
-    "range": ""
+    "range": "",
+    "locationID": "أرشيف شروح \"جيبف\""
   },
-  "loadMore": "مزيد"
+  "loadMore": "مزيد",
+  "occurrenceClustersView": {
+    "about": "حول",
+    "clusters": "",
+    "legend": "",
+    "differentPublishers": "",
+    "samePublishers": "",
+    "entryPoint": "",
+    "hasMultipleTaxonKeys": "",
+    "aboutLink": "",
+    "isCapped": "",
+    "isDeleted": "",
+    "similarities": "",
+    "currentRecord": "",
+    "nodeType": {
+      "IMAGE": "صورة",
+      "TYPE": "نوع النموذج",
+      "TREATMENT": "معالجة",
+      "OBSERVATION": "ملاحظة",
+      "SPECIMEN": "نموذج",
+      "SEQUENCE": ""
+    }
+  }
 }

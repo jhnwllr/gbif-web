@@ -4,14 +4,40 @@
     "gallery": "Galeria",
     "map": "Mapa",
     "datasets": "Conjuntos de dados",
-    "download": "Transferir"
+    "events": "Eventos",
+    "download": "Transferir",
+    "clusters": "",
+    "sites": "Ficheiros registados no GBIF"
   },
   "table": {
     "lockColumn": ""
   },
   "placeholders": {
     "default": "Pesquisa",
-    "range": ""
+    "range": "",
+    "locationID": "Ficheiros registados no GBIF"
   },
-  "loadMore": "Mais"
+  "loadMore": "Mais",
+  "occurrenceClustersView": {
+    "about": "Sobre",
+    "clusters": "",
+    "legend": "",
+    "differentPublishers": "",
+    "samePublishers": "",
+    "entryPoint": "",
+    "hasMultipleTaxonKeys": "",
+    "aboutLink": "",
+    "isCapped": "",
+    "isDeleted": "",
+    "similarities": "",
+    "currentRecord": "",
+    "nodeType": {
+      "IMAGE": "Imagem",
+      "TYPE": "",
+      "TREATMENT": "Tratamento",
+      "OBSERVATION": "Observação",
+      "SPECIMEN": "Espécime",
+      "SEQUENCE": ""
+    }
+  }
 }
