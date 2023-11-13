@@ -16,6 +16,7 @@ import {
 import { Config } from '@/contexts/config';
 import { DatasetPage, datasetLoader } from '@/routes/dataset/key/DatasetPage';
 import { PublisherPage, publisherLoader,  } from '@/routes/publisher/key/PublisherPage';
+import { News, newsLoader } from '@/routes/resource/key/news/news';
 
 const baseRoutes: SourceRouteObject[] = [
   {
@@ -59,6 +60,11 @@ const baseRoutes: SourceRouteObject[] = [
             path: 'publisher/:key',
             loader: publisherLoader,
             element: <PublisherPage />,
+          },
+          {
+            path: 'resource/:key',
+            loader: newsLoader,
+            element: <News />,
           },
           {
             path: '*',
