@@ -1,41 +1,33 @@
-import { DatasetQuery, DatasetQueryVariables } from '@/gql/graphql';
+import { PublisherQuery, PublisherQueryVariables } from '@/gql/graphql';
 import { LoaderArgs } from '@/types';
 import { createGraphQLHelpers } from '@/utils/createGraphQLHelpers';
 import { Helmet } from 'react-helmet-async';
 
 const { load, useTypedLoaderData } = createGraphQLHelpers<
-  DatasetQuery,
-  DatasetQueryVariables
+PublisherQuery,
+PublisherQueryVariables
 >(/* GraphQL */ `
-  query Dataset($key: ID!) {
-    dataset(key: $key) {
+  query Publisher($key: ID!) {
+    publisher: organization(key: $key) {
       title
-      publishingOrganizationKey
-      publishingOrganizationTitle
     }
   }
 `);
 
-export function DatasetPage() {
+export function PublisherPage() {
   const { data } = useTypedLoaderData();
 
-  if (data.dataset == null) throw new Error('404');
-  const dataset = data.dataset;
+  if (data.publisher == null) throw new Error('404');
+  const publisher = data.publisher;
 
   return (
     <>
       <Helmet>
-        <title>{dataset.title}</title>
+        <title>{publisher.title}</title>
       </Helmet>
 
-      <h1 className="text-3xl">{dataset.title}</h1>
-      {dataset.publishingOrganizationTitle && (
-        <p>
-          Published by <a href={`/publisher/${dataset.publishingOrganizationKey}`}>{dataset?.publishingOrganizationTitle}</a> - <span className="text-red-500">TODO phrase should be translated. If
-          it links to a publisher page on the site or 2 gbif.org or somewhere else depends on the hp
-          config</span>
-        </p>
-      )}
+      <h1 className="text-3xl">{publisher.title}</h1>
+
       <div className="text-red-500 mt-4 mb-4">
         <p>
           TODO have tabs that are accessible and can be used as either state push, href links or not
@@ -59,29 +51,9 @@ export function DatasetPage() {
           <h2>
             <a
               className="flex text-sm leading-6 font-semibold pt-3 pb-2.5 border-b-2 -mb-px text-slate-900 border-transparent hover:border-slate-300 dark:text-slate-200 dark:hover:border-slate-700"
-              href="./dashboard"
-            >
-              Dashboard
-            </a>
-          </h2>
-        </li>
-        <li>
-          <h2>
-            <a
-              className="flex text-sm leading-6 font-semibold pt-3 pb-2.5 border-b-2 -mb-px text-slate-900 border-transparent hover:border-slate-300 dark:text-slate-200 dark:hover:border-slate-700"
               href="./occurrences"
             >
               Occurrences
-            </a>
-          </h2>
-        </li>
-        <li>
-          <h2>
-            <a
-              className="flex text-sm leading-6 font-semibold pt-3 pb-2.5 border-b-2 -mb-px text-slate-900 border-transparent hover:border-slate-300 dark:text-slate-200 dark:hover:border-slate-700"
-              href="./download"
-            >
-              Download
             </a>
           </h2>
         </li>
@@ -91,7 +63,7 @@ export function DatasetPage() {
   );
 }
 
-export async function datasetLoader({ request, params, config }: LoaderArgs) {
+export async function publisherLoader({ request, params, config }: LoaderArgs) {
   const key = params.key;
   if (key == null) throw new Error('No key provided in the url');
 

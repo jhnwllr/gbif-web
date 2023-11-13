@@ -15,6 +15,7 @@ import {
 } from '@/routes/occurrence/search/OccurrenceSearchPage';
 import { Config } from '@/contexts/config';
 import { DatasetPage, datasetLoader } from '@/routes/dataset/key/DatasetPage';
+import { PublisherPage, publisherLoader,  } from '@/routes/publisher/key/PublisherPage';
 
 const baseRoutes: SourceRouteObject[] = [
   {
@@ -48,6 +49,16 @@ const baseRoutes: SourceRouteObject[] = [
             path: 'dataset/:key',
             loader: datasetLoader,
             element: <DatasetPage />,
+          },
+          {
+            key: 'publisher-page',
+            gbifRedirect: (params) => {
+              if (typeof params.key !== 'string') throw new Error('Invalid key');
+              return `https://www.gbif.org/publisher/${params.key}`;
+            },
+            path: 'publisher/:key',
+            loader: publisherLoader,
+            element: <PublisherPage />,
           },
           {
             path: '*',
