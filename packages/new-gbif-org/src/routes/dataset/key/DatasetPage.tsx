@@ -31,8 +31,8 @@ export function DatasetPage() {
       <h1 className="text-3xl">{dataset.title}</h1>
       {dataset.publishingOrganizationTitle && (
         <p>
-          Published by <a href={`/publisher/${dataset.publishingOrganizationKey}`}>{dataset?.publishingOrganizationTitle}</a> - <span className="text-red-500">TODO phrase should be translated. If
-          it links to a publisher page on the site or 2 gbif.org or somewhere else depends on the hp
+          Published by <a className="inline-flex justify-center rounded-lg text-sm font-semibold py-3 px-4 bg-slate-900 text-white hover:bg-slate-700" href={`/publisher/${dataset.publishingOrganizationKey}`}>{dataset?.publishingOrganizationTitle}</a> - <span className="text-red-500">TODO phrase should be translated. If
+          it links to a publisher page on the site or 2 gbif.org or somewhere else depends on the hp. And it should take color and rounding from the theme
           config</span>
         </p>
       )}
@@ -43,6 +43,7 @@ export function DatasetPage() {
           in the url and work as state push
         </p>
         <p>Notice that occurrence search lives in one of the tabs.</p>
+        <p>The fonts should be themed as well. It is fine that the hp owner have to add the fonts themselves to the site head</p>
       </div>
       <ul className="border-b border-slate-200 space-x-6 flex whitespace-nowrap dark:border-slate-200/5 mb-px">
         <li>
