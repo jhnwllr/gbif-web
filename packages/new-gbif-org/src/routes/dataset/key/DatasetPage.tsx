@@ -1,3 +1,4 @@
+import { MyLink } from '@/components/MyLink';
 import { DatasetQuery, DatasetQueryVariables } from '@/gql/graphql';
 import { LoaderArgs } from '@/types';
 import { createGraphQLHelpers } from '@/utils/createGraphQLHelpers';
@@ -31,7 +32,7 @@ export function DatasetPage() {
       <h1 className="text-3xl">{dataset.title}</h1>
       {dataset.publishingOrganizationTitle && (
         <p>
-          Published by <a className="inline-flex justify-center rounded-lg text-sm font-semibold py-3 px-4 bg-slate-900 text-white hover:bg-slate-700" href={`/publisher/${dataset.publishingOrganizationKey}`}>{dataset?.publishingOrganizationTitle}</a> - <span className="text-red-500">TODO phrase should be translated. If
+          Published by <MyLink className="inline-flex justify-center rounded-lg text-sm font-semibold py-3 px-4 bg-slate-900 text-white hover:bg-slate-700" to={`/publisher/${dataset.publishingOrganizationKey}`}>{dataset?.publishingOrganizationTitle}</MyLink> - <span className="text-red-500">TODO phrase should be translated. If
           it links to a publisher page on the site or 2 gbif.org or somewhere else depends on the hp. And it should take color and rounding from the theme
           config</span>
         </p>
