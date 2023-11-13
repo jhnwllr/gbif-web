@@ -1,3 +1,5 @@
+import { toRecord } from '@/utils/toRecord';
+import fontColorContrast from 'font-color-contrast';
 import React from 'react';
 
 type PageConfig = {
@@ -15,6 +17,13 @@ export type Config = {
   }[];
   occurrencePredicate: any;
   pages?: PageConfig[];
+  theme?: {
+    colors?: {
+      primary?: string;
+      primaryForeground?: string;
+    };
+    borderRadius?: number;
+  };
 };
 
 const ConfigContext = React.createContext<Config | null>(null);
@@ -24,8 +33,27 @@ type Props = {
   config: Config;
 };
 
+type CssVariable = { name: string; value: unknown; postFix?: string };
+
 export function ConfigProvider({ config, children }: Props): React.ReactElement {
-  return <ConfigContext.Provider value={config}>{children}</ConfigContext.Provider>;
+  const variables = React.useMemo(() => {
+    const cssVariables: CssVariable[] = [
+      { name: '--primary', value: config.theme?.colors?.primary },
+      { name: '--primary-foreground', value: config.theme?.colors?.primaryForeground },
+      { name: '--radius', value: config.theme?.borderRadius, postFix: 'rem' },
+    ];
+
+    return addSensibleForegroundColors(cssVariables).filter((v) => v.value != null);
+  }, [config]);
+
+  return (
+    <ConfigContext.Provider value={config}>
+      <style>{`:root { ${variables
+        .map((v) => `${v.name}: ${v.value}${v.postFix ?? ''};`)
+        .join('\n')} }`}</style>
+      {children}
+    </ConfigContext.Provider>
+  );
 }
 
 export function useConfig(): Config {
@@ -36,4 +64,27 @@ export function useConfig(): Config {
   }
 
   return ctx;
+}
+
+function addSensibleForegroundColors(cssVariables: CssVariable[]): CssVariable[] {
+  const variablesByNameRecord = toRecord(cssVariables, (v) => v.name);
+
+  return cssVariables.map((variable) => {
+    // Skip if the variable is not a foreground color
+    if (!variable.name.endsWith('-foreground')) return variable;
+
+    // Skip if the variable already has a value
+    if (variable.value != null) return variable;
+
+    // Get the background color variable
+    const bgName = variable.name.replace('-foreground', '');
+    const bgVariable = variablesByNameRecord[bgName];
+
+    // Skip if the background color variable does not exist or is not of type string
+    if (bgVariable == null || typeof bgVariable.value !== 'string') return variable;
+
+    // Calculate the foreground color
+    const newForegroundColor = fontColorContrast(bgVariable.value);
+    return { ...variable, value: newForegroundColor };
+  });
 }

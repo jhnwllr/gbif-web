@@ -40,4 +40,11 @@ export const gbifConfig: Config = {
       },
     ],
   },
+  theme: {
+    colors: {
+      primary: 'hsl(104 57.0%	36.5%)',
+      // primaryForeground: 'black',
+    },
+    borderRadius: 0.5,
+  },
 };

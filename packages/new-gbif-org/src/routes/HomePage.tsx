@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useI18n } from '@/contexts/i18n';
+import { Button } from '@/components/ui/button';
 
 export function HomePage(): React.ReactElement {
   const { locale } = useI18n();
@@ -33,6 +34,8 @@ export function HomePage(): React.ReactElement {
         </li>
         <li>Global configurable occurrence predicate</li>
       </ul>
+
+      <Button>This button has a theme</Button>
     </>
   );
 }
