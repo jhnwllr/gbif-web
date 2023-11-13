@@ -4,32 +4,30 @@ import { useI18n } from '@/contexts/i18n';
 import { useDefaultLocale } from '@/hooks/useDefaultLocale';
 import { useExternalGbifLink } from '@/contexts/metadataRoutes';
 
-type Props = {
+type Props<T extends React.ElementType> = React.ComponentProps<T> & {
   to: string;
-  as?: React.ElementType;
-  children?: React.ReactNode;
-  className?: string;
+  as?: T;
 };
 
-export function MyLink(props: Props): React.ReactElement {
+export function MyLink<T extends React.ElementType = typeof Link>({
+  to,
+  as,
+  ...props
+}: Props<T>): React.ReactElement {
   const { locale } = useI18n();
   const defaultLocale = useDefaultLocale();
 
   // Create localized Link
   const isDefaultLocale = defaultLocale.code === locale.code;
-  const isAbsoluteLink = props.to.startsWith('/');
-  const to = isAbsoluteLink && !isDefaultLocale ? `/${locale.code}${props.to}` : props.to;
+  const isAbsoluteLink = to.startsWith('/');
+  const toResult = isAbsoluteLink && !isDefaultLocale ? `/${locale.code}${to}` : to;
 
   // Should this link redirect to gbif.org?
   const gbifLink = useExternalGbifLink(to);
   if (gbifLink) {
-    return (
-      <a className={props.className} href={gbifLink}>
-        {props.children}
-      </a>
-    );
+    return <a {...props} href={gbifLink} />;
   }
 
-  const LinkComponent = props.as ?? Link;
-  return <LinkComponent to={to} children={props.children} className={props.className} />;
+  const LinkComponent = as ?? Link;
+  return <LinkComponent to={toResult} {...props} />;
 }

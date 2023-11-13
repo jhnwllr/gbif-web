@@ -1,5 +1,5 @@
+import { foregroundColorContrast } from '@/utils/foregroundColorContrast';
 import { toRecord } from '@/utils/toRecord';
-import fontColorContrast from 'font-color-contrast';
 import React from 'react';
 
 type PageConfig = {
@@ -84,7 +84,7 @@ function addSensibleForegroundColors(cssVariables: CssVariable[]): CssVariable[]
     if (bgVariable == null || typeof bgVariable.value !== 'string') return variable;
 
     // Calculate the foreground color
-    const newForegroundColor = fontColorContrast(bgVariable.value);
+    const newForegroundColor = foregroundColorContrast(bgVariable.value);
     return { ...variable, value: newForegroundColor };
   });
 }

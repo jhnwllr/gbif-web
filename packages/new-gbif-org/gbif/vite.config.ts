@@ -13,6 +13,7 @@ export default defineConfig({
     emptyOutDir: true,
     outDir: '../dist/gbif/client',
   },
+  envDir: '../',
   resolve: {
     alias: [{ find: '@', replacement: fileURLToPath(new URL('../src', import.meta.url)) }],
   },

@@ -1,11 +1,14 @@
+import { MyLink } from '@/components/MyLink';
 import { PublisherQuery, PublisherQueryVariables } from '@/gql/graphql';
 import { LoaderArgs } from '@/types';
 import { createGraphQLHelpers } from '@/utils/createGraphQLHelpers';
+import { cn } from '@/utils/shadcn';
 import { Helmet } from 'react-helmet-async';
+import { Outlet, NavLink } from 'react-router-dom';
 
 const { load, useTypedLoaderData } = createGraphQLHelpers<
-PublisherQuery,
-PublisherQueryVariables
+  PublisherQuery,
+  PublisherQueryVariables
 >(/* GraphQL */ `
   query Publisher($key: ID!) {
     publisher: organization(key: $key) {
@@ -39,26 +42,18 @@ export function PublisherPage() {
       <ul className="border-b border-slate-200 space-x-6 flex whitespace-nowrap dark:border-slate-200/5 mb-px">
         <li>
           <h2>
-            <a
-              className="flex text-sm leading-6 font-semibold pt-3 pb-2.5 border-b-2 -mb-px text-sky-500 border-current"
-              href="."
-            >
-              About
-            </a>
+            <TabLink to=".">About</TabLink>
           </h2>
         </li>
         <li>
           <h2>
-            <a
-              className="flex text-sm leading-6 font-semibold pt-3 pb-2.5 border-b-2 -mb-px text-slate-900 border-transparent hover:border-slate-300 dark:text-slate-200 dark:hover:border-slate-700"
-              href="./occurrences"
-            >
-              Occurrences
-            </a>
+            <TabLink to="occurrences">Occurrences</TabLink>
           </h2>
         </li>
       </ul>
-      <div>Tab content</div>
+      <div>
+        <Outlet />
+      </div>
     </>
   );
 }
@@ -74,4 +69,23 @@ export async function publisherLoader({ request, params, config }: LoaderArgs) {
       key,
     },
   });
+}
+
+function TabLink({ to, children }: { to: string; children: React.ReactNode }) {
+  return (
+    <MyLink
+      end
+      as={NavLink}
+      className={({ isActive }) =>
+        cn('flex text-sm leading-6 font-semibold pt-3 pb-2.5 border-b-2 -mb-px', {
+          'text-sky-500 border-current': isActive,
+          'text-slate-900 border-transparent hover:border-slate-300 dark:text-slate-200 dark:hover:border-slate-700':
+            !isActive,
+        })
+      }
+      to={to}
+    >
+      {children}
+    </MyLink>
+  );
 }

@@ -15,8 +15,10 @@ import {
 } from '@/routes/occurrence/search/OccurrenceSearchPage';
 import { Config } from '@/contexts/config';
 import { DatasetPage, datasetLoader } from '@/routes/dataset/key/DatasetPage';
-import { PublisherPage, publisherLoader,  } from '@/routes/publisher/key/PublisherPage';
+import { PublisherPage, publisherLoader } from '@/routes/publisher/key/PublisherPage';
 import { News, newsLoader } from '@/routes/resource/key/news/news';
+import { PublisherAboutTab } from '@/routes/publisher/key/AboutTab';
+import { PublisherOccurrencesTab } from '@/routes/publisher/key/OccurrencesTab';
 
 const baseRoutes: SourceRouteObject[] = [
   {
@@ -60,6 +62,16 @@ const baseRoutes: SourceRouteObject[] = [
             path: 'publisher/:key',
             loader: publisherLoader,
             element: <PublisherPage />,
+            children: [
+              {
+                index: true,
+                element: <PublisherAboutTab />,
+              },
+              {
+                path: 'occurrences',
+                element: <PublisherOccurrencesTab />,
+              },
+            ],
           },
           {
             path: 'resource/:key',

@@ -1,4 +1,3 @@
-import { fileURLToPath, URL } from 'url';
 import fsp from 'node:fs/promises';
 import express from 'express';
 
@@ -21,6 +20,7 @@ async function main() {
       server: { middlewareMode: true },
       appType: 'custom',
       configFile: './gbif/vite.config.ts',
+      envDir: './',
     });
 
     app.use(viteDevServer.middlewares);
