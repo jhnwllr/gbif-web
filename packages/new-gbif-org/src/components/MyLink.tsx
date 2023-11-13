@@ -8,6 +8,7 @@ type Props = {
   to: string;
   as?: React.ElementType;
   children?: React.ReactNode;
+  className?: string;
 };
 
 export function MyLink(props: Props): React.ReactElement {
@@ -22,9 +23,13 @@ export function MyLink(props: Props): React.ReactElement {
   // Should this link redirect to gbif.org?
   const gbifLink = useExternalGbifLink(to);
   if (gbifLink) {
-    return <a href={gbifLink}>{props.children}</a>;
+    return (
+      <a className={props.className} href={gbifLink}>
+        {props.children}
+      </a>
+    );
   }
 
   const LinkComponent = props.as ?? Link;
-  return <LinkComponent {...props} to={to} />;
+  return <LinkComponent to={to} children={props.children} className={props.className} />;
 }
