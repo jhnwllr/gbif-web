@@ -7,13 +7,44 @@
  */
 export default {
   Query: {
-    directoryPersonSearch: (parent, args, { dataSources }) =>
-      dataSources.directoryPersonAPI.searchPeopleByRole({ query: args }),
+    directoryTranslators: (parent, { limit, offset }, { dataSources }) =>
+      dataSources.directoryPersonAPI.searchPeopleByRole({ query: { limit, offset, role: 'TRANSLATOR' } }),
+    directoryAmbasadors: (parent, { limit, offset }, { dataSources }) =>
+      dataSources.directoryPersonAPI.searchPeopleByRole({ query: { limit, offset, role: 'AMBASSADOR' } }),
+    directoryMentors: (parent, { limit, offset }, { dataSources }) =>
+      dataSources.directoryPersonAPI.searchPeopleByRole({ query: { limit, offset, role: 'MENTOR' } }),
+    directoryAwardWinners: (parent, { award = [] }, { dataSources }) => 
+      dataSources.directoryPersonAPI.searchPeopleByRole({ query: { role: 'AWARD_WINNER' } })
+      .then((response) => {
+        if (award.length === 0) {
+          return response.results;
+        }
+        const filtered = response.results.filter((person) => {
+          return award.includes(person.award);
+        });
+        return filtered;
+      })
+      .then((response) => {
+        // remove duplicate persons
+        const unique = response.filter((person, index, self) =>
+          index === self.findIndex((p) => (
+            p.personId === person.personId
+          ))
+        );
+        // expand the person object
+        return Promise.all(
+          unique.map((person) => {
+            return dataSources.directoryPersonAPI.getDirectoryPersonByKey({ key: person.personId });
+          })
+        );
+      })
+  },
+  DirectoryPersonRole: {
+    Person: ({ personId }, args, { dataSources }) =>
+      dataSources.directoryPersonAPI.getDirectoryPersonByKey({ key: personId }),
   },
   DirectoryPerson: {
-    // someField: ({ fieldWithKey: key }, args, { dataSources }) => {
-    //   if (typeof key === 'undefined') return null;
-    //   dataSources.someAPI.getSomethingByKey({ key })
-    // },
-  },
+    profilePicture: ({ id }, args, { dataSources }) =>
+      dataSources.directoryPersonAPI.getProfilePicture({ key: id, query: args }),
+  }
 };

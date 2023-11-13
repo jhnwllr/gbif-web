@@ -13,7 +13,6 @@ class DirectoryPersonAPI extends RESTDataSource {
     super();
     this.baseURL = config.apiv1;
     this.config = config;
-    console.log(config.apiv1);
   }
 
   willSendRequest(request) {
@@ -32,7 +31,16 @@ class DirectoryPersonAPI extends RESTDataSource {
     return pick(directoryPerson, [
       'id',
       'firstName',
-      'lastName',
+      'surname',
+      'title',
+      'orcidId',
+      'jobTitle',
+      'institutionName',
+      'roles',
+      'certifications',
+      'languages',
+      'areasExpertise',
+      'profileDescriptions',
       'created',
       'modified',
     ]);
@@ -43,7 +51,6 @@ class DirectoryPersonAPI extends RESTDataSource {
       '/directory/person_role',
       stringify(query, { indices: false }),
     );
-    console.log(response);
     
     // Sanitize the data before returning it, this data is from an authorized endpoint.
     // response.results = response.results.map((p) => this.reduceDirectoryPerson(p));
@@ -51,9 +58,13 @@ class DirectoryPersonAPI extends RESTDataSource {
   }
 
   async getDirectoryPersonByKey({ key }) {
-    const directoryPerson = await this.get(`/directory/directoryPerson/${key}`);
+    const directoryPerson = await this.get(`/directory/person/${key}`);
     // Sanitize the data before returning it, this data is from an authorized endpoint.
     return this.reduceDirectoryPerson(directoryPerson);
+  }
+
+  async getProfilePicture({ key, query }) {
+    return await this.get(`/directory/person/${key}/profilePicture`, stringify(query, { indices: false }));
   }
 
   /*

@@ -2,36 +2,33 @@ import { gql } from 'apollo-server';
 
 const typeDef = gql`
   extend type Query {
-    directoryPersonSearch(
-      limit: Int
-      offset: Int
-      role: String
-    ): DirectoryPersonSearchResults
-    directoryPerson(key: String!): DirectoryPerson
+    directoryTranslators(limit: Int, offset: Int): DirectoryPersonRoleSearchResults
+    directoryAmbasadors(limit: Int, offset: Int): DirectoryPersonRoleSearchResults
+    directoryMentors(limit: Int, offset: Int): DirectoryPersonRoleSearchResults
+    directoryAwardWinners(award: [String]): [DirectoryPerson]!
   }
 
-  type DirectoryPersonSearchResults {
-    results: [JSON]!
+  type DirectoryPersonRole {
+    relationshipId: Int
+    personId: Int
+    role: String
+    programme: String
+    award: String
+    term: DirectoryTerm
+    Person: DirectoryPerson
+  }
+
+  type DirectoryTerm {
+  start: String
+  end: String
+}
+
+  type DirectoryPersonRoleSearchResults {
+    results: [DirectoryPersonRole]!
     limit: Int!
     offset: Int!
     count: Int!
     endOfRecords: Boolean!
-  }
-
-  type DirectoryPersonStub {
-    id: ID!
-    firstName: String
-    surname: String
-    title: String
-    orcidId: String
-    jobTitle: String
-    institutionName: String
-    email: String
-    phone: String
-    address: String
-    countryCode: Country
-    comments: String
-    countryName: String
   }
 
   type DirectoryPerson {
@@ -43,23 +40,22 @@ const typeDef = gql`
     jobTitle: String
     institutionName: String
     email: String
-    secondaryEmail: String
+    # secondaryEmail: String
     phone: String
-    skype: String
-    address: String
+    # skype: String
+    # address: String
     countryCode: String
-    fax: String
-    comments: String
+    # fax: String
     createdBy: String
     modifiedBy: String
     created: DateTime
     modified: DateTime
-    countryName: String
-    roles: [String]
+    roles: [DirectoryPersonRole]
     certifications: [Certification]
     languages: [String]
     areasExpertise: [String]
     profileDescriptions: [ProfileDescription]
+    profilePicture(base64: Boolean): String
   }
 
   type Certification {
