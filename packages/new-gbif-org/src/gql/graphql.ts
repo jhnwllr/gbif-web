@@ -71,7 +71,7 @@ export type Article = {
   gbifHref?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['ID']['output']>;
   keywords?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  primaryImage?: Maybe<Image>;
+  primaryImage?: Maybe<AssetImage>;
   purposes?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   secondaryLinks?: Maybe<Array<Maybe<Link>>>;
   summary?: Maybe<Scalars['String']['output']>;
@@ -79,6 +79,13 @@ export type Article = {
   topics?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   urlAlias?: Maybe<Scalars['String']['output']>;
+};
+
+export type AssetImage = {
+  __typename?: 'AssetImage';
+  description?: Maybe<Scalars['String']['output']>;
+  file?: Maybe<ImageFile>;
+  title?: Maybe<Scalars['String']['output']>;
 };
 
 export type AssociatedId = {
@@ -543,7 +550,7 @@ export type Composition = {
   id?: Maybe<Scalars['ID']['output']>;
   keywords?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   machineIdentifier?: Maybe<Scalars['String']['output']>;
-  primaryImage?: Maybe<Image>;
+  primaryImage?: Maybe<AssetImage>;
   summary?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
@@ -962,7 +969,7 @@ export type DataUse = {
   homepage?: Maybe<Scalars['Boolean']['output']>;
   id?: Maybe<Scalars['ID']['output']>;
   keywords?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  primaryImage?: Maybe<Image>;
+  primaryImage?: Maybe<AssetImage>;
   primaryLink?: Maybe<Link>;
   purposes?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   resourceUsed?: Maybe<Scalars['String']['output']>;
@@ -1480,7 +1487,7 @@ export type Event = {
   keywords?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   location?: Maybe<Scalars['String']['output']>;
   organisingParticipants?: Maybe<Array<Maybe<Participant>>>;
-  primaryImage?: Maybe<Image>;
+  primaryImage?: Maybe<AssetImage>;
   primaryLink?: Maybe<Link>;
   searchable?: Maybe<Scalars['Boolean']['output']>;
   secondaryLinks?: Maybe<Array<Maybe<Link>>>;
@@ -1598,7 +1605,7 @@ export type GbifProject = {
   matchingFunds?: Maybe<Scalars['Int']['output']>;
   news?: Maybe<Array<Maybe<News>>>;
   officialTitle?: Maybe<Scalars['String']['output']>;
-  primaryImage?: Maybe<Image>;
+  primaryImage?: Maybe<AssetImage>;
   primaryLink?: Maybe<Link>;
   programme?: Maybe<Programme>;
   projectId?: Maybe<Scalars['String']['output']>;
@@ -1740,9 +1747,32 @@ export enum IdentifierType {
 
 export type Image = {
   __typename?: 'Image';
+  IDofContainingCollection?: Maybe<Scalars['String']['output']>;
+  accessOriginalURI?: Maybe<Scalars['String']['output']>;
+  accessURI?: Maybe<Scalars['String']['output']>;
+  createDate?: Maybe<Scalars['String']['output']>;
+  creator?: Maybe<Scalars['String']['output']>;
+  credit?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
-  file?: Maybe<ImageFile>;
+  format?: Maybe<Scalars['String']['output']>;
+  hashFunction?: Maybe<Scalars['String']['output']>;
+  hashValue?: Maybe<Scalars['String']['output']>;
+  identifier: Scalars['String']['output'];
+  metadataDate?: Maybe<Scalars['String']['output']>;
+  metadataLanguage?: Maybe<Scalars['String']['output']>;
+  metadataLanguageLiteral?: Maybe<Scalars['String']['output']>;
+  owner?: Maybe<Scalars['String']['output']>;
+  pixelXDimension?: Maybe<Scalars['Int']['output']>;
+  pixelYDimension?: Maybe<Scalars['Int']['output']>;
+  provider?: Maybe<Scalars['String']['output']>;
+  providerLiteral?: Maybe<Scalars['String']['output']>;
+  providerManagedID?: Maybe<Scalars['String']['output']>;
+  rights?: Maybe<Scalars['String']['output']>;
+  subtypeLiteral?: Maybe<Scalars['String']['output']>;
+  tag?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
+  type: Scalars['String']['output'];
+  webStatement?: Maybe<Scalars['String']['output']>;
 };
 
 export type ImageFile = {
@@ -1750,7 +1780,15 @@ export type ImageFile = {
   contentType?: Maybe<Scalars['String']['output']>;
   details?: Maybe<ImageFileDetails>;
   fileName?: Maybe<Scalars['String']['output']>;
+  thumbor?: Maybe<Scalars['String']['output']>;
   url?: Maybe<Scalars['String']['output']>;
+};
+
+
+export type ImageFileThumborArgs = {
+  fitIn?: InputMaybe<Scalars['Boolean']['input']>;
+  height?: InputMaybe<Scalars['Int']['input']>;
+  width?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type ImageFileDetails = {
@@ -2583,7 +2621,7 @@ export type News = {
   homepage?: Maybe<Scalars['Boolean']['output']>;
   id?: Maybe<Scalars['ID']['output']>;
   keywords?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  primaryImage?: Maybe<Image>;
+  primaryImage?: Maybe<AssetImage>;
   primaryLink?: Maybe<Link>;
   programmeTag?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   projectTag?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
@@ -4620,6 +4658,7 @@ export type Query = {
   staffMember?: Maybe<StaffMember>;
   staffMemberSearch?: Maybe<StaffMemberSearchResults>;
   taxon?: Maybe<Taxon>;
+  taxonMedia: Array<Image>;
   taxonSearch: TaxonSearchResult;
   /** Unstable endpoint! Will return a list of taxon suggestions based on the provided query string. The returned taxonKeys are for the backbone. The datasetKey parameter can be used to restrict the suggestions to a specific checklist, but the results will be matched to the backbone and discarded if there is no match. The limit parameter is indicative only, as the number of results returned may be less than the limit if there are no matches in the backbone or if there is duplicate matches. */
   taxonSuggestions: Array<Maybe<TaxonSuggestion>>;
@@ -4780,7 +4819,8 @@ export type QueryGlobeArgs = {
 
 
 export type QueryHelpArgs = {
-  id: Scalars['String']['input'];
+  identifier: Scalars['String']['input'];
+  locale?: InputMaybe<Scalars['String']['input']>;
   preview?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
@@ -4993,6 +5033,14 @@ export type QueryTaxonArgs = {
 };
 
 
+export type QueryTaxonMediaArgs = {
+  from?: InputMaybe<Scalars['Int']['input']>;
+  key?: InputMaybe<Scalars['String']['input']>;
+  params?: InputMaybe<Scalars['JSON']['input']>;
+  size?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type QueryTaxonSearchArgs = {
   datasetKey?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
   habitat?: InputMaybe<Array<InputMaybe<Habitat>>>;
@@ -5135,6 +5183,13 @@ export enum Rank {
   Variety = 'VARIETY'
 }
 
+export type RelatedCurrentOccurrence = {
+  __typename?: 'RelatedCurrentOccurrence';
+  occurrence?: Maybe<Occurrence>;
+  /** The occurrence as provided by the cluster API. It only has relev */
+  stub?: Maybe<RelatedOccurrenceStub>;
+};
+
 export type RelatedOccurrence = {
   __typename?: 'RelatedOccurrence';
   occurrence?: Maybe<Occurrence>;
@@ -5158,6 +5213,7 @@ export type RelatedOccurrenceStub = {
 export type RelatedOccurrences = {
   __typename?: 'RelatedOccurrences';
   count?: Maybe<Scalars['Int']['output']>;
+  currentOccurrence: RelatedCurrentOccurrence;
   from?: Maybe<Scalars['Int']['output']>;
   relatedOccurrences?: Maybe<Array<Maybe<RelatedOccurrence>>>;
   size?: Maybe<Scalars['Int']['output']>;
@@ -5175,6 +5231,7 @@ export type ResourceSearchInput = {
   contentType?: InputMaybe<Array<ContentType>>;
   countriesOfCoverage?: InputMaybe<Array<Scalars['String']['input']>>;
   countriesOfResearcher?: InputMaybe<Array<Scalars['String']['input']>>;
+  id?: InputMaybe<Array<Scalars['ID']['input']>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   locale?: InputMaybe<Array<Scalars['String']['input']>>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -5399,6 +5456,8 @@ export type Taxon = {
   /** Lists all synonyms for a name usage */
   synonyms?: Maybe<TaxonListResult>;
   taxonID?: Maybe<Scalars['String']['output']>;
+  /** This is an experiment that might be stopped at any time. It is not part of the stable API. It will attempt ti find a nice image to represent the taxon. */
+  taxonImages_volatile: Array<Maybe<Image>>;
   taxonomicStatus?: Maybe<Scalars['String']['output']>;
   /** Lists all type specimens for a name usage, see also lmitations: https://github.com/gbif/portal-feedback/issues/1146#issuecomment-366260607 */
   typeSpecimens?: Maybe<TaxonTypeSpecimenResult>;
@@ -5450,6 +5509,11 @@ export type TaxonSpeciesProfilesArgs = {
 export type TaxonSynonymsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type TaxonTaxonImages_VolatileArgs = {
+  size?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -5814,7 +5878,7 @@ export type Tool = {
   id?: Maybe<Scalars['ID']['output']>;
   keywords?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   machineIdentifier?: Maybe<Scalars['String']['output']>;
-  primaryImage?: Maybe<Image>;
+  primaryImage?: Maybe<AssetImage>;
   primaryLink?: Maybe<Link>;
   publicationDate?: Maybe<Scalars['DateTime']['output']>;
   rights?: Maybe<Scalars['String']['output']>;
@@ -6116,7 +6180,7 @@ export type DatasetQueryVariables = Exact<{
 }>;
 
 
-export type DatasetQuery = { __typename?: 'Query', dataset?: { __typename?: 'Dataset', title?: string | null } | null };
+export type DatasetQuery = { __typename?: 'Query', dataset?: { __typename?: 'Dataset', title?: string | null, publishingOrganizationKey: string, publishingOrganizationTitle?: string | null } | null };
 
 export type OccurrenceQueryVariables = Exact<{
   key: Scalars['ID']['input'];
@@ -6133,7 +6197,23 @@ export type OccurrenceSearchQueryVariables = Exact<{
 
 export type OccurrenceSearchQuery = { __typename?: 'Query', occurrenceSearch?: { __typename?: 'OccurrenceSearchResult', documents: { __typename?: 'OccurrenceDocuments', from: number, size: number, total: any, results: Array<{ __typename?: 'Occurrence', key?: number | null, scientificName?: string | null, eventDate?: any | null, coordinates?: any | null, county?: string | null, basisOfRecord?: string | null, datasetName?: Array<string | null> | null, publisherTitle?: string | null } | null> } } | null };
 
+export type PublisherQueryVariables = Exact<{
+  key: Scalars['ID']['input'];
+}>;
 
-export const DatasetDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Dataset"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dataset"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"key"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]} as unknown as DocumentNode<DatasetQuery, DatasetQueryVariables>;
+
+export type PublisherQuery = { __typename?: 'Query', publisher?: { __typename?: 'Organization', title?: string | null } | null };
+
+export type NewsQueryVariables = Exact<{
+  key: Scalars['String']['input'];
+}>;
+
+
+export type NewsQuery = { __typename?: 'Query', news?: { __typename?: 'News', id?: string | null, title?: string | null, summary?: string | null, body?: string | null, countriesOfCoverage?: Array<string | null> | null, topics?: Array<string | null> | null, purposes?: Array<string | null> | null, audiences?: Array<string | null> | null, citation?: string | null, createdAt?: any | null, primaryImage?: { __typename?: 'AssetImage', description?: string | null, title?: string | null, file?: { __typename?: 'ImageFile', url?: string | null, normal?: string | null, mobile?: string | null } | null } | null, primaryLink?: { __typename?: 'Link', label?: string | null, url?: string | null } | null, secondaryLinks?: Array<{ __typename?: 'Link', label?: string | null, url?: string | null } | null> | null } | null };
+
+
+export const DatasetDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Dataset"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dataset"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"key"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"publishingOrganizationKey"}},{"kind":"Field","name":{"kind":"Name","value":"publishingOrganizationTitle"}}]}}]}}]} as unknown as DocumentNode<DatasetQuery, DatasetQueryVariables>;
 export const OccurrenceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Occurrence"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"occurrence"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"key"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"eventDate"}},{"kind":"Field","name":{"kind":"Name","value":"scientificName"}},{"kind":"Field","name":{"kind":"Name","value":"coordinates"}},{"kind":"Field","name":{"kind":"Name","value":"dataset"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]}}]} as unknown as DocumentNode<OccurrenceQuery, OccurrenceQueryVariables>;
 export const OccurrenceSearchDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"OccurrenceSearch"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"from"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"predicate"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Predicate"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"occurrenceSearch"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"predicate"},"value":{"kind":"Variable","name":{"kind":"Name","value":"predicate"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"documents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"from"},"value":{"kind":"Variable","name":{"kind":"Name","value":"from"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"scientificName"}},{"kind":"Field","name":{"kind":"Name","value":"eventDate"}},{"kind":"Field","name":{"kind":"Name","value":"coordinates"}},{"kind":"Field","name":{"kind":"Name","value":"county"}},{"kind":"Field","name":{"kind":"Name","value":"basisOfRecord"}},{"kind":"Field","name":{"kind":"Name","value":"datasetName"}},{"kind":"Field","name":{"kind":"Name","value":"publisherTitle"}}]}}]}}]}}]}}]} as unknown as DocumentNode<OccurrenceSearchQuery, OccurrenceSearchQueryVariables>;
+export const PublisherDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Publisher"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"publisher"},"name":{"kind":"Name","value":"organization"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"key"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]} as unknown as DocumentNode<PublisherQuery, PublisherQueryVariables>;
+export const NewsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"News"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"news"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"body"}},{"kind":"Field","name":{"kind":"Name","value":"primaryImage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"file"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","alias":{"kind":"Name","value":"normal"},"name":{"kind":"Name","value":"thumbor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"width"},"value":{"kind":"IntValue","value":"1200"}},{"kind":"Argument","name":{"kind":"Name","value":"height"},"value":{"kind":"IntValue","value":"500"}}]},{"kind":"Field","alias":{"kind":"Name","value":"mobile"},"name":{"kind":"Name","value":"thumbor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"width"},"value":{"kind":"IntValue","value":"800"}},{"kind":"Argument","name":{"kind":"Name","value":"height"},"value":{"kind":"IntValue","value":"400"}}]}]}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"Field","name":{"kind":"Name","value":"primaryLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"secondaryLinks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"countriesOfCoverage"}},{"kind":"Field","name":{"kind":"Name","value":"topics"}},{"kind":"Field","name":{"kind":"Name","value":"purposes"}},{"kind":"Field","name":{"kind":"Name","value":"audiences"}},{"kind":"Field","name":{"kind":"Name","value":"citation"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<NewsQuery, NewsQueryVariables>;

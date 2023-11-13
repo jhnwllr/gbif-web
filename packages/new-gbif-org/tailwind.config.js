@@ -15,6 +15,14 @@ module.exports = {
         "2xl": "1400px",
       },
     },
+    fontFamily: {
+      sans: [
+        '"Inter var", BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif',
+        {
+          fontFeatureSettings: '"cv02", "cv03", "cv04", "cv11"'
+        },
+      ],
+    },
     extend: {
       colors: {
         border: "var(--border)",
@@ -72,5 +80,8 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require('@tailwindcss/typography'),
+    require("tailwindcss-animate")
+  ],
 }
