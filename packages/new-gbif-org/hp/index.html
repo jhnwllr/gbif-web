@@ -18,7 +18,7 @@
       import { render } from '/gbif-lib.js';
 
       render(document.getElementById('root'), {
-        graphqlEndpoint: 'http://localhost:4001/graphql',
+        graphqlEndpoint: 'https://graphql.gbif-staging.org/graphql',
         pages: [
           {
             key: 'occurrence-search-page',
@@ -27,9 +27,9 @@
             key: 'occurrence-page',
           },
           // Uncomment this object to enable the dataset page. Otherwise it will link to GBIF.org
-          // {
-          //   key: 'dataset-page',
-          // },
+          {
+            key: 'dataset-page',
+          },
         ],
         languages: [
           {
