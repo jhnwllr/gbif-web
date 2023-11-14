@@ -4,14 +4,40 @@
     "gallery": "Galerie",
     "map": "Karte",
     "datasets": "Datasets",
-    "download": "Download"
+    "events": "",
+    "download": "Download",
+    "clusters": "",
+    "sites": "GBIF-kommentiertes Archiv"
   },
   "table": {
     "lockColumn": "Spalte fixieren"
   },
   "placeholders": {
     "default": "Suche",
-    "range": "Bereich oder einzelner Wert"
+    "range": "Bereich oder einzelner Wert",
+    "locationID": "GBIF-kommentiertes Archiv"
   },
-  "loadMore": "Mehr"
+  "loadMore": "Mehr",
+  "occurrenceClustersView": {
+    "about": "",
+    "clusters": "",
+    "legend": "",
+    "differentPublishers": "",
+    "samePublishers": "",
+    "entryPoint": "",
+    "hasMultipleTaxonKeys": "",
+    "aboutLink": "",
+    "isCapped": "",
+    "isDeleted": "",
+    "similarities": "",
+    "currentRecord": "",
+    "nodeType": {
+      "IMAGE": "",
+      "TYPE": "",
+      "TREATMENT": "",
+      "OBSERVATION": "Beobachtung",
+      "SPECIMEN": "Exemplar",
+      "SEQUENCE": ""
+    }
+  }
 }

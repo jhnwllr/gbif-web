@@ -1,17 +1,44 @@
-import createDOMPurify from 'dompurify';
+import sanitizeHtml from 'sanitize-html';
+import * as cheerio from 'cheerio';
 import mdit from 'markdown-it';
 import { decode } from 'html-entities';
-import { JSDOM } from 'jsdom';
 import config from '#/config';
+import mdAnchor from 'markdown-it-anchor';
 
-const { window } = new JSDOM('');
-const DOMPurify = createDOMPurify(window);
+export const standardTags = [
+  "address", "article", "aside", "footer", "header", "h1", "h2", "h3", "h4",
+  "h5", "h6", "hgroup", "main", "nav", "section", "blockquote", "dd", "div",
+  "dl", "dt", "figcaption", "figure", "hr", "li", "main", "ol", "p", "pre",
+  "ul", "a", "abbr", "b", "bdi", "bdo", "br", "cite", "code", "data", "dfn",
+  "em", "i", "kbd", "mark", "q", "rb", "rp", "rt", "rtc", "ruby", "s", "samp",
+  "small", "span", "strong", "sub", "sup", "time", "u", "var", "wbr", "caption",
+  "col", "colgroup", "table", "tbody", "td", "tfoot", "th", "thead", "tr",
+];
+export const defaultAttributes = {
+  a: ['href', 'name', 'target']
+};
+
+export const publishedTags = [
+  "h1", "h2", "h3", "h4", "h5", "h6", "dl", "dt", "li", "main", "ol", "p", "pre",
+  "ul", "a", "abbr", "b", "code", "em", "i", "span", "strong"
+];
+
+export const trustedTags = [...standardTags, 'iframe', 'img'];
+export const trustedAttributes = {
+  ...defaultAttributes,
+  img: ['src', 'srcset', 'alt', 'title', 'width', 'height', 'loading']
+};
 
 const md = mdit({
   html: true,
   linkify: true,
   typographer: false,
   breaks: true,
+});
+
+// adding anchor headers to markdown would be nice, but the problem is the navbar offset
+md.use(mdAnchor, {
+  // slugify: function(str){return '_' + encodeURIComponent(format.getSlug(str))}, // option to add a custom slug function. I'm not sure how well the default works - we should test that on the vadious languages
 });
 
 function formattedCoordinates({ lat, lon }) {
@@ -54,15 +81,16 @@ function isOccurrenceSequenced({ occurrence, verbatim }) {
 
 function getHtml(
   value,
-  { allowedTags = ['a', 'p', 'i', 'ul', 'ol', 'li', 'strong'], inline } = {},
+  { allowedTags = ['a', 'p', 'i', 'ul', 'ol', 'li', 'strong'], allowedAttributes = defaultAttributes, inline, wrapTables } = {},
 ) {
-  const options = {};
-  if (allowedTags) options.ALLOWED_TAGS = allowedTags;
+  const options = { wrapTables };
+  if (allowedTags) options.allowedTags = allowedTags;
+  if (allowedAttributes) options.allowedAttributes = allowedAttributes;
   if (typeof value === 'string' || typeof value === 'number') {
     const dirty = inline ? md.renderInline(`${value}`) : md.render(`${value}`);
-    const decoded = decode(dirty);
+    const decoded = decode(dirty).replace(/\n/g, '');
     const dirtyV2 = md.renderInline(`${decoded}`);
-    const clean = DOMPurify.sanitize(dirtyV2, options);
+    const clean = sanitize(dirtyV2, options);
     return clean;
   }
   return null;
@@ -171,6 +199,61 @@ function createLocalizedGbifHref(locale, path, id) {
   ].filter(Boolean).join('/');
 
   return url;
+}
+
+
+function prefixLinkUrl(str = '') {
+  if (typeof str === 'string') {
+    str = (str + '').replace(/^http(s)?:\/\/www\.gbif((-dev)|(-uat))?\.org\//, `${config.gbifLinkTargetOrigin}/`);
+    if (str.startsWith('/') && !str.startsWith('//')) {
+      str = config.gbifLinkTargetOrigin + str;
+    }
+  }
+  return str;
+}
+
+function sanitize(dirty, { allowedTags = standardTags, wrapTables } = {}) {
+  dirty = dirty || '';
+  let sanitized = sanitizeHtml(dirty, {
+    allowedTags,
+    allowedAttributes: false,
+    allowedIframeHostnames: ['www.youtube.com', 'player.vimeo.com', 'vimeo.com'],
+    transformTags: {
+      'a': function (tagName, attr) {
+        attr.href = prefixLinkUrl(attr.href);
+        return {
+          tagName,
+          attribs: attr
+        };
+      },
+      'img': function (tagName, attr) {
+        attr.src = prefixLinkUrl(attr.src);
+        return {
+          tagName,
+          attribs: attr
+        };
+      }
+    }
+  });
+  if (!wrapTables) return sanitized;
+
+  // else wrap tables in divs for easier styling
+  // Load the HTML content into Cheerio
+  const $ = cheerio.load(sanitized, null, false);
+  
+  // Find all table tags and wrap them in a div
+  $('table').each((index, element) => {
+    const table = $(element);
+    const div = $('<div class="gbif-table-wrapper"></div>');
+
+    // Replace the table with the wrapped div
+    table.replaceWith(div.append(table.clone()));
+  });
+
+  // Get the modified HTML
+  const modifiedHtml = $.html();
+
+  return modifiedHtml;
 }
 
 export { formattedCoordinates, isOccurrenceSequenced, getHtml, getExcerpt, simplifyUrlObjectKeys, translateContentfulResponse, excerpt, objectToQueryString, createLocalizedGbifHref };

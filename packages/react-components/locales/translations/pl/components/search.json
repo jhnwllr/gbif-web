@@ -3,15 +3,41 @@
     "table": "",
     "gallery": "",
     "map": "",
-    "datasets": "",
-    "download": ""
+    "datasets": "Zbiory danych",
+    "events": "",
+    "download": "",
+    "clusters": "",
+    "sites": ""
   },
   "table": {
     "lockColumn": ""
   },
   "placeholders": {
     "default": "",
-    "range": ""
+    "range": "",
+    "locationID": ""
   },
-  "loadMore": ""
+  "loadMore": "",
+  "occurrenceClustersView": {
+    "about": "",
+    "clusters": "",
+    "legend": "",
+    "differentPublishers": "",
+    "samePublishers": "",
+    "entryPoint": "",
+    "hasMultipleTaxonKeys": "",
+    "aboutLink": "",
+    "isCapped": "",
+    "isDeleted": "",
+    "similarities": "",
+    "currentRecord": "",
+    "nodeType": {
+      "IMAGE": "",
+      "TYPE": "",
+      "TREATMENT": "",
+      "OBSERVATION": "Obserwacja",
+      "SPECIMEN": "",
+      "SEQUENCE": ""
+    }
+  }
 }

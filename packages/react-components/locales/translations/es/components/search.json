@@ -4,14 +4,40 @@
     "gallery": "Galería",
     "map": "Mapa",
     "datasets": "Conjuntos de datos",
-    "download": "Descargar"
+    "events": "Eventos",
+    "download": "Descargar",
+    "clusters": "",
+    "sites": "Archivo de GBIF anotado"
   },
   "table": {
     "lockColumn": "Inmovilizar columna"
   },
   "placeholders": {
     "default": "Buscar",
-    "range": "Rango o valor único"
+    "range": "Rango o valor único",
+    "locationID": "Archivo de GBIF anotado"
   },
-  "loadMore": "Más"
+  "loadMore": "Más",
+  "occurrenceClustersView": {
+    "about": "Acerca de",
+    "clusters": "",
+    "legend": "",
+    "differentPublishers": "",
+    "samePublishers": "",
+    "entryPoint": "",
+    "hasMultipleTaxonKeys": "",
+    "aboutLink": "",
+    "isCapped": "",
+    "isDeleted": "",
+    "similarities": "",
+    "currentRecord": "",
+    "nodeType": {
+      "IMAGE": "Imagen",
+      "TYPE": "Espécimen tipo",
+      "TREATMENT": "Tratamiento",
+      "OBSERVATION": "Observación",
+      "SPECIMEN": "Espécimen",
+      "SEQUENCE": ""
+    }
+  }
 }

@@ -8,7 +8,6 @@ export class ResourceAPI extends RESTDataSource {
   }
 
   async getEntryById({ id, preview, locale }) {
-    console.log('getEntryById', id, preview, locale);
     let path = `/content/${id}`;
     if (preview) path += `/preview?cacheBust=${Date.now()}`;
 
@@ -26,5 +25,13 @@ export class ResourceSearchAPI extends RESTDataSource {
   search = async (params, locale) => {
     const response = await this.get(`/content`, objectToQueryString(params));
     return translateContentfulResponse(response.documents, locale);
+  }
+
+  async getFirstEntryByQuery(params, locale) {
+    const response = await this.search(params, locale);
+    console.log(params);
+    console.log(response);
+
+    return response.results[0];
   }
 }

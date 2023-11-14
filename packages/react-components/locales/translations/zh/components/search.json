@@ -4,14 +4,40 @@
     "gallery": "图库",
     "map": "地图",
     "datasets": "数据集",
-    "download": "下载"
+    "events": "事件",
+    "download": "下载",
+    "clusters": "",
+    "sites": "GBIF附加说明的归档"
   },
   "table": {
     "lockColumn": "锁定列"
   },
   "placeholders": {
     "default": "搜索",
-    "range": "范围或单个值"
+    "range": "范围或单个值",
+    "locationID": "GBIF附加说明的归档"
   },
-  "loadMore": "更多"
+  "loadMore": "更多",
+  "occurrenceClustersView": {
+    "about": "关于",
+    "clusters": "",
+    "legend": "",
+    "differentPublishers": "",
+    "samePublishers": "",
+    "entryPoint": "",
+    "hasMultipleTaxonKeys": "",
+    "aboutLink": "",
+    "isCapped": "",
+    "isDeleted": "",
+    "similarities": "",
+    "currentRecord": "",
+    "nodeType": {
+      "IMAGE": "图片",
+      "TYPE": "",
+      "TREATMENT": "治疗",
+      "OBSERVATION": "观察",
+      "SPECIMEN": "标本",
+      "SEQUENCE": ""
+    }
+  }
 }
