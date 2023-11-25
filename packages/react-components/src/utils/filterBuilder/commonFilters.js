@@ -78,7 +78,35 @@ export const commonFilters = {
         },
       },
       specific: {
-        suggestHandle: 'countryCode'
+        suggestHandle: 'countryCode',
+        query: `
+          query suggest($predicate: Predicate, $size: Int){
+            suggestions: occurrenceSearch(predicate: $predicate) {
+              cardinality {
+                countryCode
+              }
+              facet {
+                results: countryCode(size: $size) {
+                  key
+                  count
+                }
+              }
+            }
+          }
+        `,
+        facetsQuery: `
+          query suggest($predicate: Predicate, $size: Int){
+            selected: occurrenceSearch(predicate: $predicate) {
+              facet {
+                results: countryCode(size: $size) {
+                  key
+                  count
+                }
+              }
+            }
+          }
+        `,
+        queryKey: 'countryCode'
       }
     }
   },

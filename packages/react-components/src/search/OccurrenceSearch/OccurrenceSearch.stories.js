@@ -177,7 +177,7 @@ const config = {
   labels, 
   getSuggests, 
   filters, 
-  occurrenceSearchTabs: ['CLUSTERS', 'TABLE', 'MAP', 'DATASETS', 'GALLERY'],
+  occurrenceSearchTabs: ['TABLE', 'MAP', 'DATASETS', 'GALLERY'],
   // highlightedFilters: ['establishmentMeans'],
   // excludedFilters: ['locality'],
   availableCatalogues: ['OCCURRENCE', 'LITERATURE', 'COLLECTION'],
@@ -188,13 +188,13 @@ const config = {
   //   lat: 50.83439252440547
   // },
   // excludedFilters: ['occurrenceStatus', 'networkKey', 'hostingOrganizationKey', 'protocol', 'publishingCountryCode', 'institutionCode', 'collectionCode'],
-  highlightedFilters: ['datasetKey', 'taxonKey', 'institutionKey', 'collectionKey', 'catalogNumber', 'recordedBy', 'identifiedBy'],
+  highlightedFilters: ['country', 'datasetKey'],
   defaultTableColumns: ['features', 'institutionKey', 'collectionKey', 'catalogNumber', 'country', 'year', 'recordedBy', 'identifiedBy'],
 };
 // const config = { labels, getSuggests, filters, rootPredicate: {type: 'equals', key: 'publishingOrganizationKey', value: '1cd669d0-80ea-11de-a9d0-f1765f95f18b'}};
 // const config = { labels, getSuggests, filters, rootPredicate: {type: 'in', key: 'datasetKey', values: inboDatasets}};
 
-export const Example = () => <Router initialEntries={[`/occurrence/search?`]}>
+export const Example = () => <Router initialEntries={[`/occurrence/search?year=2020`]}>
 {/* export const Example = () => <Router initialEntries={[`/?filter=eyJtdXN0Ijp7Im9jY3VycmVuY2VJZCI6WyJlIl19LCJtdXN0X25vdCI6eyJvY2N1cnJlbmNlSXNzdWUiOlsiWkVST19DT09SRElOQVRFIl0sIm9jY3VycmVuY2VJZCI6WyIxIiwiMiJdfX0%3D`]}> */}
   <QueryParamProvider ReactRouterRoute={Route} stringifyOptions={{strict: false}}>
     <AddressBar />
