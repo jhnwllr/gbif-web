@@ -69,8 +69,21 @@ const searchOccurrences = (parent, query, { dataSources }) => {
   });
 };
 
-const facetOccurrenceSearch = (parent) => {
-  return { _predicate: parent._predicate };
+const facetOccurrenceSearch = (parent, _args, { dataSources }) => {
+  const predicate = parent._predicate;
+  const v1Predicate = predicate2v1(predicate);
+  const v1PredicateQStripped = predicate2v1(predicate, {
+    shouldRemoveFullTextPredicates: true,
+  });
+  return {
+    _predicate: predicate,
+    _downloadPredicate: v1Predicate,
+    _v1PredicateHash: v1PredicateQStripped.predicate
+      ? dataSources.occurrenceAPI.registerPredicate({
+        predicate: v1PredicateQStripped.predicate,
+      })
+      : null,
+  };
 };
 
 /**
@@ -163,7 +176,7 @@ export default {
     },
   },
   MultimediaItem: {
-    thumbor: ({identifier, type, occurrenceKey}, {fitIn, width = '', height = ''}) => {
+    thumbor: ({ identifier, type, occurrenceKey }, { fitIn, width = '', height = '' }) => {
       if (!identifier) return null;
       if (type !== 'StillImage') return null;
       if (!occurrenceKey) return null;
@@ -174,7 +187,7 @@ export default {
       try {
         const url = `${config.occurrenceImageCache}/${fitIn ? 'fit-in/' : ''}${width}x${height}/occurrence/${occurrenceKey}/media/${md5(identifier ?? '')}`;
         return url;
-      } catch(err) {
+      } catch (err) {
         return identifier;
       }
     }
@@ -196,7 +209,7 @@ export default {
       // extract primary image. for now just any image
       const img = media.find((x) => x.type === 'StillImage');
       if (img) {
-        return {...img, occurrenceKey: key};
+        return { ...img, occurrenceKey: key };
       }
       return null;
     },

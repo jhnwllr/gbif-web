@@ -13,6 +13,7 @@ class Map extends Component {
     super(props);
 
     this.addLayer = this.addLayer.bind(this);
+    this.addLayers = this.addLayers.bind(this);
     this.updateLayer = this.updateLayer.bind(this);
     this.onPointClick = this.onPointClick.bind(this);
     this.myRef = React.createRef();
@@ -41,7 +42,7 @@ class Map extends Component {
       center: [lng, lat]
     });
     // this.map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-left');
-    this.map.on("load", this.addLayer);
+    this.map.on("load", this.updateLayer);
   }
 
   componentWillUnmount() {
@@ -50,6 +51,9 @@ class Map extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.query !== this.props.query && this.mapLoaded) {
+      this.updateLayer();
+    }
+    if (prevProps.occurrenceLayers !== this.props.occurrenceLayers && this.mapLoaded) {
       this.updateLayer();
     }
     if (prevProps.theme !== this.props.theme && this.mapLoaded) {
@@ -86,36 +90,65 @@ class Map extends Component {
   }
 
   updateLayer() {
-    const layer = this.map.getLayer('occurrences');
-    if (layer) {
-      this.map.removeLayer("occurrences");
-      this.map.removeSource("occurrences");
-      this.addLayer();
-    } else {
-      this.addLayer();
+    // remove all occurrence layers and sources. Assume they are named occurrences0, occurrences1, etc. There can be up to 20 layers
+    for (let i = 0; i < 20; i++) {
+      const layer = this.map.getLayer(`occurrences${i}`);
+      if (layer) {
+        this.map.removeLayer(`occurrences${i}`);
+        this.map.removeSource(`occurrences${i}`);
+      } else {
+        break;
+      }
     }
-    // this.addLayer();
+    this.addLayers();
+
+    // const layer = this.map.getLayer('occurrences');
+    // if (layer) {
+    //   this.map.removeLayer("occurrences");
+    //   this.map.removeSource("occurrences");
+    //   this.addLayer();
+    // } else {
+    //   this.addLayer();
+    // }
+    // // this.addLayer();
   }
 
   onPointClick(pointData) {
     this.props.onPointClick(pointData);
   }
 
-  addLayer() {
+  addLayers() {
+    const { occurrenceLayers, predicateHash, q } = this.props;
+    if (occurrenceLayers) {
+      // call addLayer for each layer in the occurrenceLayers array using the predicate hash and color of the layer
+      // iterate occurrenceLayers and call addLayer for each layer
+      occurrenceLayers.slice().reverse().forEach((layer, i) => {
+        if (layer.visible === false) return;
+        const color = layer.color;
+        const layerPredicateHash = layer.predicateHash;
+        const name = `occurrences${i}`;
+        this.addLayer({predicateHash: layerPredicateHash, q, name, color});
+      });
+    } else {
+      this.addLayer({predicateHash, q, name: 'occurrences0'});
+    }
+  }
+
+  addLayer({name = 'occurrences0', predicateHash = this.props.predicateHash, q = this.props.q, color} = {}) {
 
     // const source = this.map.getSource('occurrences');
     // source.setTiles([`${env.API_V2}/map/occurrence/adhoc/{z}/{x}/{y}.mvt?style=scaled.circles&mode=GEO_CENTROID&srs=EPSG%3A3857&squareSize=256&predicateHash=${this.props.predicateHash}&${this.props.q ? `&q=${this.props.q} ` : ''}`])
     
 
-    var tileString = `${env.API_V2}/map/occurrence/adhoc/{z}/{x}/{y}.mvt?style=scaled.circles&mode=GEO_CENTROID&srs=EPSG%3A3857&squareSize=256&predicateHash=${this.props.predicateHash}&${this.props.q ? `&q=${this.props.q} ` : ''}`;
+    var tileString = `${env.API_V2}/map/occurrence/adhoc/{z}/{x}/{y}.mvt?style=scaled.circles&mode=GEO_CENTROID&srs=EPSG%3A3857&squareSize=256&predicateHash=${predicateHash}&${this.props.q ? `&q=${this.props.q} ` : ''}`;
     
     this.map.addLayer(
-      getLayerConfig({ tileString, theme: this.props.theme }),
+      getLayerConfig({ tileString, theme: this.props.theme, name, color }),
       // "poi-scalerank2"
     );
 
     const map = this.map
-    if (!this.mapLoaded) {
+    // if (!this.mapLoaded) {
       // remember map position
       map.on('zoomend', function () {
         const center = map.getCenter();
@@ -130,17 +163,17 @@ class Map extends Component {
         sessionStorage.setItem('mapLat', center.lat);
       });
 
-      map.on('mouseenter', 'occurrences', function (e) {
+      map.on('mouseenter', name, function (e) {
         // Change the cursor style as a UI indicator.
         map.getCanvas().style.cursor = 'pointer';
       });
 
-      map.on('click', 'occurrences', e => {
+      map.on('click', name, e => {
         this.onPointClick({ geohash: e.features[0].properties.geohash, count: e.features[0].properties.count });
         e.preventDefault();
       });
 
-      map.on('mouseleave', 'occurrences', function () {
+      map.on('mouseleave', name, function () {
         map.getCanvas().style.cursor = '';
       });
 
@@ -153,7 +186,7 @@ class Map extends Component {
           this.props.registerPredicate();
         }
       });
-    }
+    // }
     this.mapLoaded = true;
   }
 

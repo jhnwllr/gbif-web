@@ -5,6 +5,7 @@ import { useQuery } from '../../../../dataManagement/api';
 import { filter2predicate } from '../../../../dataManagement/filterAdapter';
 import MapPresentation from './MapPresentation';
 import Geohash from 'latlon-geohash';
+import { set } from "ol/transform";
 
 const OCCURRENCE_MAP = `
 query map($predicate: Predicate){
@@ -14,6 +15,25 @@ query map($predicate: Predicate){
       total
     }
     _v1PredicateHash
+  }
+}
+`;
+
+const OCCURRENCE_FACET = `
+query map($predicate: Predicate){
+  occurrenceSearch(predicate: $predicate) {
+    facet {
+      results: speciesKey(size: 8) {
+        key
+        count
+        occurrences {
+          _v1PredicateHash
+        }
+        entity: taxon {
+          formattedName: formattedName
+        }
+      }
+    }
   }
 }
 `;
@@ -48,16 +68,27 @@ function Map() {
   const { labelMap, rootPredicate, predicateConfig, more } = useContext(OccurrenceContext);
   const { data, error, loading, load } = useQuery(OCCURRENCE_MAP, { lazyLoad: true, throwAllErrors: true, queryTag: 'map' });
   const { data: pointData, error: pointError, loading: pointLoading, load: pointLoad } = useQuery(OCCURRENCE_POINT, { lazyLoad: true, queryTag: 'mapPoint' });
+  // create the breakdown loader
+  const { data: facetData, error: facetError, loading: facetLoading, load: facetLoad } = useQuery(OCCURRENCE_FACET, { lazyLoad: true });
+  const [breakdownField, setBreakdownField] = useState(true);
+  const [facets, setFacets] = useState();
 
+  /*
+  we need a state to handle which visualization to show. by count or by field/facet
+  every time the field is changed, or the filter or root predicate, then we need to fetch the data for the breakdown
+  and once we have that we need to process the result and pass that to the map component (array of key, count, predicateHash, and possible formatted name to show in the legend as well as the field we do a breakdown on)
+  The map component then needs to be able to handle that data and do the queries for each of the breakdowns. And to handle toggling each layer visibility and color.
+  */
   useEffect(() => {
     loadHashAndCount({
       filter: currentFilterContext.filter,
       predicateConfig,
-      rootPredicate
+      rootPredicate,
+      breakdownField
     });
-  }, [currentFilterContext.filterHash, rootPredicate, predicateConfig]);
+  }, [currentFilterContext.filterHash, rootPredicate, predicateConfig, breakdownField]);
 
-  const loadHashAndCount = useCallback(({filter, predicateConfig, rootPredicate}) => {
+  const loadHashAndCount = useCallback(({filter, predicateConfig, rootPredicate, breakdownField}) => {
     const predicate = {
       type: 'and',
       predicates: [
@@ -71,7 +102,33 @@ function Map() {
       ].filter(x => x)
     }
     load({ keepDataWhileLoading: true, variables: { predicate } });
+    if (breakdownField) {
+      facetLoad({ keepDataWhileLoading: true, variables: { predicate } });
+    } else {
+      setFacets();
+    }
   }, []);
+
+  useEffect(() => {
+    // map the facet data results to an easier to digest format
+    if (!facetData) return;
+    const facets = facetData?.occurrenceSearch?.facet?.results.map(x => {
+      return {
+        key: x.key,
+        count: x.count,
+        predicateHash: x.occurrences?._v1PredicateHash,
+        title: x.entity?.formattedName ?? x.key,
+        visible: true
+      }
+    });
+    // facets.push({
+    //   key: '_all',
+    //   count: null,
+    //   predicateHash: data?.occurrenceSearch?._v1PredicateHash,
+    //   title: 'all'
+    // });
+    setFacets(facets);
+  }, [facetData]);
 
   let registrationEmbargo;
   /**
@@ -86,9 +143,10 @@ function Map() {
     loadHashAndCount({
       filter: currentFilterContext.filter,
       predicateConfig,
-      rootPredicate
+      rootPredicate,
+      breakdown
     });
-  }, [currentFilterContext.filterHash, rootPredicate, predicateConfig]);
+  }, [currentFilterContext.filterHash, rootPredicate, predicateConfig, breakdownField]);
 
   const loadPointData = useCallback(({geohash}) => {
     const latLon = Geohash.bounds(geohash);
@@ -125,6 +183,9 @@ function Map() {
     pointLoading,
     pointError,
     labelMap,
+    facets,
+    breakdownField,
+    setBreakdownField,
     q,
     defaultMapSettings: more?.mapSettings
   }
