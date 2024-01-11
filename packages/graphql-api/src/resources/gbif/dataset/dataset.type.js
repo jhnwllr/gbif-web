@@ -27,6 +27,7 @@ const typeDef = gql`
       Not implemented yet
       """
       continent: [Continent]
+      projectId: [ID]
       hl: Boolean
     ): DatasetSearchResults
     dataset(key: ID!): Dataset

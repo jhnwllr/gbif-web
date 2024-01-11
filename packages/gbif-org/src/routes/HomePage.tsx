@@ -28,6 +28,9 @@ export function HomePage(): React.ReactElement {
           <li>
             <DynamicLink to="/tool/XHl9BhJPvhn9jNKVPH6oG">Tool (wip)</DynamicLink>
           </li>
+          <li>
+            <DynamicLink to="/project/82750">Project (wip)</DynamicLink>
+          </li>
         </ul>
       </div>
     </>

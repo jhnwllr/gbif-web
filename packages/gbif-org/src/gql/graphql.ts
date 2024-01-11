@@ -86,7 +86,7 @@ export type Article = {
 export type AssetImage = {
   __typename?: 'AssetImage';
   description?: Maybe<Scalars['String']['output']>;
-  file?: Maybe<ImageFile>;
+  file: ImageFile;
   title?: Maybe<Scalars['String']['output']>;
 };
 
@@ -1586,19 +1586,19 @@ export type Event = {
   gbifHref?: Maybe<Scalars['String']['output']>;
   gbifRegion?: Maybe<GbifRegion>;
   gbifsAttendee?: Maybe<Scalars['String']['output']>;
-  homepage?: Maybe<Scalars['Boolean']['output']>;
-  id?: Maybe<Scalars['ID']['output']>;
+  homepage: Scalars['Boolean']['output'];
+  id: Scalars['ID']['output'];
   keywords?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   location?: Maybe<Scalars['String']['output']>;
   meta?: Maybe<Scalars['JSON']['output']>;
   organisingParticipants?: Maybe<Array<Maybe<Participant>>>;
   primaryImage?: Maybe<AssetImage>;
   primaryLink?: Maybe<Link>;
-  searchable?: Maybe<Scalars['Boolean']['output']>;
+  searchable: Scalars['Boolean']['output'];
   secondaryLinks?: Maybe<Array<Maybe<Link>>>;
-  start?: Maybe<Scalars['DateTime']['output']>;
+  start: Scalars['DateTime']['output'];
   summary?: Maybe<Scalars['String']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   venue?: Maybe<Scalars['String']['output']>;
 };
@@ -1694,34 +1694,34 @@ export type GbifProject = {
   call?: Maybe<Call>;
   contractCountry?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
-  documents?: Maybe<Array<Maybe<DocumentAsset>>>;
+  documents?: Maybe<Array<DocumentAsset>>;
   end?: Maybe<Scalars['DateTime']['output']>;
-  events?: Maybe<Array<Maybe<Event>>>;
+  events?: Maybe<Array<Event>>;
   excerpt?: Maybe<Scalars['String']['output']>;
   fundsAllocated?: Maybe<Scalars['Int']['output']>;
   gbifHref?: Maybe<Scalars['String']['output']>;
   gbifProgrammeAcronym?: Maybe<Scalars['String']['output']>;
   gbifRegion?: Maybe<GbifRegion>;
   grantType?: Maybe<Scalars['String']['output']>;
-  homepage?: Maybe<Scalars['Boolean']['output']>;
-  id?: Maybe<Scalars['ID']['output']>;
-  keywords?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  homepage: Scalars['Boolean']['output'];
+  id: Scalars['ID']['output'];
+  keywords?: Maybe<Array<Scalars['String']['output']>>;
   leadContact?: Maybe<Scalars['String']['output']>;
   matchingFunds?: Maybe<Scalars['Int']['output']>;
   meta?: Maybe<Scalars['JSON']['output']>;
-  news?: Maybe<Array<Maybe<News>>>;
+  news?: Maybe<Array<News>>;
   officialTitle?: Maybe<Scalars['String']['output']>;
   primaryImage?: Maybe<AssetImage>;
   primaryLink?: Maybe<Link>;
   programme?: Maybe<Programme>;
   projectId?: Maybe<Scalars['String']['output']>;
-  purposes?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  searchable?: Maybe<Scalars['Boolean']['output']>;
-  secondaryLinks?: Maybe<Array<Maybe<Link>>>;
+  purposes?: Maybe<Array<Scalars['String']['output']>>;
+  searchable: Scalars['Boolean']['output'];
+  secondaryLinks?: Maybe<Array<Link>>;
   start?: Maybe<Scalars['DateTime']['output']>;
   status?: Maybe<Scalars['String']['output']>;
   summary?: Maybe<Scalars['String']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
@@ -1893,11 +1893,11 @@ export type Image = {
 
 export type ImageFile = {
   __typename?: 'ImageFile';
-  contentType?: Maybe<Scalars['String']['output']>;
-  details?: Maybe<ImageFileDetails>;
-  fileName?: Maybe<Scalars['String']['output']>;
-  thumbor?: Maybe<Scalars['String']['output']>;
-  url?: Maybe<Scalars['String']['output']>;
+  contentType: Scalars['String']['output'];
+  details: ImageFileDetails;
+  fileName: Scalars['String']['output'];
+  thumbor: Scalars['String']['output'];
+  url: Scalars['String']['output'];
 };
 
 
@@ -2747,12 +2747,12 @@ export type News = {
   body?: Maybe<Scalars['String']['output']>;
   citation?: Maybe<Scalars['String']['output']>;
   countriesOfCoverage?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  createdAt: Scalars['DateTime']['output'];
   excerpt?: Maybe<Scalars['String']['output']>;
-  gbifHref?: Maybe<Scalars['String']['output']>;
+  gbifHref: Scalars['String']['output'];
   gbifRegion?: Maybe<Array<Maybe<GbifRegion>>>;
-  homepage?: Maybe<Scalars['Boolean']['output']>;
-  id?: Maybe<Scalars['ID']['output']>;
+  homepage: Scalars['Boolean']['output'];
+  id: Scalars['ID']['output'];
   keywords?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   meta?: Maybe<Scalars['JSON']['output']>;
   primaryImage?: Maybe<AssetImage>;
@@ -2760,12 +2760,12 @@ export type News = {
   programmeTag?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   projectTag?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   purposes?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  searchable?: Maybe<Scalars['Boolean']['output']>;
+  searchable: Scalars['Boolean']['output'];
   secondaryLinks?: Maybe<Array<Maybe<Link>>>;
   summary?: Maybe<Scalars['String']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
   topics?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type Node = {
@@ -4921,6 +4921,7 @@ export type QueryDatasetSearchArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   networkKey?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  projectId?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
   publishingCountry?: InputMaybe<Array<InputMaybe<Country>>>;
   publishingOrg?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
   q?: InputMaybe<Scalars['String']['input']>;
@@ -6401,35 +6402,63 @@ export type ArticleQueryVariables = Exact<{
 }>;
 
 
-export type ArticleQuery = { __typename?: 'Query', article?: { __typename?: 'Article', id?: string | null, title?: string | null, summary?: string | null, body?: string | null, topics?: Array<string | null> | null, purposes?: Array<string | null> | null, audiences?: Array<string | null> | null, citation?: string | null, createdAt?: any | null, primaryImage?: { __typename?: 'AssetImage', description?: string | null, title?: string | null, file?: { __typename?: 'ImageFile', url?: string | null, normal?: string | null, mobile?: string | null } | null } | null, secondaryLinks?: Array<{ __typename?: 'Link', label?: string | null, url?: string | null } | null> | null, documents?: Array<{ __typename?: 'DocumentAsset', title?: string | null, file?: { __typename?: 'DocumentAssetFile', url?: string | null, fileName?: string | null, contentType?: string | null, volatile_documentType?: string | null, details?: { __typename?: 'DocumentAssetFileDetails', size?: number | null } | null } | null } | null> | null } | null };
+export type ArticleQuery = { __typename?: 'Query', article?: { __typename?: 'Article', id?: string | null, title?: string | null, summary?: string | null, body?: string | null, topics?: Array<string | null> | null, purposes?: Array<string | null> | null, audiences?: Array<string | null> | null, citation?: string | null, createdAt?: any | null, primaryImage?: { __typename?: 'AssetImage', description?: string | null, title?: string | null, file: { __typename?: 'ImageFile', url: string, normal: string, mobile: string } } | null, secondaryLinks?: Array<{ __typename?: 'Link', label?: string | null, url?: string | null } | null> | null, documents?: Array<{ __typename?: 'DocumentAsset', title?: string | null, file?: { __typename?: 'DocumentAssetFile', url?: string | null, fileName?: string | null, contentType?: string | null, volatile_documentType?: string | null, details?: { __typename?: 'DocumentAssetFileDetails', size?: number | null } | null } | null } | null> | null } | null };
 
 export type DataUseQueryVariables = Exact<{
   key: Scalars['String']['input'];
 }>;
 
 
-export type DataUseQuery = { __typename?: 'Query', dataUse?: { __typename?: 'DataUse', id?: string | null, title?: string | null, summary?: string | null, resourceUsed?: string | null, body?: string | null, countriesOfCoverage?: Array<string | null> | null, topics?: Array<string | null> | null, purposes?: Array<string | null> | null, audiences?: Array<string | null> | null, citation?: string | null, createdAt?: any | null, primaryImage?: { __typename?: 'AssetImage', description?: string | null, title?: string | null, file?: { __typename?: 'ImageFile', url?: string | null, normal?: string | null, mobile?: string | null } | null } | null, primaryLink?: { __typename?: 'Link', label?: string | null, url?: string | null } | null, secondaryLinks?: Array<{ __typename?: 'Link', label?: string | null, url?: string | null } | null> | null } | null };
+export type DataUseQuery = { __typename?: 'Query', dataUse?: { __typename?: 'DataUse', id?: string | null, title?: string | null, summary?: string | null, resourceUsed?: string | null, body?: string | null, countriesOfCoverage?: Array<string | null> | null, topics?: Array<string | null> | null, purposes?: Array<string | null> | null, audiences?: Array<string | null> | null, citation?: string | null, createdAt?: any | null, primaryImage?: { __typename?: 'AssetImage', description?: string | null, title?: string | null, file: { __typename?: 'ImageFile', url: string, normal: string, mobile: string } } | null, primaryLink?: { __typename?: 'Link', label?: string | null, url?: string | null } | null, secondaryLinks?: Array<{ __typename?: 'Link', label?: string | null, url?: string | null } | null> | null } | null };
 
 export type EventQueryVariables = Exact<{
   key: Scalars['String']['input'];
 }>;
 
 
-export type EventQuery = { __typename?: 'Query', event?: { __typename?: 'Event', id?: string | null, title?: string | null, summary?: string | null, body?: string | null, location?: string | null, country?: string | null, start?: any | null, end?: any | null, eventLanguage?: string | null, venue?: string | null, primaryImage?: { __typename?: 'AssetImage', description?: string | null, title?: string | null, file?: { __typename?: 'ImageFile', url?: string | null, normal?: string | null, mobile?: string | null } | null } | null, primaryLink?: { __typename?: 'Link', label?: string | null, url?: string | null } | null, secondaryLinks?: Array<{ __typename?: 'Link', label?: string | null, url?: string | null } | null> | null } | null };
+export type EventQuery = { __typename?: 'Query', event?: { __typename?: 'Event', id: string, title: string, summary?: string | null, body?: string | null, location?: string | null, country?: string | null, start: any, end?: any | null, eventLanguage?: string | null, venue?: string | null, primaryImage?: { __typename?: 'AssetImage', description?: string | null, title?: string | null, file: { __typename?: 'ImageFile', url: string, normal: string, mobile: string } } | null, primaryLink?: { __typename?: 'Link', label?: string | null, url?: string | null } | null, secondaryLinks?: Array<{ __typename?: 'Link', label?: string | null, url?: string | null } | null> | null } | null };
 
 export type NewsQueryVariables = Exact<{
   key: Scalars['String']['input'];
 }>;
 
 
-export type NewsQuery = { __typename?: 'Query', news?: { __typename?: 'News', id?: string | null, title?: string | null, summary?: string | null, body?: string | null, countriesOfCoverage?: Array<string | null> | null, topics?: Array<string | null> | null, purposes?: Array<string | null> | null, audiences?: Array<string | null> | null, citation?: string | null, createdAt?: any | null, primaryImage?: { __typename?: 'AssetImage', description?: string | null, title?: string | null, file?: { __typename?: 'ImageFile', url?: string | null, normal?: string | null, mobile?: string | null } | null } | null, primaryLink?: { __typename?: 'Link', label?: string | null, url?: string | null } | null, secondaryLinks?: Array<{ __typename?: 'Link', label?: string | null, url?: string | null } | null> | null } | null };
+export type NewsQuery = { __typename?: 'Query', news?: { __typename?: 'News', id: string, title: string, summary?: string | null, body?: string | null, countriesOfCoverage?: Array<string | null> | null, topics?: Array<string | null> | null, purposes?: Array<string | null> | null, audiences?: Array<string | null> | null, citation?: string | null, createdAt: any, primaryImage?: { __typename?: 'AssetImage', description?: string | null, title?: string | null, file: { __typename?: 'ImageFile', url: string, normal: string, mobile: string } } | null, primaryLink?: { __typename?: 'Link', label?: string | null, url?: string | null } | null, secondaryLinks?: Array<{ __typename?: 'Link', label?: string | null, url?: string | null } | null> | null } | null };
+
+export type ProjectAboutQueryVariables = Exact<{
+  key: Scalars['String']['input'];
+}>;
+
+
+export type ProjectAboutQuery = { __typename?: 'Query', gbifProject?: { __typename?: 'GbifProject', summary?: string | null, body?: string | null, createdAt?: any | null, primaryImage?: { __typename?: 'AssetImage', description?: string | null, title?: string | null, file: { __typename?: 'ImageFile', url: string, normal: string, mobile: string } } | null, secondaryLinks?: Array<{ __typename?: 'Link', label?: string | null, url?: string | null }> | null, documents?: Array<{ __typename?: 'DocumentAsset', title?: string | null, file?: { __typename?: 'DocumentAssetFile', url?: string | null, fileName?: string | null, contentType?: string | null, volatile_documentType?: string | null, details?: { __typename?: 'DocumentAssetFileDetails', size?: number | null } | null } | null }> | null } | null };
+
+export type ProjectDatasetsQueryVariables = Exact<{
+  key: Scalars['ID']['input'];
+}>;
+
+
+export type ProjectDatasetsQuery = { __typename?: 'Query', datasetSearch?: { __typename?: 'DatasetSearchResults', count: number, limit: number, results: Array<{ __typename?: 'DatasetSearchStub', key: string, title?: string | null, description?: string | null, type?: DatasetType | null, publishingOrganizationTitle?: string | null, recordCount?: number | null, license?: string | null } | null> } | null };
+
+export type ProjectNewsQueryVariables = Exact<{
+  key: Scalars['String']['input'];
+}>;
+
+
+export type ProjectNewsQuery = { __typename?: 'Query', gbifProject?: { __typename?: 'GbifProject', news?: Array<{ __typename?: 'News', id: string, title: string, excerpt?: string | null, createdAt: any, primaryImage?: { __typename?: 'AssetImage', file: { __typename?: 'ImageFile', url: string } } | null }> | null, events?: Array<{ __typename?: 'Event', id: string, title: string, excerpt?: string | null, country?: string | null, location?: string | null, venue?: string | null, start: any, end?: any | null, gbifsAttendee?: string | null, allDayEvent?: boolean | null, primaryLink?: { __typename?: 'Link', url?: string | null } | null }> | null } | null };
+
+export type ProjectQueryVariables = Exact<{
+  key: Scalars['String']['input'];
+}>;
+
+
+export type ProjectQuery = { __typename?: 'Query', gbifProject?: { __typename?: 'GbifProject', id: string, title: string, summary?: string | null, body?: string | null, createdAt?: any | null, primaryImage?: { __typename?: 'AssetImage', description?: string | null, title?: string | null, file: { __typename?: 'ImageFile', url: string, normal: string, mobile: string } } | null, secondaryLinks?: Array<{ __typename?: 'Link', label?: string | null, url?: string | null }> | null, documents?: Array<{ __typename?: 'DocumentAsset', title?: string | null, file?: { __typename?: 'DocumentAssetFile', url?: string | null, fileName?: string | null, contentType?: string | null, volatile_documentType?: string | null, details?: { __typename?: 'DocumentAssetFileDetails', size?: number | null } | null } | null }> | null } | null };
 
 export type ToolQueryVariables = Exact<{
   key: Scalars['String']['input'];
 }>;
 
 
-export type ToolQuery = { __typename?: 'Query', tool?: { __typename?: 'Tool', id?: string | null, title?: string | null, summary?: string | null, body?: string | null, citation?: string | null, createdAt?: any | null, primaryImage?: { __typename?: 'AssetImage', description?: string | null, title?: string | null, file?: { __typename?: 'ImageFile', url?: string | null, normal?: string | null, mobile?: string | null } | null } | null, primaryLink?: { __typename?: 'Link', label?: string | null, url?: string | null } | null, secondaryLinks?: Array<{ __typename?: 'Link', label?: string | null, url?: string | null } | null> | null } | null };
+export type ToolQuery = { __typename?: 'Query', tool?: { __typename?: 'Tool', id?: string | null, title?: string | null, summary?: string | null, body?: string | null, citation?: string | null, createdAt?: any | null, primaryImage?: { __typename?: 'AssetImage', description?: string | null, title?: string | null, file: { __typename?: 'ImageFile', url: string, normal: string, mobile: string } } | null, primaryLink?: { __typename?: 'Link', label?: string | null, url?: string | null } | null, secondaryLinks?: Array<{ __typename?: 'Link', label?: string | null, url?: string | null } | null> | null } | null };
 
 
 export const HeaderDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Header"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"gbifHome"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"children"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"externalLink"}},{"kind":"Field","name":{"kind":"Name","value":"link"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"children"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"externalLink"}},{"kind":"Field","name":{"kind":"Name","value":"link"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"children"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"externalLink"}},{"kind":"Field","name":{"kind":"Name","value":"link"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<HeaderQuery, HeaderQueryVariables>;
@@ -6441,4 +6470,8 @@ export const ArticleDocument = {"kind":"Document","definitions":[{"kind":"Operat
 export const DataUseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"DataUse"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dataUse"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"resourceUsed"}},{"kind":"Field","name":{"kind":"Name","value":"body"}},{"kind":"Field","name":{"kind":"Name","value":"primaryImage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"file"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","alias":{"kind":"Name","value":"normal"},"name":{"kind":"Name","value":"thumbor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"width"},"value":{"kind":"IntValue","value":"1200"}},{"kind":"Argument","name":{"kind":"Name","value":"height"},"value":{"kind":"IntValue","value":"500"}}]},{"kind":"Field","alias":{"kind":"Name","value":"mobile"},"name":{"kind":"Name","value":"thumbor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"width"},"value":{"kind":"IntValue","value":"800"}},{"kind":"Argument","name":{"kind":"Name","value":"height"},"value":{"kind":"IntValue","value":"400"}}]}]}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"Field","name":{"kind":"Name","value":"primaryLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"secondaryLinks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"countriesOfCoverage"}},{"kind":"Field","name":{"kind":"Name","value":"topics"}},{"kind":"Field","name":{"kind":"Name","value":"purposes"}},{"kind":"Field","name":{"kind":"Name","value":"audiences"}},{"kind":"Field","name":{"kind":"Name","value":"citation"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<DataUseQuery, DataUseQueryVariables>;
 export const EventDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Event"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"event"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"body"}},{"kind":"Field","name":{"kind":"Name","value":"primaryImage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"file"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","alias":{"kind":"Name","value":"normal"},"name":{"kind":"Name","value":"thumbor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"width"},"value":{"kind":"IntValue","value":"1200"}},{"kind":"Argument","name":{"kind":"Name","value":"height"},"value":{"kind":"IntValue","value":"500"}}]},{"kind":"Field","alias":{"kind":"Name","value":"mobile"},"name":{"kind":"Name","value":"thumbor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"width"},"value":{"kind":"IntValue","value":"800"}},{"kind":"Argument","name":{"kind":"Name","value":"height"},"value":{"kind":"IntValue","value":"400"}}]}]}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"Field","name":{"kind":"Name","value":"primaryLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"secondaryLinks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"country"}},{"kind":"Field","name":{"kind":"Name","value":"start"}},{"kind":"Field","name":{"kind":"Name","value":"end"}},{"kind":"Field","name":{"kind":"Name","value":"eventLanguage"}},{"kind":"Field","name":{"kind":"Name","value":"venue"}}]}}]}}]} as unknown as DocumentNode<EventQuery, EventQueryVariables>;
 export const NewsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"News"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"news"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"body"}},{"kind":"Field","name":{"kind":"Name","value":"primaryImage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"file"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","alias":{"kind":"Name","value":"normal"},"name":{"kind":"Name","value":"thumbor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"width"},"value":{"kind":"IntValue","value":"1200"}},{"kind":"Argument","name":{"kind":"Name","value":"height"},"value":{"kind":"IntValue","value":"500"}}]},{"kind":"Field","alias":{"kind":"Name","value":"mobile"},"name":{"kind":"Name","value":"thumbor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"width"},"value":{"kind":"IntValue","value":"800"}},{"kind":"Argument","name":{"kind":"Name","value":"height"},"value":{"kind":"IntValue","value":"400"}}]}]}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"Field","name":{"kind":"Name","value":"primaryLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"secondaryLinks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"countriesOfCoverage"}},{"kind":"Field","name":{"kind":"Name","value":"topics"}},{"kind":"Field","name":{"kind":"Name","value":"purposes"}},{"kind":"Field","name":{"kind":"Name","value":"audiences"}},{"kind":"Field","name":{"kind":"Name","value":"citation"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<NewsQuery, NewsQueryVariables>;
+export const ProjectAboutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ProjectAbout"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"gbifProject"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"body"}},{"kind":"Field","name":{"kind":"Name","value":"primaryImage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"file"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","alias":{"kind":"Name","value":"normal"},"name":{"kind":"Name","value":"thumbor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"width"},"value":{"kind":"IntValue","value":"1200"}},{"kind":"Argument","name":{"kind":"Name","value":"height"},"value":{"kind":"IntValue","value":"500"}}]},{"kind":"Field","alias":{"kind":"Name","value":"mobile"},"name":{"kind":"Name","value":"thumbor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"width"},"value":{"kind":"IntValue","value":"800"}},{"kind":"Argument","name":{"kind":"Name","value":"height"},"value":{"kind":"IntValue","value":"400"}}]}]}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"Field","name":{"kind":"Name","value":"secondaryLinks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"documents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"file"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"fileName"}},{"kind":"Field","name":{"kind":"Name","value":"contentType"}},{"kind":"Field","name":{"kind":"Name","value":"volatile_documentType"}},{"kind":"Field","name":{"kind":"Name","value":"details"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"size"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<ProjectAboutQuery, ProjectAboutQueryVariables>;
+export const ProjectDatasetsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ProjectDatasets"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"datasetSearch"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"projectId"},"value":{"kind":"ListValue","values":[{"kind":"Variable","name":{"kind":"Name","value":"key"}}]}},{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"500"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"count"}},{"kind":"Field","name":{"kind":"Name","value":"limit"}},{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"publishingOrganizationTitle"}},{"kind":"Field","name":{"kind":"Name","value":"recordCount"}},{"kind":"Field","name":{"kind":"Name","value":"license"}}]}}]}}]}}]} as unknown as DocumentNode<ProjectDatasetsQuery, ProjectDatasetsQueryVariables>;
+export const ProjectNewsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ProjectNews"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"gbifProject"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"news"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"excerpt"}},{"kind":"Field","name":{"kind":"Name","value":"primaryImage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"file"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"url"},"name":{"kind":"Name","value":"thumbor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"width"},"value":{"kind":"IntValue","value":"300"}},{"kind":"Argument","name":{"kind":"Name","value":"height"},"value":{"kind":"IntValue","value":"150"}}]}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"events"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"excerpt"}},{"kind":"Field","name":{"kind":"Name","value":"country"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"venue"}},{"kind":"Field","name":{"kind":"Name","value":"start"}},{"kind":"Field","name":{"kind":"Name","value":"end"}},{"kind":"Field","name":{"kind":"Name","value":"primaryLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"gbifsAttendee"}},{"kind":"Field","name":{"kind":"Name","value":"allDayEvent"}}]}}]}}]}}]} as unknown as DocumentNode<ProjectNewsQuery, ProjectNewsQueryVariables>;
+export const ProjectDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Project"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"gbifProject"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"body"}},{"kind":"Field","name":{"kind":"Name","value":"primaryImage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"file"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","alias":{"kind":"Name","value":"normal"},"name":{"kind":"Name","value":"thumbor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"width"},"value":{"kind":"IntValue","value":"1200"}},{"kind":"Argument","name":{"kind":"Name","value":"height"},"value":{"kind":"IntValue","value":"500"}}]},{"kind":"Field","alias":{"kind":"Name","value":"mobile"},"name":{"kind":"Name","value":"thumbor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"width"},"value":{"kind":"IntValue","value":"800"}},{"kind":"Argument","name":{"kind":"Name","value":"height"},"value":{"kind":"IntValue","value":"400"}}]}]}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"Field","name":{"kind":"Name","value":"secondaryLinks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"documents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"file"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"fileName"}},{"kind":"Field","name":{"kind":"Name","value":"contentType"}},{"kind":"Field","name":{"kind":"Name","value":"volatile_documentType"}},{"kind":"Field","name":{"kind":"Name","value":"details"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"size"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<ProjectQuery, ProjectQueryVariables>;
 export const ToolDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Tool"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tool"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"body"}},{"kind":"Field","name":{"kind":"Name","value":"primaryImage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"file"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","alias":{"kind":"Name","value":"normal"},"name":{"kind":"Name","value":"thumbor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"width"},"value":{"kind":"IntValue","value":"1200"}},{"kind":"Argument","name":{"kind":"Name","value":"height"},"value":{"kind":"IntValue","value":"500"}}]},{"kind":"Field","alias":{"kind":"Name","value":"mobile"},"name":{"kind":"Name","value":"thumbor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"width"},"value":{"kind":"IntValue","value":"800"}},{"kind":"Argument","name":{"kind":"Name","value":"height"},"value":{"kind":"IntValue","value":"400"}}]}]}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"Field","name":{"kind":"Name","value":"primaryLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"secondaryLinks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"citation"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<ToolQuery, ToolQueryVariables>;
