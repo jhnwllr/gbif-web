@@ -1,11 +1,7 @@
-import { Helmet } from 'react-helmet-async';
 import { LoaderArgs } from '@/types';
 import { ProjectAboutQuery, ProjectAboutQueryVariables } from '@/gql/graphql';
 import { createGraphQLHelpers } from '@/utils/createGraphQLHelpers';
-import { ArticleContainer } from '@/routes/resource/key/components/ArticleContainer';
 import { ArticleBanner } from '@/routes/resource/key/components/ArticleBanner';
-import { ArticleTitle } from '../components/ArticleTitle';
-import { ArticleIntro } from '../components/ArticleIntro';
 import { ArticleTextContainer } from '../components/ArticleTextContainer';
 import { ArticleBody } from '../components/ArticleBody';
 import { ArticleTags } from '../components/ArticleTags';
@@ -13,11 +9,8 @@ import { ArticleAuxiliary } from '../components/ArticleAuxiliary';
 
 import { SecondaryLinks } from '../components/SecondaryLinks';
 import { Documents } from '../components/Documents';
-import { ArticlePreTitle } from '../components/ArticlePreTitle';
-import { Tabs } from '@/components/Tabs';
-import { Outlet } from 'react-router-dom';
 import { KeyValuePair } from '../components/KeyValuePair';
-import { FormattedDate, FormattedMessage } from 'react-intl';
+import { FormattedDate, FormattedMessage, FormattedNumber } from 'react-intl';
 import { DynamicLink } from '@/components/DynamicLink';
 
 const { load, useTypedLoaderData } = createGraphQLHelpers<
@@ -85,25 +78,29 @@ export function AboutTab() {
           <ArticleBody dangerouslySetInnerHTML={{ __html: resource.body }} className="mt-2" />
         )}
 
-        <hr className="mt-8" />
+        <hr className="mt-8 mb-4" />
 
         <KeyValuePair
-          label={<FormattedMessage id="project.funding" />}
-          value={resource.fundsAllocated}
+          label={<FormattedMessage id="cms.project.status" />}
+          value={<FormattedMessage id={`enums.cms.projectStatus.${resource.status}`} />}
         />
+        {resource.fundsAllocated && <KeyValuePair
+          label={<FormattedMessage id="cms.project.funding" />}
+          value={<FormattedNumber value={resource.fundsAllocated} style="currency" currency="EUR" />}
+        />}
+        {resource.matchingFunds && <KeyValuePair
+          label={<FormattedMessage id="cms.project.coFunding" />}
+          value={<FormattedNumber value={resource.matchingFunds} style="currency" currency="EUR" />}
+        />}
         <KeyValuePair
-          label={<FormattedMessage id="project.coFunding" />}
-          value={resource.matchingFunds}
-        />
-        <KeyValuePair
-          label={<FormattedMessage id="project.typeOfGrant" />}
-          value={resource.grantType}
+          label={<FormattedMessage id="cms.project.typeOfGrant" />}
+          value={<FormattedMessage id={`enums.cms.projectGrantType.${resource.grantType}`} />}
         />
 
         {/* if start and end dates are the same, only show one date */}
         {resource.start === resource.end ? (
           <KeyValuePair
-            label={<FormattedMessage id="project.projectStart" />}
+            label={<FormattedMessage id="cms.project.projectStart" />}
             value={
               <span>
                 <FormattedDate value={resource.start} year="numeric" month="long" day="numeric" />
@@ -112,7 +109,7 @@ export function AboutTab() {
           />
         ) : (
           <KeyValuePair
-            label={<FormattedMessage id="project.duration" />}
+            label={<FormattedMessage id="cms.project.duration" />}
             value={
               <span>
                 <FormattedDate value={resource.start} year="numeric" month="long" day="numeric" /> -{' '}
@@ -124,16 +121,16 @@ export function AboutTab() {
 
         {resource.programme && (
           <KeyValuePair
-            label={<FormattedMessage id="project.programme" />}
+            label={<FormattedMessage id="cms.project.programme" />}
             value={
-              <DynamicLink to={`/programme/${resource.programme?.id}`}>
+              <DynamicLink to={`/programme/${resource.programme?.id}`} className="underline">
                 {resource.programme?.title}
               </DynamicLink>
             }
           />
         )}
         <KeyValuePair
-          label={<FormattedMessage id="project.projectIdentifier" />}
+          label={<FormattedMessage id="cms.project.projectIdentifier" />}
           value={resource.projectId}
         />
 

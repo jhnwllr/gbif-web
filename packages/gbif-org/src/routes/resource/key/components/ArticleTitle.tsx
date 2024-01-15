@@ -4,7 +4,7 @@ import { cn } from '@/utils/shadcn';
 type Props = {
   children: React.ReactNode;
   className?: string;
-  title: string;
+  title?: string;
 };
 
 export function ArticleTitle({ title, children, className }: Props) {

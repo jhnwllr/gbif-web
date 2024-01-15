@@ -8,6 +8,7 @@ import { ArticleTextContainer } from '../components/ArticleTextContainer';
 import { ArticlePreTitle } from '../components/ArticlePreTitle';
 import { Tabs } from '@/components/Tabs';
 import { Outlet } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 
 const { load, useTypedLoaderData } = createGraphQLHelpers<
   ProjectQuery,
@@ -59,7 +60,7 @@ export function Project() {
   const resource = data.gbifProject;
 
   // if end date is in the past, the project is closed
-  const closed = resource.status === 'CLOSED';
+  const closed = resource.status === 'CLOSED' || resource.status === 'DISCONTINUED';
   return (
     <>
       <Helmet>
@@ -68,14 +69,14 @@ export function Project() {
 
       <ArticleContainer>
         <ArticleTextContainer className="mb-10">
-          <ArticlePreTitle>Project</ArticlePreTitle>
+          <ArticlePreTitle><FormattedMessage id="cms.project.project" /></ArticlePreTitle>
 
           <ArticleTitle title={resource.title}>
             {closed && (
               <>
                 {' '}
                 <span className="align-middle bg-red-100 text-red-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
-                  Closed
+                  <FormattedMessage id={`enums.cms.projectStatus.${resource.status}`} />
                 </span>
               </>
             )}
@@ -84,9 +85,9 @@ export function Project() {
         <ArticleTextContainer>
           <Tabs
             links={[
-              { to: '.', children: 'About' },
-              { to: 'datasets', children: 'Datasets' },
-              { to: 'news', children: 'News & events' },
+              { to: '.', children: <FormattedMessage id="cms.resource.about" /> },
+              { to: 'datasets', children: <FormattedMessage id="cms.resource.datasets" /> },
+              { to: 'news', children: <FormattedMessage id="cms.project.newsAndEvents" /> },
             ]}
           />
         </ArticleTextContainer>
