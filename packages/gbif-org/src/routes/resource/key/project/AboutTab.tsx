@@ -16,6 +16,9 @@ import { Documents } from '../components/Documents';
 import { ArticlePreTitle } from '../components/ArticlePreTitle';
 import { Tabs } from '@/components/Tabs';
 import { Outlet } from 'react-router-dom';
+import { KeyValuePair } from '../components/KeyValuePair';
+import { FormattedDate, FormattedMessage } from 'react-intl';
+import { DynamicLink } from '@/components/DynamicLink';
 
 const { load, useTypedLoaderData } = createGraphQLHelpers<
   ProjectAboutQuery,
@@ -25,6 +28,16 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
     gbifProject(id: $key) {
       summary
       body
+      fundsAllocated
+      matchingFunds
+      grantType
+      start
+      end
+      programme {
+        id
+        title
+      }
+      projectId
       primaryImage {
         file {
           url
@@ -50,6 +63,8 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
         }
         title
       }
+      purposes
+      status
       createdAt
     }
   }
@@ -64,13 +79,63 @@ export function AboutTab() {
   return (
     <>
       <ArticleBanner className="mt-8 mb-6" image={resource?.primaryImage ?? null} />
-      
+
       <ArticleTextContainer>
         {resource.body && (
           <ArticleBody dangerouslySetInnerHTML={{ __html: resource.body }} className="mt-2" />
         )}
 
         <hr className="mt-8" />
+
+        <KeyValuePair
+          label={<FormattedMessage id="project.funding" />}
+          value={resource.fundsAllocated}
+        />
+        <KeyValuePair
+          label={<FormattedMessage id="project.coFunding" />}
+          value={resource.matchingFunds}
+        />
+        <KeyValuePair
+          label={<FormattedMessage id="project.typeOfGrant" />}
+          value={resource.grantType}
+        />
+
+        {/* if start and end dates are the same, only show one date */}
+        {resource.start === resource.end ? (
+          <KeyValuePair
+            label={<FormattedMessage id="project.projectStart" />}
+            value={
+              <span>
+                <FormattedDate value={resource.start} year="numeric" month="long" day="numeric" />
+              </span>
+            }
+          />
+        ) : (
+          <KeyValuePair
+            label={<FormattedMessage id="project.duration" />}
+            value={
+              <span>
+                <FormattedDate value={resource.start} year="numeric" month="long" day="numeric" /> -{' '}
+                <FormattedDate value={resource.end} year="numeric" month="long" day="numeric" />
+              </span>
+            }
+          />
+        )}
+
+        {resource.programme && (
+          <KeyValuePair
+            label={<FormattedMessage id="project.programme" />}
+            value={
+              <DynamicLink to={`/programme/${resource.programme?.id}`}>
+                {resource.programme?.title}
+              </DynamicLink>
+            }
+          />
+        )}
+        <KeyValuePair
+          label={<FormattedMessage id="project.projectIdentifier" />}
+          value={resource.projectId}
+        />
 
         {resource.secondaryLinks && (
           <ArticleAuxiliary>
@@ -81,12 +146,6 @@ export function AboutTab() {
         {resource.documents && (
           <ArticleAuxiliary>
             <Documents documents={resource.documents} className="mt-8" />
-          </ArticleAuxiliary>
-        )}
-
-        {resource.citation && (
-          <ArticleAuxiliary label="Citation">
-            <div dangerouslySetInnerHTML={{ __html: resource.citation }} />
           </ArticleAuxiliary>
         )}
 

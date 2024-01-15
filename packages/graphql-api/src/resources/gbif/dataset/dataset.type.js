@@ -29,12 +29,12 @@ const typeDef = gql`
       continent: [Continent]
       projectId: [ID]
       hl: Boolean
-    ): DatasetSearchResults
+    ): DatasetSearchResults!
     dataset(key: ID!): Dataset
   }
 
   type DatasetSearchResults {
-    results: [DatasetSearchStub]!
+    results: [DatasetSearchStub!]!
     limit: Int!
     offset: Int!
     count: Int!
@@ -74,6 +74,12 @@ const typeDef = gql`
     hostingOrganization: Organization
     occurrenceCount: Int
     literatureCount: Int
+
+    """
+    volatile shortened version of the description
+    """
+    excerpt: String
+    mapCapabilities: MapCapabilities
   }
 
   type Dataset {
@@ -139,7 +145,7 @@ const typeDef = gql`
     constituents(limit: Int, offset: Int): DatasetListResults
     networks: [Network]!
     metrics: DatasetChecklistMetrics
-    gridded: [GridMetric]
+    gridded(limit: Int): [GridMetric]
 
     """
     Link to homepage with crawling logs.
@@ -150,6 +156,7 @@ const typeDef = gql`
     Get the dataset as it looks like in checklist bank. Only available for checklists. And not for all of them.
     """
     checklistBankDataset: ChecklistBankDataset
+    mapCapabilities: MapCapabilities
   }
 
   type DatasetChecklistMetrics {

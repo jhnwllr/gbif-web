@@ -50,7 +50,7 @@ export function NewsTab() {
   const sortedEvents = resource.events?.map(x => x).sort((a, b) => (a.start > b.start ? -1 : 1));
 
   return (
-    <div className="pt-4 max-w-[800px] m-auto">
+    <div className="pt-4 max-w-3xl m-auto">
       {resource.news &&
         resource.news
           .filter((x) => x)

@@ -3,16 +3,8 @@ import { LoaderArgs } from '@/types';
 import { ProjectQuery, ProjectQueryVariables } from '@/gql/graphql';
 import { createGraphQLHelpers } from '@/utils/createGraphQLHelpers';
 import { ArticleContainer } from '@/routes/resource/key/components/ArticleContainer';
-import { ArticleBanner } from '@/routes/resource/key/components/ArticleBanner';
 import { ArticleTitle } from '../components/ArticleTitle';
-import { ArticleIntro } from '../components/ArticleIntro';
 import { ArticleTextContainer } from '../components/ArticleTextContainer';
-import { ArticleBody } from '../components/ArticleBody';
-import { ArticleTags } from '../components/ArticleTags';
-import { ArticleAuxiliary } from '../components/ArticleAuxiliary';
-
-import { SecondaryLinks } from '../components/SecondaryLinks';
-import { Documents } from '../components/Documents';
 import { ArticlePreTitle } from '../components/ArticlePreTitle';
 import { Tabs } from '@/components/Tabs';
 import { Outlet } from 'react-router-dom';
@@ -40,6 +32,8 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
         label
         url
       }
+      start
+      end
       documents {
         file {
           url
@@ -53,6 +47,7 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
         title
       }
       createdAt
+      status
     }
   }
 `);
@@ -63,6 +58,8 @@ export function Project() {
   if (data.gbifProject == null) throw new Error('404');
   const resource = data.gbifProject;
 
+  // if end date is in the past, the project is closed
+  const closed = resource.status === 'CLOSED';
   return (
     <>
       <Helmet>
@@ -73,11 +70,15 @@ export function Project() {
         <ArticleTextContainer className="mb-10">
           <ArticlePreTitle>Project</ArticlePreTitle>
 
-          <ArticleTitle>
-            {resource.title}{' '}
-            <span className="align-middle bg-red-100 text-red-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
-              Closed
-            </span>
+          <ArticleTitle title={resource.title}>
+            {closed && (
+              <>
+                {' '}
+                <span className="align-middle bg-red-100 text-red-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
+                  Closed
+                </span>
+              </>
+            )}
           </ArticleTitle>
         </ArticleTextContainer>
         <ArticleTextContainer>
@@ -85,7 +86,7 @@ export function Project() {
             links={[
               { to: '.', children: 'About' },
               { to: 'datasets', children: 'Datasets' },
-              { to: 'news', children: 'News' },
+              { to: 'news', children: 'News & events' },
             ]}
           />
         </ArticleTextContainer>

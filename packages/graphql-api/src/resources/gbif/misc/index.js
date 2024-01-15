@@ -20,6 +20,6 @@ export default {
     identifier,
     machineTag,
     masterSourceMetadata,
-    tag,
+    tag
   ]
 };

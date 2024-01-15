@@ -48,14 +48,6 @@ const typeDef = gql`
     meta: JSON
   }
 
-  type Programme {
-    id: String
-    summary: String
-    body: String
-    title: String
-    excerpt: String
-  }
-
   union ParticipantOrOrganisation = Participant | Organization
 `
 
