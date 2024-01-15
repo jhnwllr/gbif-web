@@ -12,6 +12,7 @@ import { ArticleTextContainer } from '../components/ArticleTextContainer';
 import { ArticleBody } from '../components/ArticleBody';
 import { SecondaryLinks } from '../components/SecondaryLinks';
 import { ArticleAuxiliary } from '../components/ArticleAuxiliary';
+import styles from './tool.module.css';
 
 const { load, useTypedLoaderData } = createGraphQLHelpers<
   ToolQuery,
@@ -26,6 +27,12 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
       primaryImage {
         file {
           url
+          details {
+            image {
+              width
+              height
+            }
+          }
           normal: thumbor(width: 1200, height: 500)
           mobile: thumbor(width: 800, height: 400)
         }
@@ -42,6 +49,10 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
       }
       citation
       createdAt
+      author
+      rights
+      rightsHolder
+      publicationDate
     }
   }
 `);
@@ -64,7 +75,7 @@ export function Tool() {
 
           <ArticleTitle>{resource.title}</ArticleTitle>
 
-          <PublishedDate className="mt-2" date={resource.createdAt} />
+          <PublishedDate className="mt-2" date={resource.publicationDate} />
 
           {resource.summary && (
             <ArticleIntro dangerouslySetInnerHTML={{ __html: resource.summary }} className="mt-2" />
@@ -83,6 +94,33 @@ export function Tool() {
           {resource.secondaryLinks && (
             <ArticleAuxiliary>
               <SecondaryLinks links={resource.secondaryLinks} className="mt-8" />
+            </ArticleAuxiliary>
+          )}
+
+          {resource.author && (
+            <ArticleAuxiliary label="Author">
+              <div
+                className={styles.underlineLinks}
+                dangerouslySetInnerHTML={{ __html: resource.author }}
+              />
+            </ArticleAuxiliary>
+          )}
+
+          {resource.rights && (
+            <ArticleAuxiliary label="Rights">
+              <div
+                className={styles.underlineLinks}
+                dangerouslySetInnerHTML={{ __html: resource.rights }}
+              />
+            </ArticleAuxiliary>
+          )}
+
+          {resource.rightsHolder && (
+            <ArticleAuxiliary label="Rights Holder">
+              <div
+                className={styles.underlineLinks}
+                dangerouslySetInnerHTML={{ __html: resource.rightsHolder }}
+              />
             </ArticleAuxiliary>
           )}
         </ArticleTextContainer>

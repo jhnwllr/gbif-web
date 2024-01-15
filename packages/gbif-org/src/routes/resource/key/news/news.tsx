@@ -3,13 +3,16 @@ import { LoaderArgs } from '@/types';
 import { NewsQuery, NewsQueryVariables } from '@/gql/graphql';
 import { createGraphQLHelpers } from '@/utils/createGraphQLHelpers';
 import { ArticleContainer } from '@/routes/resource/key/components/ArticleContainer';
-import { ArticleBanner } from '@/routes/resource/key/components/ArticleBanner';
+import {
+  ArticleBanner,
+  ArticleBannerSkeleton,
+} from '@/routes/resource/key/components/ArticleBanner';
 import { ArticlePreTitle } from '../components/ArticlePreTitle';
-import { ArticleTitle } from '../components/ArticleTitle';
-import { PublishedDate } from '../components/PublishedDate';
-import { ArticleIntro } from '../components/ArticleIntro';
+import { ArticleTitle, ArticleTitleSkeleton } from '../components/ArticleTitle';
+import { PublishedDate, PublishedDateSkeleton } from '../components/PublishedDate';
+import { ArticleIntro, ArticleIntroSkeleton } from '../components/ArticleIntro';
 import { ArticleTextContainer } from '../components/ArticleTextContainer';
-import { ArticleBody } from '../components/ArticleBody';
+import { ArticleBody, ArticleBodySkeleton } from '../components/ArticleBody';
 import { ArticleTags } from '../components/ArticleTags';
 
 const { load, useTypedLoaderData } = createGraphQLHelpers<
@@ -62,7 +65,7 @@ export function News() {
       </Helmet>
 
       <ArticleContainer>
-        <ArticleTextContainer className="mb-10">
+        <ArticleTextContainer>
           <ArticlePreTitle>News</ArticlePreTitle>
 
           <ArticleTitle>{resource.title}</ArticleTitle>
@@ -102,4 +105,23 @@ export async function newsLoader({ request, params, config, locale }: LoaderArgs
     },
     locale: locale.cmsLocale || locale.code,
   });
+}
+
+export function NewsSkeleton() {
+  return (
+    <ArticleContainer>
+      <ArticleTextContainer>
+        <ArticlePreTitle>News</ArticlePreTitle>
+        <ArticleTitleSkeleton className="mt-3" />
+        <PublishedDateSkeleton className="mt-3" />
+        <ArticleIntroSkeleton className="mt-3" />
+      </ArticleTextContainer>
+
+      <ArticleBannerSkeleton className="mt-10" />
+
+      <ArticleTextContainer className="mt-6">
+        <ArticleBodySkeleton />
+      </ArticleTextContainer>
+    </ArticleContainer>
+  );
 }
