@@ -1,13 +1,13 @@
 const config = 
 {
   options: {
-    "q": {
-      "type": "text",
-      "field": "all",
-      "get": {
-        "type": "fuzzy"
-      }
-    },
+    // "q": {
+    //   "type": "text",
+    //   "field": "all",
+    //   "get": {
+    //     "type": "fuzzy"
+    //   }
+    // },
     "amplificationItems": {
       "field": "amplificationItems",
       "discarded": true

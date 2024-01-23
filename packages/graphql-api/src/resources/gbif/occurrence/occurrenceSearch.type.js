@@ -5,6 +5,7 @@ const typeDef = gql`
     occurrenceSearch(
       apiKey: String
       predicate: Predicate
+      q: String
       size: Int
       from: Int
     ): OccurrenceSearchResult
@@ -43,6 +44,7 @@ const typeDef = gql`
     histogram: OccurrenceHistogram
     autoDateHistogram: OccurrenceAutoDateHistogram
     _predicate: JSON
+    _q: String
     _downloadPredicate: JSON
     """
     Register the search predicate with the v1 endpoints and get a hash back. This can be used to query e.g. the tile API.
@@ -271,60 +273,67 @@ const typeDef = gql`
 
   type OccurrenceFacetResult_float {
     key: Float!
-    count: Int!
+    count: Long!
     occurrences(size: Int, from: Int): OccurrenceSearchResult!
     _predicate: JSON
+    _q: String
   }
 
   type OccurrenceFacetResult_establishmentMeans {
     key: String!
-    count: Int!
+    count: Long!
     concept: VocabularyConcept!
     occurrences(size: Int, from: Int): OccurrenceSearchResult!
     _predicate: JSON
+    _q: String
   }
 
   type OccurrenceFacetResult_gadm {
     key: String!
-    count: Int!
+    count: Long!
     gadm: Gadm!
     occurrences(size: Int, from: Int): OccurrenceSearchResult!
     _predicate: JSON
+    _q: String
   }
 
   type OccurrenceFacetResult_boolean {
     key: Boolean!
-    count: Int!
+    count: Long!
     occurrences(size: Int, from: Int): OccurrenceSearchResult!
     _predicate: JSON
+    _q: String
   }
 
   type OccurrenceFacetResult_string {
     key: String!
-    count: Int!
+    count: Long!
     occurrences(size: Int, from: Int): OccurrenceSearchResult!
     _predicate: JSON
+    _q: String
   }
 
   type OccurrenceFacetResult_dataset {
     key: String!
-    count: Int!
+    count: Long!
     dataset: Dataset!
     occurrences(size: Int, from: Int): OccurrenceSearchResult!
     _predicate: JSON
+    _q: String
   }
 
   type OccurrenceFacetResult_node {
     key: String!
-    count: Int!
+    count: Long!
     node: Node!
     occurrences(size: Int, from: Int): OccurrenceSearchResult!
     _predicate: JSON
+    _q: String
   }
 
   type OccurrenceFacetResult_installation {
     key: String!
-    count: Int!
+    count: Long!
     installation: Node!
     occurrences(size: Int, from: Int): OccurrenceSearchResult!
     _predicate: JSON
@@ -332,58 +341,65 @@ const typeDef = gql`
 
   type OccurrenceFacetResult_taxon {
     key: String!
-    count: Int!
+    count: Long!
     taxon: Taxon!
     occurrences(size: Int, from: Int): OccurrenceSearchResult!
     _predicate: JSON
+    _q: String
   }
 
   type OccurrenceFacetResult_network {
     key: String!
-    count: Int!
+    count: Long!
     network: Network!
     occurrences(size: Int, from: Int): OccurrenceSearchResult!
     _predicate: JSON
+    _q: String
   }
 
   type OccurrenceFacetResult_organization {
     key: String!
-    count: Int!
+    count: Long!
     publisher: Organization!
     occurrences(size: Int, from: Int): OccurrenceSearchResult!
     _predicate: JSON
+    _q: String
   }
 
   type OccurrenceFacetResult_institution {
     key: String!
-    count: Int!
+    count: Long!
     institution: Institution!
     occurrences(size: Int, from: Int): OccurrenceSearchResult!
     _predicate: JSON
+    _q: String
   }
 
   type OccurrenceFacetResult_collection {
     key: String!
-    count: Int!
+    count: Long!
     collection: Collection!
     occurrences(size: Int, from: Int): OccurrenceSearchResult!
     _predicate: JSON
+    _q: String
   }
 
   type OccurrenceFacetResult_recordedBy {
     key: String!
-    count: Int!
+    count: Long!
     occurrences(size: Int, from: Int): OccurrenceSearchResult!
     occurrencesIdentifiedBy(size: Int, from: Int): OccurrenceSearchResult!
     _predicate: JSON
+    _q: String
   }
 
   type OccurrenceFacetResult_identifiedBy {
     key: String!
-    count: Int!
+    count: Long!
     occurrences(size: Int, from: Int): OccurrenceSearchResult!
     occurrencesRecordedBy(size: Int, from: Int): OccurrenceSearchResult!
     _predicate: JSON
+    _q: String
   }
 
   type Stats {

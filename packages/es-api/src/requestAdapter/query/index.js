@@ -1,6 +1,6 @@
 
 const { get2predicate } = require('./get2predicate');
-const { predicate2esQuery } = require('./predicate2esQuery');
+const { predicate2esQuery, query2esQuery } = require('./predicate2esQuery');
 const { validatePredicate } = require('./validatePredicate');
 const { suggestConfig } = require('../../requestAdapter/util/suggestConfig');
 
@@ -13,6 +13,7 @@ function get2esQuery(getQuery, config) {
 module.exports = {
   get2predicate,
   predicate2esQuery,
+  query2esQuery,
   validatePredicate,
   get2esQuery,
   suggestConfig

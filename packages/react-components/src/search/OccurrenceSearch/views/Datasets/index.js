@@ -6,8 +6,8 @@ import { filter2predicate } from '../../../../dataManagement/filterAdapter';
 import { DatasetsPresentation } from './DatasetsPresentation';
 
 const DATASETS = `
-query table($predicate: Predicate, $size: Int = 100){
-  occurrenceSearch(predicate: $predicate, size: 0, from: 0) {
+query table($predicate: Predicate, $size: Int = 100, $q: String){
+  occurrenceSearch(predicate: $predicate, size: 0, from: 0, q: $q) {
     cardinality {
       datasetKey
     }
@@ -42,7 +42,8 @@ function Datasets() {
         filter2predicate(currentFilterContext.filter, predicateConfig)
       ].filter(x => x)
     }
-    load({ keepDataWhileLoading: true, variables: { predicate, size } });
+    const q = currentFilterContext.filter?.must?.q?.[0];
+    load({ keepDataWhileLoading: true, variables: { predicate, q, size } });
   }, [currentFilterContext.filterHash, rootPredicate, size]);
 
   useEffect(() => {

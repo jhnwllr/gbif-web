@@ -9,8 +9,8 @@ import { useQueryParam, NumberParam } from 'use-query-params';
 import uniqBy from 'lodash/uniqBy'
 
 const OCCURRENCE_CLUSTERS = `
-query clusters($predicate: Predicate, $size: Int = 20, $from: Int = 0){
-  occurrenceSearch(predicate: $predicate, size: $size, from: $from) {
+query clusters($predicate: Predicate, $size: Int = 20, $from: Int = 0, $q: String){
+  occurrenceSearch(predicate: $predicate, size: $size, from: $from, q: $q) {
     documents(size: $size, from: $from) {
       total
       results {
@@ -155,7 +155,8 @@ function Clusters() {
         }
       ].filter(x => x)
     }
-    load({ keepDataWhileLoading: true, variables: { predicate, size, from } });
+    const q = currentFilterContext.filter?.must?.q?.[0];
+    load({ keepDataWhileLoading: true, variables: { predicate, q, size, from } });
     setCriticalError(false);
   }, [currentFilterContext.filterHash, rootPredicate, from, attempt]);
 

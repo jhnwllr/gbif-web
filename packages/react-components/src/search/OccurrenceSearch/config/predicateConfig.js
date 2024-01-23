@@ -22,7 +22,8 @@ const filterConf = {
   },
   fields: {
     q: {
-      defaultType: 'fuzzy',
+      singleValue: true,
+      defaultType: 'DISCARD',
       v1: {
         supportedTypes: ['fuzzy']
       }

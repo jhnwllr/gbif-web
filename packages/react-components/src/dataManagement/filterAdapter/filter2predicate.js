@@ -40,6 +40,10 @@ function getPredicate({ filterName, values = [], filterConfig }) {
   // get the configuration for this filter if any is provided
   const config = filterConfig.fields[filterName] || {};
 
+  if (get(config, 'defaultType') === 'DISCARD') {
+    return;
+  }
+
   // if a custom serializer is specified then use that
   if (config.serializer) {
     return config.serializer({filterName, values, config});

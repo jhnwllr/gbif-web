@@ -34,6 +34,7 @@ function unknownRouteHandler(req, res) {
 
 function asyncMiddleware(fn) {
   return (req, res, next) => {
+    delete req.query.apiKey;
     Promise.resolve(fn(req, res, next))
       .catch(next);
   };

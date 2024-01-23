@@ -6,8 +6,8 @@ import { filter2predicate } from '../../../../dataManagement/filterAdapter';
 import { GalleryPresentation } from './GalleryPresentation';
 
 const OCCURRENCE_GALLERY = `
-query gallery($predicate: Predicate, $size: Int = 20, $from: Int = 0){
-  occurrenceSearch(predicate: $predicate, size: $size, from: $from) {
+query gallery($predicate: Predicate, $size: Int = 20, $from: Int = 0, $q: String){
+  occurrenceSearch(predicate: $predicate, size: $size, from: $from, q: $q) {
     documents(size: $size, from: $from) {
       total
       size
@@ -69,7 +69,8 @@ function Table() {
         }
       ].filter(x => x)
     }
-    load({ keepDataWhileLoading: true, variables: { predicate, size, from } });
+    const q = currentFilterContext.filter?.must?.q?.[0];
+    load({ keepDataWhileLoading: true, variables: { predicate, q, size, from } });
   }, [from, currentFilterContext.filterHash, rootPredicate]);
 
   useEffect(() => {

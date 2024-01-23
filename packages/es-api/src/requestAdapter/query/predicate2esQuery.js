@@ -4,6 +4,34 @@ const { validatePredicate } = require('./validatePredicate');
 const { wktPolygonToCoordinates } = require('../util/geoHelper');
 const { ResponseError } = require('../../resources/errorHandler');
 
+function query2esQuery({ predicate, q } = {}, config) {
+  let queryFragment = predicate2esQuery(predicate, config);
+  const query = {
+    bool: {
+      must: [
+        queryFragment
+      ]
+    }
+  }
+  if (q) {
+    query.bool.must.push({
+      "match": {
+        "all": {
+          "query": q,
+          "operator": "OR",
+          "prefix_length": 0,
+          "max_expansions": 50,
+          "fuzzy_transpositions": true,
+          "lenient": false,
+          "zero_terms_query": "NONE",
+          "auto_generate_synonyms_phrase_query": true
+        }
+      }
+    });
+  }
+  return query;
+}
+
 function predicate2esQuery(predicate, config) {
   if (!predicate) return;
   const { error } = validatePredicate(predicate, config);
@@ -52,11 +80,11 @@ function transform(p, config, isRootQuery) {
   // for handling joins records
   if (config?.options?.[p.key]?.join) {
     return {
-          has_child: {
-            type: config.options[p.key].join,
-            query: transform(p, config.options[p.key].config)
-          }
-        }
+      has_child: {
+        type: config.options[p.key].join,
+        query: transform(p, config.options[p.key].config)
+      }
+    }
   }
   // for making nested fields easier to query
   if (config?.options?.[p.key]?.type === 'flatNested') {
@@ -213,11 +241,12 @@ function transform(p, config, isRootQuery) {
 
 function getFieldName(key, type, config) {
   if (!key && !['geoDistance'].includes(type)) return;
-  
+
   const fieldKey = key || type;
   return config.prefix ? `${config.prefix}.${config.options[fieldKey].field}` : config.options[fieldKey].field;
 }
 
 module.exports = {
-  predicate2esQuery
+  predicate2esQuery,
+  query2esQuery
 }

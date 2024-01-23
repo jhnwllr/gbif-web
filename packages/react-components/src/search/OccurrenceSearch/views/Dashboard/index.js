@@ -8,6 +8,7 @@ function Dashboard() {
   const currentFilterContext = useContext(FilterContext);
   const { rootPredicate, predicateConfig } = useContext(OccurrenceContext);
   const [searchPredicate, setSearchPredicate] = useState();
+  const [searchQ, setSearchQ] = useState();
 
   useEffect(() => {
     const predicate = {
@@ -17,9 +18,12 @@ function Dashboard() {
         filter2predicate(currentFilterContext.filter, predicateConfig)
       ].filter(x => x)
     }
+    const q = currentFilterContext.filter?.must?.q?.[0];
     setSearchPredicate(predicate);
+    setSearchQ(q);
   }, [currentFilterContext.filterHash, rootPredicate]);
 
+  // TODO, add q parameter to dashboard to support metrics for arbitrary occurrence queries
   return <DashboardPresentation
     predicate={searchPredicate}
   />

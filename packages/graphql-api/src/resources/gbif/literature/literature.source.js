@@ -38,7 +38,8 @@ class LiteratureAPI extends RESTDataSource {
     response.documents.count = response.documents.total;
     response.documents.limit = response.documents.size;
     response.documents.offset = response.documents.from;
-    response._predicate = body.predicate;
+    // response._predicate = body.predicate; // this looks odd. Shouldn't it use the response predicate as that includes the various GET params?
+    response._predicate = response.meta.predicate; // this looks odd. Shouldn't it use the response predicate as that includes the various GET params?
     return response;
   }
 

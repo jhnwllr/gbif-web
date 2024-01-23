@@ -60,11 +60,15 @@ const LiteratureStats = statsFields.reduce(statsReducer, {});
  */
 export default {
   Query: {
-    literatureSearch: (parent, { predicate, ...params }) => {
-      return {
-        _predicate: predicate,
-        _params: params,
-      };
+    literatureSearch: (parent, { predicate, ...params }, { dataSources }) => {
+      return dataSources.literatureAPI.meta({
+        query: { predicate, ...params },
+      }).then(response => {
+        return {
+          _predicate: response.meta.predicate,
+          _meta: response.meta,
+        };
+      });
     },
     literature: (parent, { key }, { dataSources }) =>
       dataSources.literatureAPI.getLiteratureByKey({ key }),
@@ -92,7 +96,7 @@ export default {
     },
     _meta: (parent, query, { dataSources }) => {
       return dataSources.literatureAPI.meta({
-        query: { predicate: parent._predicate },
+        query: { predicate: parent._predicate, ...parent._params },
       });
     },
   },

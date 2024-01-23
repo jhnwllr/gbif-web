@@ -4,24 +4,13 @@ import { FilterContext } from '../../../..//widgets/Filter/state';
 import OccurrenceContext from '../../../SearchContext';
 import { useQuery } from '../../../../dataManagement/api';
 import { filter2predicate } from '../../../../dataManagement/filterAdapter';
-import { useUrlState } from '../../../../dataManagement/state/useUrlState';
-import { useIntegerParam } from '../../../../dataManagement/state/useIntegerParam';
 import { TablePresentation } from './TablePresentation';
 import { useQueryParam, NumberParam } from 'use-query-params';
 import keyBy from 'lodash/keyBy';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect,
-  useHistory,
-  useLocation
-} from "react-router-dom";
 
 const OCCURRENCE_TABLE = `
-query table($predicate: Predicate, $size: Int = 20, $from: Int = 0){
-  occurrenceSearch(predicate: $predicate, size: $size, from: $from) {
+query table($predicate: Predicate, $size: Int = 20, $from: Int = 0, $q: String){
+  occurrenceSearch(predicate: $predicate, q: $q, size: $size, from: $from) {
     documents(size: $size, from: $from) {
       total
       size
@@ -106,7 +95,8 @@ function Table() {
         filter2predicate(currentFilterContext.filter, predicateConfig)
       ].filter(x => x)
     }
-    load({ keepDataWhileLoading: true, variables: { predicate, size, from } });
+    const q = currentFilterContext.filter?.must?.q?.[0];
+    load({ keepDataWhileLoading: true, variables: { predicate, q, size, from } });
   }, [currentFilterContext.filterHash, rootPredicate, from]);
 
   useEffect(() => {

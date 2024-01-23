@@ -32,6 +32,7 @@ class OccurrenceAPI extends RESTDataSource {
 
   async searchOccurrences({ query }) {
     const body = { ...query, includeMeta: true };
+    // console.log(body);
     let response;
     if (JSON.stringify(body).length < urlSizeLimit) {
       response = await this.get(
@@ -44,7 +45,9 @@ class OccurrenceAPI extends RESTDataSource {
         signal: this.context.abortController.signal,
       });
     }
-    response._predicate = body.predicate;
+    // console.log(response);
+    response._predicate = response.meta.predicate;
+    response._q = response.meta.q;
     return response;
   }
 
@@ -75,7 +78,9 @@ class OccurrenceAPI extends RESTDataSource {
 
   async meta({ query }) {
     const body = { ...query };
+    console.log(body);
     const response = await this.post('/occurrence/meta', body);
+    console.log(response);
     return response;
   }
 

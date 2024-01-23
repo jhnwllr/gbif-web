@@ -12,6 +12,7 @@ const getFacet =
       // generate the occurrence search facet query, by inherting from the parent query, and map limit/offset to facet equivalents
       const query = {
         predicate: parent._predicate,
+        q: parent._q,
         size: 0,
         metrics: {
           facet: {
@@ -44,6 +45,7 @@ const getFacet =
               // create a new predicate that joins the base with the facet. This enables us to dig deeper for multidimensional metrics
               _predicate: joinedPredicate,
               _parentPredicate: data.meta.predicate,
+              _q: data.meta.q, // could also use parent._predicate.q
             };
           });
         });
@@ -62,6 +64,7 @@ const getStats =
       // generate the occurrence search facet query, by inherting from the parent query, and map limit/offset to facet equivalents
       const query = {
         predicate: parent._predicate,
+        q: parent._q,
         size: 0,
         metrics: {
           stats: {
@@ -88,6 +91,7 @@ const getCardinality =
       // generate the occurrence search facet query, by inherting from the parent query, and map limit/offset to facet equivalents
       const query = {
         predicate: parent._predicate,
+        q: parent._q,
         size: 0,
         metrics: {
           cardinality: {
@@ -119,6 +123,7 @@ const getHistogram =
       // generate the occurrence search facet query, by inherting from the parent query, and map limit/offset to facet equivalents
       const query = {
         predicate: parent._predicate,
+        q: parent._q,
         size: 0,
         metrics: {
           histogram: {
@@ -146,6 +151,7 @@ const getAutoDateHistogram =
       // generate the occurrence search facet query, by inherting from the parent query, and map limit/offset to facet equivalents
       const query = {
         predicate: parent._predicate,
+        q: parent._q,
         size: 0,
         metrics: {
           autoDateHistogram: {

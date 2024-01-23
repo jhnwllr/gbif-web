@@ -7,8 +7,8 @@ import MapPresentation from './MapPresentation';
 import Geohash from 'latlon-geohash';
 
 const OCCURRENCE_MAP = `
-query map($predicate: Predicate){
-  occurrenceSearch(predicate: $predicate) {
+query map($predicate: Predicate, $q: String){
+  occurrenceSearch(predicate: $predicate, q: $q) {
     _meta
     documents {
       total
@@ -19,8 +19,8 @@ query map($predicate: Predicate){
 `;
 
 const OCCURRENCE_POINT = `
-query point($predicate: Predicate){
-  occurrenceSearch(predicate: $predicate) {
+query point($predicate: Predicate, $q: String){
+  occurrenceSearch(predicate: $predicate, q: $q) {
     documents {
       total
       results {
@@ -70,7 +70,8 @@ function Map() {
         }
       ].filter(x => x)
     }
-    load({ keepDataWhileLoading: true, variables: { predicate } });
+    const q = filter?.must?.q?.[0];
+    load({ keepDataWhileLoading: true, variables: { predicate, q } });
   }, []);
 
   let registrationEmbargo;
@@ -106,7 +107,8 @@ function Map() {
         }
       ].filter(x => x)
     }
-    pointLoad({ variables: { predicate } });
+    const q = currentFilterContext.filter?.must?.q?.[0];
+    pointLoad({ variables: { predicate, q } });
   }, [currentFilterContext.filterHash, rootPredicate]);
 
   const q = currentFilterContext.filter?.must?.q?.[0];
