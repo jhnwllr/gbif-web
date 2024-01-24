@@ -155,7 +155,7 @@ function searchResource(resource) {
 
       const { metrics, predicate, q, size, from, randomSeed, randomize, includeMeta, sortBy, sortOrder } = parseQuery(req, res, next, { get2predicate, get2metric });
       const aggs = metric2aggs(metrics);
-      const query = predicate2query(predicate, q);
+      const query = await predicate2query(predicate, q);
       const { result, esBody } = await dataSource.query({ query, aggs, size, from, metrics, randomSeed, randomize, sortBy, sortOrder, req });
       const meta = {
         GET: req.query,
@@ -192,7 +192,7 @@ function parseQuery(req, res, next, { get2predicate, get2metric }) {
     const { body: getBody, ...getQuery } = req.query;
     // then merge body (from POST or GET) with the url params giving preference to the body
     const query = { ...getQuery, ...body };
-    console.log(req.query.body);
+
     const {
       predicate: jsonPredicate,
       metrics: jsonMetrics,
@@ -256,7 +256,7 @@ function getMetaOnly(resource) {
   return async (req, res, next) => {
     try {
       const { predicate, q } = parseQuery(req, res, next, { get2predicate, get2metric });
-      const query = predicate2query(predicate, q);
+      const query = await predicate2query(predicate, q);
       const meta = {
         GET: req.query,
         predicate,

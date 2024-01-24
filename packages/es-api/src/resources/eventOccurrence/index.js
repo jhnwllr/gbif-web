@@ -9,7 +9,7 @@ module.exports = {
   dataSource: dataSource,
   get2predicate: query => get2predicate(query, config),
   get2query: predicate => get2esQuery(predicate, config),
-  predicate2query: predicate => predicate2esQuery(predicate, config),
+  predicate2query: async predicate => predicate2esQuery(predicate, config),
   get2metric: query => get2metric(query, config),
   metric2aggs: metrics => metric2aggs(metrics, config),
   getSuggestQuery: ({key, text, next}) => getSuggestQuery(key, text, config, {next})

@@ -4,34 +4,6 @@ const { validatePredicate } = require('./validatePredicate');
 const { wktPolygonToCoordinates } = require('../util/geoHelper');
 const { ResponseError } = require('../../resources/errorHandler');
 
-function query2esQuery({ predicate, q } = {}, config) {
-  let queryFragment = predicate2esQuery(predicate, config);
-  const query = {
-    bool: {
-      must: [
-        queryFragment
-      ]
-    }
-  }
-  if (q) {
-    query.bool.must.push({
-      "match": {
-        "all": {
-          "query": q,
-          "operator": "OR",
-          "prefix_length": 0,
-          "max_expansions": 50,
-          "fuzzy_transpositions": true,
-          "lenient": false,
-          "zero_terms_query": "NONE",
-          "auto_generate_synonyms_phrase_query": true
-        }
-      }
-    });
-  }
-  return query;
-}
-
 function predicate2esQuery(predicate, config) {
   if (!predicate) return;
   const { error } = validatePredicate(predicate, config);
@@ -247,6 +219,5 @@ function getFieldName(key, type, config) {
 }
 
 module.exports = {
-  predicate2esQuery,
-  query2esQuery
+  predicate2esQuery
 }
