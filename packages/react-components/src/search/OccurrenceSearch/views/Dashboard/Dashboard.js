@@ -3,6 +3,10 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import * as charts from '../../../../widgets/dashboard';
 import useBelow from '../../../../utils/useBelow';
 import RouteContext from '../../../../dataManagement/RouteContext';
+import Map from '../Map';
+import Table from '../Table';
+import Gallery from '../Gallery';
+import { Resizable } from 're-resizable';
 
 export function Dashboard({
   predicate,
@@ -10,44 +14,65 @@ export function Dashboard({
 }) {
   return <div>
     <DashBoardLayout>
-      {/* <charts.Taxa predicate={predicate} /> */}
-      <charts.Iucn predicate={predicate} />
-      <charts.Synonyms predicate={predicate} />
-      {/* <charts.IucnCounts predicate={predicate} /> */}
-      
-      {/* <charts.Country predicate={predicate} defaultOption="TABLE" />
-      <charts.CollectionCodes predicate={predicate} defaultOption="TABLE" />
-      <charts.InstitutionCodes predicate={predicate} defaultOption="TABLE" />
-      <charts.StateProvince predicate={predicate} defaultOption="TABLE" />
-      <charts.IdentifiedBy predicate={predicate} defaultOption="TABLE" />
-      <charts.RecordedBy predicate={predicate} defaultOption="TABLE" />
-      <charts.Preparations predicate={predicate} defaultOption="PIE" />
-      <charts.EstablishmentMeans predicate={predicate} defaultOption="PIE" />
-      <charts.Months predicate={predicate} defaultOption="COLUMN" /> */}
+      {/* <charts.Taxa interactive predicate={predicate} />
+      <charts.Iucn interactive predicate={predicate} />
+      <charts.Synonyms interactive predicate={predicate} />
+      <charts.IucnCounts interactive predicate={predicate} /> */}
 
-      {/* <charts.Preparations2 predicate={predicate} defaultOption="TABLE" /> */}
+      {/* <charts.Country interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.CollectionCodes interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.InstitutionCodes interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.StateProvince interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.IdentifiedBy interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.RecordedBy interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.EstablishmentMeans interactive predicate={predicate} defaultOption="PIE" />
+      <charts.Months interactive predicate={predicate} defaultOption="COLUMN" />
+      <charts.Preparations predicate={predicate} defaultOption="PIE" /> */}
 
-      {/* <Datasets predicate={predicate} defaultOption="TABLE" />
-      <Publishers predicate={predicate} defaultOption="TABLE" />
-      <HostingOrganizations predicate={predicate} defaultOption="TABLE" />
-      <Collections predicate={predicate} defaultOption="TABLE" />
-      <Institutions predicate={predicate} defaultOption="TABLE" />
-      <Networks predicate={predicate} defaultOption="TABLE" /> */}
+      {/* <charts.Datasets interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.Publishers interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.HostingOrganizations interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.Collections interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.Institutions interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.Networks interactive predicate={predicate} defaultOption="TABLE" /> */}
 
-      {/* <OccurrenceIssue predicate={predicate} />
-      <BasisOfRecord predicate={predicate} />
-      <Licenses predicate={predicate} />
-      <Months predicate={predicate} defaultOption="COLUMN" currentFilter={{
-        must: {
-          taxonKey: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        }
-      }} />
-      <OccurrenceSummary predicate={predicate} />
-      <OccurrenceMap rootPredicate={predicate} />
-      <DataQuality predicate={predicate} />
-      <Preparations predicate={predicate} />
-      <Taxa predicate={predicate} />
-      <Iucn predicate={predicate} /> */}
+      {/* <charts.OccurrenceIssue interactive predicate={predicate} />
+      <charts.BasisOfRecord interactive predicate={predicate} />
+      <charts.Licenses interactive predicate={predicate} />
+      <charts.Months interactive predicate={predicate} defaultOption="COLUMN" /> */}
+      {/* <charts.OccurrenceSummary predicate={predicate} />
+      <charts.DataQuality predicate={predicate} />
+      <div style={{height: 500}}><Map/></div> */}
+      <Resizable
+        enable={{ top: false, right: false, bottom: true, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
+        defaultSize={{
+          height: 500,
+        }}
+      >
+        <Map />
+      </Resizable>
+      <Resizable
+        enable={{ top: false, right: false, bottom: true, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
+        defaultSize={{
+          height: 500,
+        }}
+      >
+        <Table />
+      </Resizable>
+      {/* <div style={{ height: 500 }}><Map /></div>
+      <div style={{ height: 500 }}><Table style={{ height: 500 }} /></div> */}
+      <charts.Months interactive predicate={predicate} defaultOption="COLUMN" />
+      {/* <div><Gallery style={{overflow:  'auto', paddingBottom: 48}} size={10} /></div> */}
+      {/* <charts.Preparations predicate={predicate} /> */}
+      {/* <charts.Country interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.CollectionCodes interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.InstitutionCodes interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.StateProvince interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.IdentifiedBy interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.RecordedBy interactive predicate={predicate} defaultOption="TABLE" />
+      <charts.EstablishmentMeans interactive predicate={predicate} defaultOption="PIE" />
+      <charts.Months interactive predicate={predicate} defaultOption="COLUMN" />
+      <charts.Preparations predicate={predicate} defaultOption="PIE" /> */}
     </DashBoardLayout>
   </div>
 };
@@ -66,7 +91,9 @@ function DashBoardLayout({ children, predicate, queueUpdates = false, ...props }
   return <div css={css`
     display: flex; margin: -6px; padding-bottom: 200px; flex-wrap: wrap;
     > div {
-      flex: 0 1 calc(50% - 12px); margin: 6px;
+      flex: 0 1 calc(50% - 12px); 
+      margin: 6px;
+      width: calc(50% - 12px);
     }
   `}>
     <div>

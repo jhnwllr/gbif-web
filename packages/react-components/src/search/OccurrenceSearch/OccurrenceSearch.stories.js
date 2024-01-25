@@ -177,7 +177,7 @@ const config = {
   labels, 
   getSuggests, 
   filters, 
-  occurrenceSearchTabs: ['CLUSTERS', 'TABLE', 'MAP', 'DATASETS', 'GALLERY'],
+  occurrenceSearchTabs: ['DASHBOARD', 'CLUSTERS', 'TABLE', 'MAP', 'DATASETS', 'GALLERY'],
   // highlightedFilters: ['establishmentMeans'],
   // excludedFilters: ['locality'],
   availableCatalogues: ['OCCURRENCE', 'LITERATURE', 'COLLECTION'],

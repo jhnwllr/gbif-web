@@ -11,7 +11,7 @@ import ThemeContext from '../../../../style/themes/ThemeContext';
 import env from '../../../../../.env.json';
 import * as css from './gallery.styles';
 
-export const GalleryPresentation = ({ first, prev, next, size, from, data, total, loading, error }) => {
+export const GalleryPresentation = ({ style, className, next, size, from, data, total, loading, error }) => {
   const theme = useContext(ThemeContext);
   const [activeId, setActive] = useState();
   const [activeItem, setActiveItem] = useState();
@@ -52,7 +52,7 @@ export const GalleryPresentation = ({ first, prev, next, size, from, data, total
       <OccurrenceSidebar id={activeItem?.key} defaultTab='images' style={{ maxWidth: '100%', width: 700, height: '100%' }} onCloseRequest={() => dialog.setVisible(false)} />
     </DetailsDrawer>
     <ViewHeader message="counts.nResultsWithImages" loading={loading} total={total} />
-    <div css={css.paper({ theme })}>
+    <div css={css.paper({ theme })} style={style} className={className}>
       <GalleryTiles>
         {items.map((item, index) => {
           return <GalleryTile height={150} key={item.key}

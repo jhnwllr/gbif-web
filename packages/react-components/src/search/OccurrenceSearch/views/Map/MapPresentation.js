@@ -9,6 +9,7 @@ And probably the point overlays will have to be dependent on the basemap as well
 
 */
 import { jsx } from '@emotion/react';
+import { useResizeDetector } from 'react-resize-detector';
 import React, { useContext, useState, useEffect, useCallback } from "react";
 import { DetailsDrawer, Menu, MenuAction, Button } from '../../../../components';
 import { OccurrenceSidebar } from '../../../../entities';
@@ -75,6 +76,18 @@ function Map({ labelMap, query, q, pointData, pointError, pointLoading, loading,
   const [listVisible, showList] = useState(false);
 
   const items = pointData?.occurrenceSearch?.documents?.results || [];
+
+  const onResize = useCallback((a, b, c) => {
+    debugger;
+    // on resize logic
+  }, []);
+
+  const { width, height, ref } = useResizeDetector({
+    handleHeight: true,
+    refreshMode: 'debounce',
+    refreshRate: 1000,
+    onResize
+  });
 
   useEffect(() => {
     const mapStyles = getMapStyles({ apiKeys: siteContext.apiKeys, language: siteContext?.maps?.locale || 'en', });
