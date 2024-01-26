@@ -16,6 +16,7 @@ import { BsFillBarChartFill, BsPieChartFill } from 'react-icons/bs';
 import { useLocation, useHistory } from 'react-router-dom';
 import { FilterContext } from '../../Filter/state';
 import { getTimeSeriesOptions } from './time';
+import { uncontrollable } from 'uncontrollable';
 
 // Component to control the view options: table, pie chart, bar chart
 function ViewOptions({ view, setView, options = ['COLUMN', 'PIE', 'TABLE'] }) {
@@ -45,7 +46,11 @@ function ViewOptions({ view, setView, options = ['COLUMN', 'PIE', 'TABLE'] }) {
   </div>
 }
 
-export function OneDimensionalChart({
+export const OneDimensionalChart = uncontrollable(OneDimensional, {
+  view: 'setView'
+});
+
+export function OneDimensional({
   facetQuery,
   predicateKey,
   detailsRoute,
@@ -63,13 +68,16 @@ export function OneDimensionalChart({
   handleRedirect,
   visibilityThreshold = -1,
   interactive = true,
+  setView,
+  view,
   ...props
 }) {
   const intl = useIntl();
   const facetResults = useFacets(facetQuery);
-  const [view, setView] = useState(defaultOption ?? options?.[0] ?? 'TABLE');
+  // const [view, setView] = useState(defaultOption ?? options?.[0] ?? 'TABLE');
   const showChart = facetResults?.results?.length > 0;
   const { otherCount, emptyCount, distinct } = facetResults;
+  if (!view) setView(defaultOption ?? options?.[0] ?? 'TABLE');
 
   const translations = {
     occurrences: intl.formatMessage({id: 'dashboard.occurrences'})
