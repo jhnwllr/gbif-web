@@ -220,4 +220,4 @@ export const StandaloneExample = () => <Standalone siteConfig={{
     rootPredicate
   },
   availableCatalogues: ['INSTITUTION', 'COLLECTION', 'OCCURRENCE', 'DATASET'],
-}} style={{ height: 'calc(100vh - 40px)' }}></Standalone>;
+}} style={{ minHeight: 'calc(100vh - 40px)' }}></Standalone>;

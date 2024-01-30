@@ -1,14 +1,12 @@
 import { jsx, css } from '@emotion/react';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import * as charts from '../../../../widgets/dashboard';
 import useBelow from '../../../../utils/useBelow';
-import RouteContext from '../../../../dataManagement/RouteContext';
 import Map from '../Map';
-import Table from '../Table';
-import Gallery from '../Gallery';
 import { Resizable } from 're-resizable';
-import { Button } from '../../../../components';
 import DashboardBuilder from './DashboardBuilder';
+import { useQueryParam } from 'use-query-params';
+import Base64JsonParam from '../../../../dataManagement/state/base64JsonParam';
 
 const chartsTypes = {
   Taxa: charts.Taxa,
@@ -55,6 +53,9 @@ export function Dashboard({
 }) {
   const [items, setItems] = useState([]);
   const [view, setView] = React.useState('COLUMN');
+  // const [state, setState] = React.useState([[],[],[]]);
+  const [state = [[], []], setState] = useQueryParam('state', Base64JsonParam);
+  console.log(state);
   // const sections = charts.map((chart, index) => {
   //   const Chart = chartsTypes[chart.type];
   //   return <Chart key={index} interactive predicate={predicate} defaultOption="TABLE" />
@@ -70,7 +71,7 @@ export function Dashboard({
   });
 
   return <div>
-    <DashboardBuilder predicate={predicate} />
+    <DashboardBuilder predicate={predicate} {...{state, setState}}/>
     {/* <DashBoardLayout> */}
       {/* <charts.Months interactive predicate={predicate} defaultOption="COLUMN" {...{view, setView}} /> */}
       {/* {sections}

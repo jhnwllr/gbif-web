@@ -76,7 +76,7 @@ class Map extends Component {
       }
     }
     // check if the size of the map container has changed and if so resize the map
-    if (prevProps.height !== this.props.height && this.mapLoaded) {
+    if ((prevProps.height !== this.props.height || prevProps.width !== this.props.width) && this.mapLoaded) {
       this.map.updateSize();
     }
 

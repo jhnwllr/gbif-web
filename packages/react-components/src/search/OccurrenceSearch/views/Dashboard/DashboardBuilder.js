@@ -7,6 +7,7 @@ import Map from "../Map";
 import { MdClose, MdDragHandle } from "react-icons/md";
 import Table from '../Table';
 import Gallery from '../Gallery';
+import { uncontrollable } from 'uncontrollable';
 
 const chartsTypes = {
   Iucn: {
@@ -79,14 +80,19 @@ const chartsTypes = {
       return <charts.Taxa predicate={predicate} interactive {...props} />
     },
   },
+  OccurrenceIssue: {
+    type: ({ predicate, ...props }) => {
+      return <charts.OccurrenceIssue predicate={predicate} interactive {...props} />
+    },
+  },
   Map: {
-    resizable: true,
+    r: true,// resizable
     type: ({ predicate, ...props }) => {
       return <Map predicate={predicate} interactive {...props} />
     },
   },
   Table: {
-    resizable: true,
+    r: true,// resizable
     type: ({ predicate, ...props }) => {
       return <Table predicate={predicate} interactive {...props} />
     },
@@ -98,15 +104,19 @@ const chartsTypes = {
   },
 }
 
-// fake data generator
+function generateRandomId() {
+  return Math.random().toString(36).substring(2, 7);
+}
+
 const getItem = (type) => {
-  const chart = chartsTypes[type] || {
-    type: () => <div>not defined</div>
-  };
+  const chart = chartsTypes[type];
+  if (!chart) return;
+  const id = generateRandomId();
   return {
-    id: `item-${type}-${new Date().getTime()}`,
-    params: {},
-    ...chart
+    id,
+    p: {},
+    ...chart,
+    t: type
   }
 }
 
@@ -151,14 +161,22 @@ const getItemStyle = (isDragging, draggableStyle, index) => ({
   // styles we need to apply on draggables
   ...draggableStyle
 });
-const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? "#00000005" : "none",
-  padding: `${grid * 2}px ${grid}px`,
-  width: '33.3%'
-});
+const getListStyle = ({ isDraggingOver, width, index }) => {
+  const style = index === 0 ? {
+    flex: '10 0 auto',
+    width: '550px',
+    maxWidth: '100%',
+  } : {
+    flex: '1 1 550px'
+  }
+  return {
+    background: isDraggingOver ? "#00000005" : "none",
+    padding: `${grid * 2}px ${grid}px`,
+    ...style
+  }
+};
 
-function DashboardBuilder({ predicate, ...props }) {
-  const [state, setState] = useState([[], [], []]);
+function DashboardBuilder({ predicate, state, setState, ...props }) {
   const [isDragging, setIsDragging] = useState(false);
 
   const onDragStart = () => {
@@ -199,7 +217,6 @@ function DashboardBuilder({ predicate, ...props }) {
     setState(newState);
   }
 
-
   return (
     <div>
       {/* <button
@@ -218,7 +235,7 @@ function DashboardBuilder({ predicate, ...props }) {
       >
         Add new item
       </button> */}
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", flexWrap: 'wrap' }}>
         <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
           {state.map((column, ind) => (
             // For each group create a column
@@ -226,7 +243,11 @@ function DashboardBuilder({ predicate, ...props }) {
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
-                  style={getListStyle(snapshot.isDraggingOver)}
+                  style={getListStyle({
+                    isDraggingOver: snapshot.isDraggingOver,
+                    width: (100 / state.length),
+                    index: ind
+                  })}
                   {...provided.droppableProps}
                 >
                   <Column predicate={predicate} isDragging={isDragging} items={column} onDelete={({ index }) => {
@@ -240,8 +261,12 @@ function DashboardBuilder({ predicate, ...props }) {
                     onAdd={(type) => {
                       // add new item to this group
                       const newState = [...state];
-                      newState[ind].push(getItem(type));
-                      setState(newState);
+                      if (getItem(type)) {
+                        newState[ind].push(getItem(type));
+                        setState(newState);
+                      } else {
+                        console.warn('type not found', type);
+                      }
                     }}
                     onUpdateItem={(item, index) => updateItemProps({ groupIndex: ind, itemIndex: index, item })} />
                   {provided.placeholder}
@@ -267,10 +292,10 @@ function Column({ items: el, onDelete, onAdd, onUpdateItem, isDragging, predicat
 }
 
 function Item({ item, index, onDelete, onUpdateItem, predicate }) {
-  const { type, resizable = false, params = {} } = item;
-  const { height = 500, ...componentProps } = params;
-  const Component = type ?? (() => <div>not defined</div>);
-  const content = <Component predicate={predicate} {...componentProps} setView={view => onUpdateItem({ ...item, params: { view } }, index)} />
+  const { t: type, r: resizable = false, p: params = {} } = item;
+  const { h: height = 500, ...componentProps } = params;
+  const Component = chartsTypes[type]?.type ?? (() => <div>not defined</div>);
+  const content = <Component predicate={predicate} {...componentProps} setView={view => onUpdateItem({ ...item, p: { view } }, index)} />
 
   return <Draggable
     key={item.id}
@@ -316,7 +341,7 @@ function Item({ item, index, onDelete, onUpdateItem, predicate }) {
             height,
           }}
           onResizeStop={(e, direction, ref, d) => {
-            onUpdateItem({ ...item, params: { ...params, height: height + d.height } }, index);
+            onUpdateItem({ ...item, p: { ...params, h: height + d.height } }, index);
           }}
         >
           {content}
@@ -337,9 +362,6 @@ const CreateOptions = ({ onAdd }) => {
 
   return (
     <div css={css`
-      background: #00000005;
-      border: 1px solid #ddd;
-      border-radius: 4px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -355,21 +377,23 @@ const CreateOptions = ({ onAdd }) => {
           border-radius: 0.25rem;
           color: #000;
           cursor: pointer; */
-          padding: 12px;
           background: none;
-          margin: 24px;
-          border-radius: 8px;
+          border-radius: 4px;
           color: #888;
         }
       `
       }>
         <select value={selectedOption} onChange={handleSelectChange}>
           <option value="">Add</option>
-          {Object.keys(chartsTypes).map(type => <option value={type}>{type}</option>)}
+          {Object.keys(chartsTypes).map(type => <option value={type} key={type}>{type}</option>)}
         </select>
       </label>
     </div>
   );
 };
 
-export default DashboardBuilder;
+// export default DashboardBuilder;
+
+export default uncontrollable(DashboardBuilder, {
+  state: 'setState'
+});
