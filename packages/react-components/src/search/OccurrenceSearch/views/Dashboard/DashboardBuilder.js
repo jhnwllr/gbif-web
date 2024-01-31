@@ -88,18 +88,35 @@ const chartsTypes = {
   Map: {
     r: true,// resizable
     type: ({ predicate, ...props }) => {
-      return <Map predicate={predicate} interactive {...props} />
+      return <Map predicate={predicate} interactive style={{
+        background: 'white', 
+        paddingTop: 8,
+        border: '1px solid var(--paperBorderColor)',
+        borderRadius: 'var(--borderRadiusPx)'
+      }} mapProps={{style: {border: 0, borderRadius: '0 0 var(--borderRadiusPx) var(--borderRadiusPx)'}}} {...props} 
+      />
     },
   },
   Table: {
     r: true,// resizable
     type: ({ predicate, ...props }) => {
-      return <Table predicate={predicate} interactive {...props} />
+      return <Table predicate={predicate} interactive {...props} style={{
+        background: 'white', 
+        paddingTop: 8,
+        border: '1px solid var(--paperBorderColor)',
+        borderRadius: 'var(--borderRadiusPx)'
+      }} dataTableProps={{style: {borderWidth: '1px 0 0 0'}}}/>
     },
   },
   Gallery: {
+    r: true,// resizable
     type: ({ predicate, ...props }) => {
-      return <Gallery predicate={predicate} interactive {...props} />
+      return <Gallery predicate={predicate} size={10} interactive style={{
+        overflow :'auto', height: '100%', background: 'white',
+        paddingTop: 8,
+        border: '1px solid var(--paperBorderColor)',
+        borderRadius: 'var(--borderRadiusPx)'
+      }} {...props} />
     },
   },
 }

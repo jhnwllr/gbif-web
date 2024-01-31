@@ -54,7 +54,7 @@ export function Dashboard({
   const [items, setItems] = useState([]);
   const [view, setView] = React.useState('COLUMN');
   // const [state, setState] = React.useState([[],[],[]]);
-  const [state = [[], []], setState] = useQueryParam('state', Base64JsonParam);
+  const [state = [[], []], setState] = useQueryParam('layout', Base64JsonParam);
   console.log(state);
   // const sections = charts.map((chart, index) => {
   //   const Chart = chartsTypes[chart.type];
@@ -71,7 +71,7 @@ export function Dashboard({
   });
 
   return <div>
-    <DashboardBuilder predicate={predicate} {...{state, setState}}/>
+    <DashboardBuilder predicate={predicate} setState={value => setState(value, 'replaceIn')} state={state} />
     {/* <DashBoardLayout> */}
       {/* <charts.Months interactive predicate={predicate} defaultOption="COLUMN" {...{view, setView}} /> */}
       {/* {sections}

@@ -47,7 +47,7 @@ export const GalleryPresentation = ({ style, className, next, size, from, data, 
     return <h2>Error</h2>
   }
 
-  return <>
+  return <div {...{style, className}}>
     <DetailsDrawer href={`${env.GBIF_ORG}/occurrence/${activeItem?.key}`} dialog={dialog} nextItem={nextItem} previousItem={previousItem}>
       <OccurrenceSidebar id={activeItem?.key} defaultTab='images' style={{ maxWidth: '100%', width: 700, height: '100%' }} onCloseRequest={() => dialog.setVisible(false)} />
     </DetailsDrawer>
@@ -65,7 +65,7 @@ export const GalleryPresentation = ({ style, className, next, size, from, data, 
               try {
                 const url = `${env.OCCURRENCE_IMAGE_CACHE}/${w}x${h}/occurrence/${item.key}/media/${md5(item.primaryImage.identifier ?? '')}`;
                 return url;
-              } catch(err) {
+              } catch (err) {
                 console.warn(err);
                 return '';
               }
@@ -96,7 +96,7 @@ export const GalleryPresentation = ({ style, className, next, size, from, data, 
         </div>
       </GalleryTiles>
     </div>
-  </>
+  </div>
 }
 
 /*

@@ -43,7 +43,7 @@ query gallery($predicate: Predicate, $size: Int = 20, $from: Int = 0){
 }
 `;
 
-function Gallery({ size: defaultSize = 10, ...props }) {
+function Gallery({ size: defaultSize = 50, ...props }) {
   const [from, setFrom] = useState(0);
   const size = defaultSize;
   const currentFilterContext = useContext(FilterContext);
@@ -81,18 +81,16 @@ function Gallery({ size: defaultSize = 10, ...props }) {
     setFrom(Math.max(0, from + size));
   }, [from, size]);
 
-  return <>
-    <GalleryPresentation
-      error={error}
-      loading={loading}
-      data={allData}
-      total={data?.occurrenceSearch?.documents?.total}
-      next={next}
-      size={size}
-      from={from}
-      {...props}
-    />
-  </>
+  return <GalleryPresentation
+    error={error}
+    loading={loading}
+    data={allData}
+    total={data?.occurrenceSearch?.documents?.total}
+    next={next}
+    size={size}
+    from={from}
+    {...props}
+  />
 }
 
 export default Gallery;
