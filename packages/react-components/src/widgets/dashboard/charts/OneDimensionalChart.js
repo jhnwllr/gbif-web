@@ -55,7 +55,7 @@ export function OneDimensional({
   predicateKey,
   detailsRoute,
   disableOther,
-  options = ['PIE', 'COLUMN', 'TABLE'],
+  options = ['TABLE', 'PIE', 'COLUMN'],
   defaultOption,
   disableUnknown,
   showUnknownInChart,
@@ -67,7 +67,7 @@ export function OneDimensional({
   filterKey,
   handleRedirect,
   visibilityThreshold = -1,
-  interactive = true,
+  interactive = false,
   setView,
   view,
   ...props

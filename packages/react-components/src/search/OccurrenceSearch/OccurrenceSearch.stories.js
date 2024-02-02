@@ -213,7 +213,7 @@ export const StandaloneExample = () => <Standalone siteConfig={{
     }
   },
   occurrence: {
-    occurrenceSearchTabs: ['TABLE', 'MAP', 'DATASETS', 'GALLERY'],
+    occurrenceSearchTabs: ['DASHBOARD', 'TABLE', 'MAP', 'DATASETS', 'GALLERY'],
     mapSettings: {
       userLocationEnabled: true,
     },

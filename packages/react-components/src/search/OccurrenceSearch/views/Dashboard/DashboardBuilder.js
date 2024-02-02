@@ -4,11 +4,13 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import * as charts from '../../../../widgets/dashboard';
 import { Resizable } from 're-resizable';
 import Map from "../Map";
-import { MdClose, MdDragHandle } from "react-icons/md";
+import { MdAddChart, MdClose, MdDelete, MdDragHandle, MdViewColumn } from "react-icons/md";
 import Table from '../Table';
 import Gallery from '../Gallery';
 import { uncontrollable } from 'uncontrollable';
-
+import { Button } from '../../../../components';
+import { Card, CardTitle } from '../../../../widgets/dashboard/shared';
+import { button as buttonStyle, primary as primaryButtonStyle } from '../../../../components/Button/Button.styles';
 const chartsTypes = {
   Iucn: {
     type: ({ predicate, ...props }) => {
@@ -57,17 +59,17 @@ const chartsTypes = {
   },
   EstablishmentMeans: {
     type: ({ predicate, ...props }) => {
-      return <charts.EstablishmentMeans predicate={predicate} interactive {...props} />
+      return <charts.EstablishmentMeans predicate={predicate} interactive defaultOption="PIE" {...props} />
     },
   },
   Months: {
     type: ({ predicate, ...props }) => {
-      return <charts.Months predicate={predicate} interactive {...props} />
+      return <charts.Months predicate={predicate} interactive defaultOption="PIE" {...props} />
     },
   },
   Preparations: {
     type: ({ predicate, ...props }) => {
-      return <charts.Preparations predicate={predicate} interactive {...props} />
+      return <charts.Preparations predicate={predicate} interactive defaultOption="PIE" {...props} />
     },
   },
   Datasets: {
@@ -89,11 +91,11 @@ const chartsTypes = {
     r: true,// resizable
     type: ({ predicate, ...props }) => {
       return <Map predicate={predicate} interactive style={{
-        background: 'white', 
+        background: 'white',
         paddingTop: 8,
         border: '1px solid var(--paperBorderColor)',
         borderRadius: 'var(--borderRadiusPx)'
-      }} mapProps={{style: {border: 0, borderRadius: '0 0 var(--borderRadiusPx) var(--borderRadiusPx)'}}} {...props} 
+      }} mapProps={{ style: { border: 0, borderRadius: '0 0 var(--borderRadiusPx) var(--borderRadiusPx)' } }} {...props}
       />
     },
   },
@@ -101,18 +103,20 @@ const chartsTypes = {
     r: true,// resizable
     type: ({ predicate, ...props }) => {
       return <Table predicate={predicate} interactive {...props} style={{
-        background: 'white', 
+        background: 'white',
         paddingTop: 8,
         border: '1px solid var(--paperBorderColor)',
         borderRadius: 'var(--borderRadiusPx)'
-      }} dataTableProps={{style: {borderWidth: '1px 0 0 0'}}}/>
+      }} dataTableProps={{ style: { borderWidth: '1px 0 0 0' } }} />
     },
   },
   Gallery: {
     r: true,// resizable
     type: ({ predicate, ...props }) => {
       return <Gallery predicate={predicate} size={10} interactive style={{
-        overflow :'auto', height: '100%', background: 'white',
+        overflow: 'auto',
+        height: '100%',
+        background: 'white',
         paddingTop: 8,
         border: '1px solid var(--paperBorderColor)',
         borderRadius: 'var(--borderRadiusPx)'
@@ -178,6 +182,7 @@ const getItemStyle = (isDragging, draggableStyle, index) => ({
   // styles we need to apply on draggables
   ...draggableStyle
 });
+
 const getListStyle = ({ isDraggingOver, width, index }) => {
   const style = index === 0 ? {
     flex: '10 0 auto',
@@ -188,7 +193,7 @@ const getListStyle = ({ isDraggingOver, width, index }) => {
   }
   return {
     background: isDraggingOver ? "#00000005" : "none",
-    padding: `${grid * 2}px ${grid}px`,
+    padding: `0 ${grid}px`,
     ...style
   }
 };
@@ -234,25 +239,19 @@ function DashboardBuilder({ predicate, state, setState, ...props }) {
     setState(newState);
   }
 
+  function addNewGroup() {
+    setState([...state, []]);
+  }
+
+  function removeColumn(index) {
+    const newState = [...state];
+    newState.splice(index, 1);
+    setState(newState);
+  }
+
   return (
     <div>
-      {/* <button
-        type="button"
-        onClick={() => {
-          setState([...state, []]);
-        }}
-      >
-        Add new group
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          setState([...state, getItem('months')]);
-        }}
-      >
-        Add new item
-      </button> */}
-      <div style={{ display: "flex", flexWrap: 'wrap' }}>
+      <div style={{ display: "flex", flexWrap: 'wrap', margin: `0 ${-grid}px` }}>
         <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
           {state.map((column, ind) => (
             // For each group create a column
@@ -275,6 +274,10 @@ function DashboardBuilder({ predicate, state, setState, ...props }) {
                       newState
                     );
                   }}
+                    addNewGroup={addNewGroup}
+                    removeColumn={() => removeColumn(ind)}
+                    columnCount={state.length}
+                    isLastGroup={ind === state.length - 1}
                     onAdd={(type) => {
                       // add new item to this group
                       const newState = [...state];
@@ -298,12 +301,14 @@ function DashboardBuilder({ predicate, state, setState, ...props }) {
 }
 
 
-function Column({ items: el, onDelete, onAdd, onUpdateItem, isDragging, predicate }) {
+function Column({ items: el, onDelete, onAdd, onUpdateItem, isDragging, predicate, isLastGroup, addNewGroup, removeColumn, columnCount }) {
   return <>{el.map((item, index) => (
     <Item predicate={predicate} key={item.id} item={item} index={index} onDelete={onDelete} onUpdateItem={onUpdateItem} />
   ))}
+
     <div style={{ visibility: isDragging ? 'hidden' : 'visible' }}>
-      <CreateOptions onAdd={onAdd} />
+      {el.length === 0 && <EmptyColumn {...{ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount }} />}
+      {el.length > 0 && <ColumnOptions {...{ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount }} />}
     </div>
   </>
 }
@@ -368,7 +373,37 @@ function Item({ item, index, onDelete, onUpdateItem, predicate }) {
   </Draggable>
 }
 
-const CreateOptions = ({ onAdd }) => {
+function EmptyColumn({ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount }) {
+  // if the columns is empty, then show a larger card with a placeholder graph and provide the user 3 options: add chart, delete column or add additional column.
+  return <Card>
+    <CardTitle></CardTitle>
+    <div style={{ textAlign: 'center' }}>
+      <MdAddChart style={{ fontSize: 100 }} />
+      <ColumnOptions {...{ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount }} />
+    </div>
+  </Card>
+
+}
+
+function ColumnOptions({ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount }) {
+  return (
+    <div css={css`
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 12px;
+      > * {
+        margin: 0 4px;
+      }
+    `}>
+      <CreateOptions onAdd={onAdd} />
+      {columnCount > 1 && <Button look="primaryOutline" onClick={removeColumn}>Delete column</Button>}
+      {isLastGroup && <Button look="primaryOutline" onClick={addNewGroup}>Add column</Button>}
+    </div>
+  );
+}
+
+function CreateOptions({ onAdd }) {
   const [selectedOption, setSelectedOption] = useState('');
 
   const handleSelectChange = (event) => {
@@ -377,36 +412,10 @@ const CreateOptions = ({ onAdd }) => {
     onAdd(selectedValue);
   };
 
-  return (
-    <div css={css`
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    `}>
-      <label htmlFor="mySelect" css={css`
-        select {
-          /* appearance: none;
-          width: 100%;
-          font-size: 1.15rem;
-          padding: 0.675em 6em 0.675em 1em;
-          background-color: #fff;
-          border: 1px solid #caced1;
-          border-radius: 0.25rem;
-          color: #000;
-          cursor: pointer; */
-          background: none;
-          border-radius: 4px;
-          color: #888;
-        }
-      `
-      }>
-        <select value={selectedOption} onChange={handleSelectChange}>
-          <option value="">Add</option>
-          {Object.keys(chartsTypes).map(type => <option value={type} key={type}>{type}</option>)}
-        </select>
-      </label>
-    </div>
-  );
+  return <select value={selectedOption} onChange={handleSelectChange} css={css`${buttonStyle}; ${primaryButtonStyle}; max-width: 100px; font-size: 12px;`}>
+    <option value="">Add</option>
+    {Object.keys(chartsTypes).map(type => <option value={type} key={type}>{type}</option>)}
+  </select>
 };
 
 // export default DashboardBuilder;

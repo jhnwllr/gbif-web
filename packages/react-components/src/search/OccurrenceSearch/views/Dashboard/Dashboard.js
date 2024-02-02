@@ -54,7 +54,7 @@ export function Dashboard({
   const [items, setItems] = useState([]);
   const [view, setView] = React.useState('COLUMN');
   // const [state, setState] = React.useState([[],[],[]]);
-  const [state = [[], []], setState] = useQueryParam('layout', Base64JsonParam);
+  const [state = [[]], setState] = useQueryParam('layout', Base64JsonParam);
   console.log(state);
   // const sections = charts.map((chart, index) => {
   //   const Chart = chartsTypes[chart.type];

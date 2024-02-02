@@ -14,7 +14,7 @@ export function GroupByTable({
   columnCount = 'Records',
   results = [],
   onClick,
-  interactive = true,
+  interactive = false,
   total = 800,
   ...props
 }) {
@@ -60,7 +60,7 @@ export function GroupByTable({
         {results.map((e, i) => {
           const perentageOfTotal = e.count / total;
           return <tr key={e.key}>
-            <td>
+            <td style={interactive ? {cursor: 'pointer'} : {}}>
               {e.filter && <div onClick={() => {
                 if (interactive) onClick({ filter: e.filter })
               }
