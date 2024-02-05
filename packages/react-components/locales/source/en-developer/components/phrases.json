@@ -29,5 +29,6 @@
   "seeDetails": "See details",
   "readMore": "Read more",
   "pageNotFoundDescription": "Sorry, the page you visited does not exist.",
-  "download": "Download"
+  "download": "Download",
+  "noResults": "No results"
 }

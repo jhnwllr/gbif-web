@@ -69,7 +69,7 @@ const chartsTypes = {
   },
   Preparations: {
     type: ({ predicate, ...props }) => {
-      return <charts.Preparations predicate={predicate} interactive defaultOption="PIE" {...props} />
+      return <charts.Preparations predicate={predicate} defaultOption="PIE" {...props} />
     },
   },
   Datasets: {
@@ -165,7 +165,7 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 
   return result;
 };
-const grid = 8;
+const grid = 6;
 
 const getItemStyle = (isDragging, draggableStyle, index) => ({
   // some basic styles to make the items look a bit nicer
@@ -378,7 +378,7 @@ function EmptyColumn({ onAdd, isLastGroup, addNewGroup, removeColumn, columnCoun
   return <Card>
     <CardTitle></CardTitle>
     <div style={{ textAlign: 'center' }}>
-      <MdAddChart style={{ fontSize: 100 }} />
+      <MdAddChart style={{ fontSize: 100, color: 'var(--color200)' }} />
       <ColumnOptions {...{ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount }} />
     </div>
   </Card>
