@@ -7,45 +7,8 @@ import { Resizable } from 're-resizable';
 import DashboardBuilder from './DashboardBuilder';
 import { useQueryParam } from 'use-query-params';
 import Base64JsonParam from '../../../../dataManagement/state/base64JsonParam';
-
-const chartsTypes = {
-  Taxa: charts.Taxa,
-  Iucn: charts.Iucn,
-  Synonyms: charts.Synonyms,
-  IucnCounts: charts.IucnCounts,
-  Country: charts.Country,
-  CollectionCodes: charts.CollectionCodes,
-  InstitutionCodes: charts.InstitutionCodes,
-  StateProvince: charts.StateProvince,
-  IdentifiedBy: charts.IdentifiedBy,
-  RecordedBy: charts.RecordedBy,
-  EstablishmentMeans: charts.EstablishmentMeans,
-  Months: charts.Months,
-  Preparations: charts.Preparations,
-  Datasets: charts.Datasets,
-  Publishers: charts.Publishers,
-  HostingOrganizations: charts.HostingOrganizations,
-  Collections: charts.Collections,
-  Institutions: charts.Institutions,
-  Networks: charts.Networks,
-  OccurrenceIssue: charts.OccurrenceIssue,
-  BasisOfRecord: charts.BasisOfRecord,
-  Licenses: charts.Licenses,
-  OccurrenceSummary: charts.OccurrenceSummary,
-  DataQuality: charts.DataQuality,
-  Map: props => {
-    return <Resizable
-      enable={{ top: false, right: false, bottom: true, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
-      defaultSize={{
-        height: 500,
-      }}
-    >
-      <Map />
-    </Resizable>
-  },
-  // Table: Table,
-  // Gallery: Gallery,
-}
+import { useLocalStorage } from 'react-use';
+import { Button } from '../../../../components';
 
 export function Dashboard({
   predicate,
@@ -54,27 +17,24 @@ export function Dashboard({
   const [items, setItems] = useState([]);
   const [view, setView] = React.useState('COLUMN');
   // const [state, setState] = React.useState([[],[],[]]);
-  const [state = [[]], setState] = useQueryParam('layout', Base64JsonParam);
-  console.log(state);
-  // const sections = charts.map((chart, index) => {
-  //   const Chart = chartsTypes[chart.type];
-  //   return <Chart key={index} interactive predicate={predicate} defaultOption="TABLE" />
-  // });
+  const [urlLayout, setUrlLayout] = useQueryParam('layout', Base64JsonParam);
+  const [layout = [[]], setLayoutState, removeLayoutState] = useLocalStorage('occurrenceDashboardLayout', false);
 
-  const sections = items.map((chart, index) => {
-    const Chart = chartsTypes[chart.type];
-    return (
-      <React.Fragment key={index}>
-        <Chart interactive predicate={predicate} defaultOption="TABLE" options={['PIE', 'TABLE']}/>
-      </React.Fragment>
-    );
-  });
+  const isUrlLayoutDifferent = urlLayout && JSON.stringify(urlLayout) !== JSON.stringify(layout);
 
   return <div>
-    <DashboardBuilder predicate={predicate} setState={value => setState(value, 'replaceIn')} state={state} />
+    {isUrlLayoutDifferent && <div>You are viewing a shared layout. <Button onClick={() => setUrlLayout()}>Revert to my default</Button></div>}
+    <DashboardBuilder predicate={predicate} setState={(value, useUrl) => {
+      if (useUrl) {
+        setUrlLayout(value);
+      } else {
+        setLayoutState(value);
+        setUrlLayout();
+      }
+    }} state={urlLayout ?? layout} {...{lockedLayout: isUrlLayoutDifferent}}/>
     {/* <DashBoardLayout> */}
-      {/* <charts.Months interactive predicate={predicate} defaultOption="COLUMN" {...{view, setView}} /> */}
-      {/* {sections}
+    {/* <charts.Months interactive predicate={predicate} defaultOption="COLUMN" {...{view, setView}} /> */}
+    {/* {sections}
       <div>
         <Button onClick={_ => { setItems([...items, { type: 'Taxa' }]) }}>Add new</Button>
         <Button onClick={_ => { setItems([...items, { type: 'Taxa' }]) }}>Taxa</Button>
@@ -85,7 +45,7 @@ export function Dashboard({
         <Button onClick={_ => { setItems([...items, { type: 'CollectionCodes' }]) }}>CollectionCodes</Button>
         <Button onClick={_ => { setItems([...items, { type: 'Map' }]) }}>Map</Button>
       </div> */}
-      {/* <charts.Taxa interactive predicate={predicate} />
+    {/* <charts.Taxa interactive predicate={predicate} />
       <charts.Iucn interactive predicate={predicate} />
       <charts.Synonyms interactive predicate={predicate} />
       <charts.IucnCounts interactive predicate={predicate} />

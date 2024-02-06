@@ -198,8 +198,14 @@ const getListStyle = ({ isDraggingOver, width, index }) => {
   }
 };
 
-function DashboardBuilder({ predicate, state, setState, ...props }) {
+function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDifferent, lockedLayout, ...props }) {
   const [isDragging, setIsDragging] = useState(false);
+
+  // if an invalid state is passed, reset to default
+  if (!Array.isArray(state) || state.length === 0) {
+    setState([[]]);
+    return null;
+  }
 
   const onDragStart = () => {
     setIsDragging(true);
@@ -251,74 +257,102 @@ function DashboardBuilder({ predicate, state, setState, ...props }) {
 
   return (
     <div>
-      <div style={{ display: "flex", flexWrap: 'wrap', margin: `0 ${-grid}px` }}>
-        <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-          {state.map((column, ind) => (
-            // For each group create a column
-            <Droppable key={ind} droppableId={`${ind}`}>
-              {(provided, snapshot) => (
-                <div
-                  ref={provided.innerRef}
-                  style={getListStyle({
-                    isDraggingOver: snapshot.isDraggingOver,
-                    width: (100 / state.length),
-                    index: ind
-                  })}
-                  {...provided.droppableProps}
-                >
-                  <Column predicate={predicate} isDragging={isDragging} items={column} onDelete={({ index }) => {
-                    const newState = [...state];
-                    newState[ind].splice(index, 1);
-                    setState(
-                      // newState.filter(group => group.length)
-                      newState
-                    );
-                  }}
-                    addNewGroup={addNewGroup}
-                    removeColumn={() => removeColumn(ind)}
-                    columnCount={state.length}
-                    isLastGroup={ind === state.length - 1}
-                    onAdd={(type) => {
-                      // add new item to this group
+      <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", flexWrap: 'wrap', margin: `0 ${-grid}px`, flex: '1 1 auto' }}>
+          <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+            {state.map((column, ind) => (
+              // For each group create a column
+              <Droppable key={ind} droppableId={`${ind}`}>
+                {(provided, snapshot) => (
+                  <div
+                    ref={provided.innerRef}
+                    style={getListStyle({
+                      isDraggingOver: snapshot.isDraggingOver,
+                      width: (100 / state.length),
+                      index: ind
+                    })}
+                    {...provided.droppableProps}
+                  >
+                    <Column {...{
+                      lockedLayout,
+                      predicate,
+                      isDragging,
+                      addNewGroup,
+                    }} items={column} onDelete={({ index }) => {
                       const newState = [...state];
-                      if (getItem(type)) {
-                        newState[ind].push(getItem(type));
-                        setState(newState);
-                      } else {
-                        console.warn('type not found', type);
-                      }
+                      newState[ind].splice(index, 1);
+                      setState(
+                        // newState.filter(group => group.length)
+                        newState
+                      );
                     }}
-                    onUpdateItem={(item, index) => updateItemProps({ groupIndex: ind, itemIndex: index, item })} />
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          ))}
-        </DragDropContext>
+                      removeColumn={() => removeColumn(ind)}
+                      columnCount={state.length}
+                      isLastGroup={ind === state.length - 1}
+                      onAdd={(type) => {
+                        // add new item to this group
+                        const newState = [...state];
+                        if (getItem(type)) {
+                          newState[ind].push(getItem(type));
+                          setState(newState);
+                        } else {
+                          console.warn('type not found', type);
+                        }
+                      }}
+                      onUpdateItem={(item, index) => updateItemProps({ groupIndex: ind, itemIndex: index, item })} />
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            ))}
+          </DragDropContext>
+        </div>
+        <div>
+          <div css={css`flex: 0 0 auto; position: sticky; top: 0; display: flex; flex-direction: column; margin-inline-start: ${grid * 2}px;`}>
+            <Button onClick={() => {
+              // first we need to decide what to share. to get that we set the 
+              navigator.clipboard.writeText('test text laksdjfh')
+              setState(state, true);
+              // after 200ms copy the current url to the clipboard
+              setTimeout(() => {
+                navigator.clipboard.writeText(window.location.href)
+              }, 200);
+            }}>Share</Button>
+            <Button>B</Button>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
 
-function Column({ items: el, onDelete, onAdd, onUpdateItem, isDragging, predicate, isLastGroup, addNewGroup, removeColumn, columnCount }) {
+function Column({ items: el, lockedLayout, onDelete, onAdd, onUpdateItem, isDragging, predicate, isLastGroup, addNewGroup, removeColumn, columnCount }) {
   return <>{el.map((item, index) => (
-    <Item predicate={predicate} key={item.id} item={item} index={index} onDelete={onDelete} onUpdateItem={onUpdateItem} />
+    <Item {...{
+      lockedLayout,
+      predicate,
+      item,
+      index,
+      onDelete,
+      onUpdateItem
+    }} key={item.id} />
   ))}
 
-    <div style={{ visibility: isDragging ? 'hidden' : 'visible' }}>
+    <div style={{ visibility: isDragging || lockedLayout ? 'hidden' : 'visible' }}>
       {el.length === 0 && <EmptyColumn {...{ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount }} />}
       {el.length > 0 && <ColumnOptions {...{ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount }} />}
     </div>
   </>
 }
 
-function Item({ item, index, onDelete, onUpdateItem, predicate }) {
+function Item({ item, index, onDelete, onUpdateItem, predicate, lockedLayout }) {
   const { t: type, r: resizable = false, p: params = {} } = item;
   const { h: height = 500, ...componentProps } = params;
   const Component = chartsTypes[type]?.type ?? (() => <div>not defined</div>);
   const content = <Component predicate={predicate} {...componentProps} setView={view => onUpdateItem({ ...item, p: { view } }, index)} />
 
+  const canBeResized = resizable && !lockedLayout;
   return <Draggable
     key={item.id}
     draggableId={item.id}
@@ -335,7 +369,7 @@ function Item({ item, index, onDelete, onUpdateItem, predicate }) {
         )}
       >
         {/* Custom Drag Handle (Corner) */}
-        <div
+        {!lockedLayout && <div
           css={css`
           width: 24px;
           height: 48px;
@@ -355,10 +389,10 @@ function Item({ item, index, onDelete, onUpdateItem, predicate }) {
         >
           <div {...provided.dragHandleProps}><MdDragHandle /></div>
           <MdClose onClick={() => onDelete({ index })} />
-        </div>
+        </div>}
         {!resizable && content}
         {resizable && <Resizable
-          enable={{ top: false, right: false, bottom: true, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
+          enable={canBeResized && { top: false, right: false, bottom: true, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
           size={{
             height,
           }}
