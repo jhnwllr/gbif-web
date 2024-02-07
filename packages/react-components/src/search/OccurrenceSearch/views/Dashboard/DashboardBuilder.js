@@ -4,8 +4,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import * as charts from '../../../../widgets/dashboard';
 import { Resizable } from 're-resizable';
 import Map from "../Map";
-import { MdAddChart, MdClose, MdDelete, MdDragHandle, MdViewColumn, MdShare } from "react-icons/md";
-import { TbColumnInsertLeft as AddColumnIcon } from "react-icons/tb";
+import { MdAddChart, MdClose, MdDragHandle, MdShare } from "react-icons/md";
 
 import Table from '../Table';
 import Gallery from '../Gallery';
@@ -169,7 +168,7 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 
   return result;
 };
-const grid = 6;
+const grid = 8;
 
 const getItemStyle = (isDragging, draggableStyle, index) => ({
   // some basic styles to make the items look a bit nicer
@@ -189,12 +188,12 @@ const getItemStyle = (isDragging, draggableStyle, index) => ({
 
 const getListStyle = ({ isDraggingOver, width, index, maxGroups }) => {
   const style = index === 0 ? {
-    flex: '1 1 auto',
+    flex: '1 0 auto',
     width: `${width}%`,
     maxWidth: '100%',
   } : {
-    flex: `0 0 ${width}%`,
-    maxWidth: maxGroups > index ? `600px` : `${width}%`,
+    flex: `0 1 600px`,
+    maxWidth: `${width}%`,
   }
   return {
     background: isDraggingOver ? "#00000005" : "none",
@@ -209,14 +208,31 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
   const isBelow800 = useBelow(1100);
   const isBelow1200 = useBelow(1600);
   const isBelow1800 = useBelow(2100);
+
   const deviceSize = isBelow800 ? 'small' : isBelow1200 ? 'medium' : isBelow1800 ? 'large' : 'xlarge';
   const maxGroups = deviceSize === 'small' ? 1 : deviceSize === 'medium' ? 2 : deviceSize === 'large' ? 3 : 4;
   const disableAdd = maxGroups < state.length;
 
+
+  //Before doing anything ensure that the state is valid and all items have a unique id
+  useEffect(() => {
+    // check all items have unique ids
+    const ids = state.map(group => group.map(item => item.id)).flat();
+    const uniqueIds = new Set(ids);
+    if (ids.length !== uniqueIds.size) {
+      alert('duplicate ids found in the state');
+      setState([[]]);
+      return;
+    }
+  }, []);
+
   // if max groups exceeded, then remove empty groups automatically
   useEffect(() => {
     if (maxGroups < state.length) {
-      setState(state.filter(group => group.length));
+      // only update state if there is empty groups
+      if (state.filter(group => group.length === 0).length > 0) {
+        setState(state.filter(group => group.length));
+      }
     }
   }, [maxGroups, state, setState]);
 
@@ -278,10 +294,32 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
     setState(newState);
   }
 
+  function restructureToFitDevice() {
+    if (maxGroups >= state.length) return;
+    // restructure the layout to fit the device size
+    // for all columns that exceed the maxGroups, move the items to the last allowed column
+    const newState = [...state];
+    const lastLegalColumn = newState[maxGroups - 1];
+    
+    // this isn't the ideal solution. It would be better to distribute the cards across the remaining columns
+    // iterate groups that exceed the maxGroups
+    for (let i = maxGroups; i < newState.length; i++) {
+      // move all items to the last legal column
+      lastLegalColumn.push(...newState[i]);
+    }
+    // remove the excess columns
+    newState.splice(maxGroups, newState.length - maxGroups);
+    setState(newState);
+  }
+
   return (
     <div>
+      {disableAdd && <div style={{ padding: 12, }}>
+        The layout does not fit the current size.
+        <Button style={{fontSize: '0.85em'}} onClick={restructureToFitDevice}>Fit to device</Button>
+      </div>}
       <div style={{ display: "flex" }}>
-        <div style={{ display: "flex", flexWrap: 'wrap', margin: `0 ${-grid}px`, flex: '1 1 auto' }}>
+        <div style={{ display: "flex", flexWrap: disableAdd ? 'wrap' : 'nowrap', margin: `0 ${-grid}px`, flex: '1 1 auto' }}>
           <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
             {state.map((column, ind) => (
               // For each group create a column
@@ -335,7 +373,7 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
         </div>
         <div>
           <div css={css`flex: 0 0 auto; position: sticky; top: 0; display: flex; flex-direction: column; margin-inline-start: ${grid * 2}px;`}>
-            <Button onClick={() => {
+            <Button style={{marginBottom: 8}} onClick={() => {
               // first we need to decide what to share. to get that we set the 
               setState(state, true);
               // after 200ms copy the current url to the clipboard
