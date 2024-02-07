@@ -1,16 +1,20 @@
 import { jsx, css } from '@emotion/react'
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import * as charts from '../../../../widgets/dashboard';
 import { Resizable } from 're-resizable';
 import Map from "../Map";
-import { MdAddChart, MdClose, MdDelete, MdDragHandle, MdViewColumn } from "react-icons/md";
+import { MdAddChart, MdClose, MdDelete, MdDragHandle, MdViewColumn, MdShare } from "react-icons/md";
+import { TbColumnInsertLeft as AddColumnIcon } from "react-icons/tb";
+
 import Table from '../Table';
 import Gallery from '../Gallery';
 import { uncontrollable } from 'uncontrollable';
 import { Button } from '../../../../components';
 import { Card, CardTitle } from '../../../../widgets/dashboard/shared';
 import { button as buttonStyle, primary as primaryButtonStyle } from '../../../../components/Button/Button.styles';
+import useBelow from '../../../../utils/useBelow';
+
 const chartsTypes = {
   Iucn: {
     type: ({ predicate, ...props }) => {
@@ -183,23 +187,38 @@ const getItemStyle = (isDragging, draggableStyle, index) => ({
   ...draggableStyle
 });
 
-const getListStyle = ({ isDraggingOver, width, index }) => {
+const getListStyle = ({ isDraggingOver, width, index, maxGroups }) => {
   const style = index === 0 ? {
-    flex: '10 0 auto',
-    width: '550px',
+    flex: '1 1 auto',
+    width: `${width}%`,
     maxWidth: '100%',
   } : {
-    flex: '1 1 550px'
+    flex: `0 0 ${width}%`,
+    maxWidth: maxGroups > index ? `600px` : `${width}%`,
   }
   return {
     background: isDraggingOver ? "#00000005" : "none",
     padding: `0 ${grid}px`,
+    marginBottom: 12,
     ...style
   }
 };
 
 function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDifferent, lockedLayout, ...props }) {
   const [isDragging, setIsDragging] = useState(false);
+  const isBelow800 = useBelow(1100);
+  const isBelow1200 = useBelow(1600);
+  const isBelow1800 = useBelow(2100);
+  const deviceSize = isBelow800 ? 'small' : isBelow1200 ? 'medium' : isBelow1800 ? 'large' : 'xlarge';
+  const maxGroups = deviceSize === 'small' ? 1 : deviceSize === 'medium' ? 2 : deviceSize === 'large' ? 3 : 4;
+  const disableAdd = maxGroups < state.length;
+
+  // if max groups exceeded, then remove empty groups automatically
+  useEffect(() => {
+    if (maxGroups < state.length) {
+      setState(state.filter(group => group.length));
+    }
+  }, [maxGroups, state, setState]);
 
   // if an invalid state is passed, reset to default
   if (!Array.isArray(state) || state.length === 0) {
@@ -246,6 +265,10 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
   }
 
   function addNewGroup() {
+    if (state.length > 3) {
+      console.warn('max 4 groups allowed');
+      return;
+    }
     setState([...state, []]);
   }
 
@@ -268,8 +291,10 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
                     ref={provided.innerRef}
                     style={getListStyle({
                       isDraggingOver: snapshot.isDraggingOver,
-                      width: (100 / state.length),
-                      index: ind
+                      width: 100 / Math.min(maxGroups, state.length),
+                      maxGroups,
+                      index: ind,
+                      deviceSize
                     })}
                     {...provided.droppableProps}
                   >
@@ -277,6 +302,7 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
                       lockedLayout,
                       predicate,
                       isDragging,
+                      disableAdd,
                       addNewGroup,
                     }} items={column} onDelete={({ index }) => {
                       const newState = [...state];
@@ -311,14 +337,13 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
           <div css={css`flex: 0 0 auto; position: sticky; top: 0; display: flex; flex-direction: column; margin-inline-start: ${grid * 2}px;`}>
             <Button onClick={() => {
               // first we need to decide what to share. to get that we set the 
-              navigator.clipboard.writeText('test text laksdjfh')
               setState(state, true);
               // after 200ms copy the current url to the clipboard
               setTimeout(() => {
                 navigator.clipboard.writeText(window.location.href)
               }, 200);
-            }}>Share</Button>
-            <Button>B</Button>
+            }}><MdShare /></Button>
+            {maxGroups > state.length && <Button onClick={addNewGroup}><MdAddChart /></Button>}
           </div>
         </div>
       </div>
@@ -327,7 +352,7 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
 }
 
 
-function Column({ items: el, lockedLayout, onDelete, onAdd, onUpdateItem, isDragging, predicate, isLastGroup, addNewGroup, removeColumn, columnCount }) {
+function Column({ items: el, lockedLayout, onDelete, onAdd, onUpdateItem, isDragging, predicate, isLastGroup, disableAdd, addNewGroup, removeColumn, columnCount }) {
   return <>{el.map((item, index) => (
     <Item {...{
       lockedLayout,
@@ -339,9 +364,9 @@ function Column({ items: el, lockedLayout, onDelete, onAdd, onUpdateItem, isDrag
     }} key={item.id} />
   ))}
 
-    <div style={{ visibility: isDragging || lockedLayout ? 'hidden' : 'visible' }}>
+    <div style={{ visibility: (isDragging || lockedLayout) ? 'hidden' : 'visible' }}>
       {el.length === 0 && <EmptyColumn {...{ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount }} />}
-      {el.length > 0 && <ColumnOptions {...{ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount }} />}
+      {(el.length > 0 && !disableAdd) && <ColumnOptions {...{ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount }} />}
     </div>
   </>
 }
@@ -413,13 +438,13 @@ function EmptyColumn({ onAdd, isLastGroup, addNewGroup, removeColumn, columnCoun
     <CardTitle></CardTitle>
     <div style={{ textAlign: 'center' }}>
       <MdAddChart style={{ fontSize: 100, color: 'var(--color200)' }} />
-      <ColumnOptions {...{ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount }} />
+      <ColumnOptions {...{ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount, isEmpty: true }} />
     </div>
   </Card>
 
 }
 
-function ColumnOptions({ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount }) {
+function ColumnOptions({ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount, isEmpty }) {
   return (
     <div css={css`
       display: flex;
@@ -431,8 +456,8 @@ function ColumnOptions({ onAdd, isLastGroup, addNewGroup, removeColumn, columnCo
       }
     `}>
       <CreateOptions onAdd={onAdd} />
-      {columnCount > 1 && <Button look="primaryOutline" onClick={removeColumn}>Delete column</Button>}
-      {isLastGroup && <Button look="primaryOutline" onClick={addNewGroup}>Add column</Button>}
+      {isEmpty && <Button look="primaryOutline" onClick={removeColumn}>Remove empty card</Button>}
+      {/* {isLastGroup && <Button look="primaryOutline" onClick={addNewGroup}>Add column</Button>} */}
     </div>
   );
 }
@@ -447,7 +472,7 @@ function CreateOptions({ onAdd }) {
   };
 
   return <select value={selectedOption} onChange={handleSelectChange} css={css`${buttonStyle}; ${primaryButtonStyle}; max-width: 100px; font-size: 12px;`}>
-    <option value="">Add</option>
+    <option value="">Add chart</option>
     {Object.keys(chartsTypes).map(type => <option value={type} key={type}>{type}</option>)}
   </select>
 };
