@@ -4,118 +4,131 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import * as charts from '../../../../widgets/dashboard';
 import { Resizable } from 're-resizable';
 import Map from "../Map";
-import { MdAddChart, MdClose, MdDragHandle, MdShare } from "react-icons/md";
-
+import { MdAddChart, MdDeleteOutline as MdClose, MdOutlineDragIndicator as MdDragHandle, MdShare } from "react-icons/md";
 import Table from '../Table';
 import Gallery from '../Gallery';
 import { uncontrollable } from 'uncontrollable';
-import { Button } from '../../../../components';
+import { Button, Tooltip } from '../../../../components';
 import { Card, CardTitle } from '../../../../widgets/dashboard/shared';
 import { button as buttonStyle, primary as primaryButtonStyle } from '../../../../components/Button/Button.styles';
 import useBelow from '../../../../utils/useBelow';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const chartsTypes = {
-  Iucn: {
-    type: ({ predicate, ...props }) => {
-      return <charts.Iucn predicate={predicate} interactive {...props} />
+  iucn: {
+    translation: 'dashboard.iucnThreatStatus',
+    component: ({ predicate, ...props }) => {
+      return <charts.Iucn predicate={predicate} interactive {...props} />;
     },
   },
-  Synonyms: {
-    type: ({ predicate, ...props }) => {
-      return <charts.Synonyms predicate={predicate} interactive {...props} />
+  synonyms: {
+    translation: 'dashboard.synonyms',
+    component: ({ predicate, ...props }) => {
+      return <charts.Synonyms predicate={predicate} interactive {...props} />;
     },
   },
-  IucnCounts: {
-    type: ({ predicate, ...props }) => {
-      return <charts.IucnCounts predicate={predicate} interactive {...props} />
+  iucnCounts: {
+    translation: 'filters.iucnRedListCategory.name',
+    component: ({ predicate, ...props }) => {
+      return <charts.IucnCounts predicate={predicate} interactive {...props} />;
     },
   },
-  Country: {
-    type: ({ predicate, ...props }) => {
-      return <charts.Country predicate={predicate} interactive {...props} />
+  country: {
+    translation: 'filters.occurrenceCountry.name',
+    component: ({ predicate, ...props }) => {
+      return <charts.Country predicate={predicate} interactive {...props} />;
     },
   },
-  CollectionCodes: {
-    type: ({ predicate, ...props }) => {
-      return <charts.CollectionCodes predicate={predicate} interactive {...props} />
+  collectionCode: {
+    translation: 'filters.collectionCode.name',
+    component: ({ predicate, ...props }) => {
+      return <charts.CollectionCodes predicate={predicate} interactive {...props} />;
     },
   },
-  InstitutionCodes: {
-    type: ({ predicate, ...props }) => {
-      return <charts.InstitutionCodes predicate={predicate} interactive {...props} />
+  institutionCode: {
+    translation: 'filters.institutionCode.name',
+    component: ({ predicate, ...props }) => {
+      return <charts.InstitutionCodes predicate={predicate} interactive {...props} />;
     },
   },
-  StateProvince: {
-    type: ({ predicate, ...props }) => {
-      return <charts.StateProvince predicate={predicate} interactive {...props} />
+  stateProvince: {
+    translation: 'filters.stateProvince.name',
+    component: ({ predicate, ...props }) => {
+      return <charts.StateProvince predicate={predicate} interactive {...props} />;
     },
   },
-  IdentifiedBy: {
-    type: ({ predicate, ...props }) => {
-      return <charts.IdentifiedBy predicate={predicate} interactive {...props} />
+  identifiedBy: {
+    translation: 'filters.identifiedBy.name',
+    component: ({ predicate, ...props }) => {
+      return <charts.IdentifiedBy predicate={predicate} interactive {...props} />;
     },
   },
-  RecordedBy: {
-    type: ({ predicate, ...props }) => {
-      return <charts.RecordedBy predicate={predicate} interactive {...props} />
+  recordedBy: {
+    translation: 'filters.recordedBy.name',
+    component: ({ predicate, ...props }) => {
+      return <charts.RecordedBy predicate={predicate} interactive {...props} />;
     },
   },
-  EstablishmentMeans: {
-    type: ({ predicate, ...props }) => {
-      return <charts.EstablishmentMeans predicate={predicate} interactive defaultOption="PIE" {...props} />
+  establishmentMeans: {
+    component: ({ predicate, ...props }) => {
+      return <charts.EstablishmentMeans predicate={predicate} interactive defaultOption="PIE" {...props} />;
     },
   },
-  Months: {
-    type: ({ predicate, ...props }) => {
-      return <charts.Months predicate={predicate} interactive defaultOption="PIE" {...props} />
+  month: {
+    component: ({ predicate, ...props }) => {
+      return <charts.Months predicate={predicate} interactive defaultOption="PIE" {...props} />;
     },
   },
-  Preparations: {
-    type: ({ predicate, ...props }) => {
-      return <charts.Preparations predicate={predicate} defaultOption="PIE" {...props} />
+  preparations: {
+    component: ({ predicate, ...props }) => {
+      return <charts.Preparations predicate={predicate} defaultOption="PIE" {...props} />;
     },
   },
-  Datasets: {
-    type: ({ predicate, ...props }) => {
-      return <charts.Datasets predicate={predicate} interactive {...props} />
+  datasetKey: {
+    component: ({ predicate, ...props }) => {
+      return <charts.Datasets predicate={predicate} interactive {...props} />;
     },
   },
-  Taxa: {
-    type: ({ predicate, ...props }) => {
-      return <charts.Taxa predicate={predicate} interactive {...props} />
+  taxa: {
+    translation: 'dashboard.taxa',
+    component: ({ predicate, ...props }) => {
+      return <charts.Taxa predicate={predicate} interactive {...props} />;
     },
   },
-  OccurrenceIssue: {
-    type: ({ predicate, ...props }) => {
-      return <charts.OccurrenceIssue predicate={predicate} interactive {...props} />
+  occurrenceIssue: {
+    component: ({ predicate, ...props }) => {
+      return <charts.OccurrenceIssue predicate={predicate} interactive {...props} />;
     },
   },
-  Map: {
-    r: true,// resizable
-    type: ({ predicate, ...props }) => {
+  map: {
+    translation: 'search.tabs.map',
+    r: true, // resizable
+    component: ({ predicate, ...props }) => {
       return <Map predicate={predicate} interactive style={{
         background: 'white',
         paddingTop: 8,
         border: '1px solid var(--paperBorderColor)',
         borderRadius: 'var(--borderRadiusPx)'
       }} mapProps={{ style: { border: 0, borderRadius: '0 0 var(--borderRadiusPx) var(--borderRadiusPx)' } }} {...props}
-      />
+      />;
     },
   },
-  Table: {
-    r: true,// resizable
-    type: ({ predicate, ...props }) => {
+  table: {
+    translation: 'search.tabs.table',
+    r: true, // resizable
+    component: ({ predicate, ...props }) => {
       return <Table predicate={predicate} interactive {...props} style={{
         background: 'white',
         paddingTop: 8,
         border: '1px solid var(--paperBorderColor)',
         borderRadius: 'var(--borderRadiusPx)'
-      }} dataTableProps={{ style: { borderWidth: '1px 0 0 0' } }} />
+      }} dataTableProps={{ style: { borderWidth: '1px 0 0 0' } }} />;
     },
   },
-  Gallery: {
-    r: true,// resizable
-    type: ({ predicate, ...props }) => {
+  gallery: {
+    translation: 'search.tabs.gallery',
+    r: true, // resizable
+    component: ({ predicate, ...props }) => {
       return <Gallery predicate={predicate} size={10} interactive style={{
         overflow: 'auto',
         height: '100%',
@@ -123,10 +136,11 @@ const chartsTypes = {
         paddingTop: 8,
         border: '1px solid var(--paperBorderColor)',
         borderRadius: 'var(--borderRadiusPx)'
-      }} {...props} />
+      }} {...props} />;
     },
   },
-}
+};
+
 
 function generateRandomId() {
   return Math.random().toString(36).substring(2, 7);
@@ -152,9 +166,6 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
-/**
- * Moves an item from one list to another list.
- */
 const move = (source, destination, droppableSource, droppableDestination) => {
   const sourceClone = Array.from(source);
   const destClone = Array.from(destination);
@@ -188,10 +199,9 @@ const getItemStyle = (isDragging, draggableStyle, index) => ({
 
 const getListStyle = ({ isDraggingOver, width, index, maxGroups, groupCount }) => {
   const cardSize = 600;
-  const firstItemWidth = `calc(100% - ${cardSize * (groupCount - 1)}px - ${grid * (groupCount - 1)}px)`;
   const style = index === 0 ? {
     flex: `1 1 400px`,
-    width: '33%',//`calc(100% - ${cardSize * (groupCount - 1)}px - ${grid * (groupCount - 1)}px)`,
+    width: 300
   } : {
     flex: `0 0 600px`,
     maxWidth: `${width}%`,
@@ -214,14 +224,13 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
   const maxGroups = deviceSize === 'small' ? 1 : deviceSize === 'medium' ? 2 : deviceSize === 'large' ? 3 : 4;
   const disableAdd = maxGroups < state.length;
 
-
   //Before doing anything ensure that the state is valid and all items have a unique id
   useEffect(() => {
     // check all items have unique ids
     const ids = state.map(group => group.map(item => item.id)).flat();
     const uniqueIds = new Set(ids);
     if (ids.length !== uniqueIds.size) {
-      alert('duplicate ids found in the state');
+      console.warn('duplicate ids found in the state');
       setState([[]]);
       return;
     }
@@ -323,9 +332,9 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
 
   return (
     <div>
-      {disableAdd && <div style={{ padding: 12, }}>
-        The layout does not fit the current size.
-        <Button style={{ fontSize: '0.85em' }} onClick={restructureToFitDevice}>Fit to device</Button>
+      {!lockedLayout && disableAdd && <div css={css`margin-bottom: 12px;`}>
+        <FormattedMessage id="dashboard.invalidLayoutWarning" />
+        <Button css={css`margin-inline-start: 12px;`} onClick={restructureToFitDevice}><FormattedMessage id="dashboard.adaptLayout" defaultMessage="Adapt layout" /></Button>
       </div>}
       <div style={{ display: "flex" }}>
         <div style={{ display: "flex", flexWrap: disableAdd ? 'wrap' : 'wrap', margin: `0 ${-grid}px`, flex: '1 1 auto' }}>
@@ -383,15 +392,19 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
         </div>
         <div>
           <div css={css`flex: 0 0 auto; position: sticky; top: 0; display: flex; flex-direction: column; margin-inline-start: ${grid * 2}px;`}>
-            <Button style={{ marginBottom: 8 }} onClick={() => {
-              // first we need to decide what to share. to get that we set the 
-              setState(state, true);
-              // after 200ms copy the current url to the clipboard
-              setTimeout(() => {
-                navigator.clipboard.writeText(window.location.href)
-              }, 200);
-            }}><MdShare /></Button>
-            {maxGroups > state.length && <Button onClick={addNewGroup}><MdAddChart /></Button>}
+            <Tooltip title={<FormattedMessage id="phrases.share" />} placement="left">
+              <Button style={{ marginBottom: 8 }} onClick={() => {
+                // first we need to decide what to share. to get that we set the 
+                setState(state, true);
+                // after 200ms copy the current url to the clipboard
+                setTimeout(() => {
+                  navigator.clipboard.writeText(window.location.href)
+                }, 200);
+              }}><MdShare /></Button>
+            </Tooltip>
+            {maxGroups > state.length && <Tooltip title={<FormattedMessage id="dashboard.newGroup" />} placement="left">
+              <Button onClick={addNewGroup}><MdAddChart /></Button>
+            </Tooltip>}
           </div>
         </div>
       </div>
@@ -422,7 +435,7 @@ function Column({ items: el, lockedLayout, onDelete, onAdd, onUpdateItem, isDrag
 function Item({ item, index, onDelete, onUpdateItem, predicate, lockedLayout }) {
   const { t: type, r: resizable = false, p: params = {} } = item;
   const { h: height = 500, ...componentProps } = params;
-  const Component = chartsTypes[type]?.type ?? (() => <div>not defined</div>);
+  const Component = chartsTypes[type]?.component ?? (() => <div>not defined</div>);
   const content = <Component predicate={predicate} {...componentProps} setView={view => onUpdateItem({ ...item, p: { view } }, index)} />
 
   const canBeResized = resizable && !lockedLayout;
@@ -493,6 +506,9 @@ function EmptyColumn({ onAdd, isLastGroup, addNewGroup, removeColumn, columnCoun
 }
 
 function ColumnOptions({ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount, isEmpty }) {
+  const intl = useIntl();
+  const messageRemove = intl.formatMessage({ id: 'dashboard.removeEmptyGroup' });
+
   return (
     <div css={css`
       display: flex;
@@ -504,14 +520,22 @@ function ColumnOptions({ onAdd, isLastGroup, addNewGroup, removeColumn, columnCo
       }
     `}>
       <CreateOptions onAdd={onAdd} />
-      {isEmpty && <Button look="primaryOutline" onClick={removeColumn}>Remove empty card</Button>}
+      {isEmpty && <Button look="primaryOutline" onClick={removeColumn}>{messageRemove}</Button>}
       {/* {isLastGroup && <Button look="primaryOutline" onClick={addNewGroup}>Add column</Button>} */}
     </div>
   );
 }
 
 function CreateOptions({ onAdd }) {
+  const intl = useIntl();
+  const messageNew = intl.formatMessage({ id: 'dashboard.addNew' });
   const [selectedOption, setSelectedOption] = useState('');
+
+  // get translations for all the dashboard names
+  const dashboardTitles = Object.keys(chartsTypes).reduce((acc, type) => {
+    acc[type] = intl.formatMessage({ id: chartsTypes[type].translation ?? `filters.${type}.name`, defaultMessage: type });
+    return acc;
+  }, {});
 
   const handleSelectChange = (event) => {
     const selectedValue = event.target.value;
@@ -520,8 +544,8 @@ function CreateOptions({ onAdd }) {
   };
 
   return <select value={selectedOption} onChange={handleSelectChange} css={css`${buttonStyle}; ${primaryButtonStyle}; max-width: 100px; font-size: 12px;`}>
-    <option value="">Add chart</option>
-    {Object.keys(chartsTypes).map(type => <option value={type} key={type}>{type}</option>)}
+    <option value="">{messageNew}</option>
+    {Object.keys(chartsTypes).map(type => <option value={type} key={type}>{dashboardTitles[type]}</option>)}
   </select>
 };
 

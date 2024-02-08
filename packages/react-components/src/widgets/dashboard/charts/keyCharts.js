@@ -245,7 +245,7 @@ export function Synonyms({
       accepted
       acceptedKey
     }`,
-    title: <FormattedMessage id="filters.synonyms.name" defaultMessage="Synonyms" />,
+    title: <FormattedMessage id="dashboard.synonyms" defaultMessage="Synonyms" />,
     subtitleKey: "dashboard.numberOfOccurrences",
     transform: data => {
       return data?.search?.facet?.results?.map(x => {

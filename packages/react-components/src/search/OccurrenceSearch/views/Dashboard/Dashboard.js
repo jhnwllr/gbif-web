@@ -1,29 +1,24 @@
 import { jsx, css } from '@emotion/react';
-import React, { useState } from 'react';
-import * as charts from '../../../../widgets/dashboard';
+import React from 'react';
 import useBelow from '../../../../utils/useBelow';
-import Map from '../Map';
-import { Resizable } from 're-resizable';
 import DashboardBuilder from './DashboardBuilder';
 import { useQueryParam } from 'use-query-params';
 import Base64JsonParam from '../../../../dataManagement/state/base64JsonParam';
 import { useLocalStorage } from 'react-use';
 import { Button } from '../../../../components';
+import { FormattedMessage } from 'react-intl';
 
 export function Dashboard({
   predicate,
   ...props
 }) {
-  const [items, setItems] = useState([]);
-  const [view, setView] = React.useState('COLUMN');
-  // const [state, setState] = React.useState([[],[],[]]);
   const [urlLayout, setUrlLayout] = useQueryParam('layout', Base64JsonParam);
   const [layout = [[]], setLayoutState, removeLayoutState] = useLocalStorage('occurrenceDashboardLayout', false);
 
   const isUrlLayoutDifferent = urlLayout && JSON.stringify(urlLayout) !== JSON.stringify(layout);
 
   return <div>
-    {isUrlLayoutDifferent && <div>You are viewing a shared layout. <Button onClick={() => setUrlLayout()}>Revert to my default</Button></div>}
+    {isUrlLayoutDifferent && <div css={css`margin-bottom: 12px;`}><FormattedMessage id="dashboard.sharedLayout" /> <Button css={css`margin-inline-start: 12px;`} onClick={() => setUrlLayout()}><FormattedMessage id="phrases.discard" /></Button> <Button look="primaryOutline" css={css`margin-inline-start: 12px;`} onClick={() => {setLayoutState(urlLayout); setUrlLayout();}}><FormattedMessage id="phrases.keep" /></Button></div>}
     <DashboardBuilder predicate={predicate} setState={(value, useUrl) => {
       if (useUrl) {
         setUrlLayout(value);
