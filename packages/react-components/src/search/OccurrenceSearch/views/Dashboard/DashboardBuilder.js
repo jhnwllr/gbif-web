@@ -186,13 +186,14 @@ const getItemStyle = (isDragging, draggableStyle, index) => ({
   ...draggableStyle
 });
 
-const getListStyle = ({ isDraggingOver, width, index, maxGroups }) => {
+const getListStyle = ({ isDraggingOver, width, index, maxGroups, groupCount }) => {
+  const cardSize = 600;
+  const firstItemWidth = `calc(100% - ${cardSize * (groupCount - 1)}px - ${grid * (groupCount - 1)}px)`;
   const style = index === 0 ? {
-    flex: '1 0 auto',
-    width: `${width}%`,
-    maxWidth: '100%',
+    flex: `1 1 400px`,
+    width: '33%',//`calc(100% - ${cardSize * (groupCount - 1)}px - ${grid * (groupCount - 1)}px)`,
   } : {
-    flex: `0 1 600px`,
+    flex: `0 0 600px`,
     maxWidth: `${width}%`,
   }
   return {
@@ -296,19 +297,27 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
 
   function restructureToFitDevice() {
     if (maxGroups >= state.length) return;
-    // restructure the layout to fit the device size
-    // for all columns that exceed the maxGroups, move the items to the last allowed column
-    const newState = [...state];
-    const lastLegalColumn = newState[maxGroups - 1];
-    
-    // this isn't the ideal solution. It would be better to distribute the cards across the remaining columns
-    // iterate groups that exceed the maxGroups
-    for (let i = maxGroups; i < newState.length; i++) {
-      // move all items to the last legal column
-      lastLegalColumn.push(...newState[i]);
+    const newState = [...state]
+    // Get the total number of columns before removal
+    const totalColumns = newState.length;
+    if (maxGroups < 1 || maxGroups > totalColumns) {
+      return newState;
     }
-    // remove the excess columns
-    newState.splice(maxGroups, newState.length - maxGroups);
+
+    const columnsToRemove = totalColumns - maxGroups;
+
+    // Remove the last x columns and store them
+    const removedColumns = newState.splice(totalColumns - columnsToRemove, columnsToRemove);
+
+    // Flatten the array of removed columns
+    const flattenedRemovedColumns = removedColumns.flat();
+
+    // Distribute the items from removed columns into remaining columns
+    for (let i = 0; i < flattenedRemovedColumns.length; i++) {
+      const columnIndex = i % maxGroups;
+      newState[columnIndex].push(flattenedRemovedColumns[i]);
+    }
+
     setState(newState);
   }
 
@@ -316,10 +325,10 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
     <div>
       {disableAdd && <div style={{ padding: 12, }}>
         The layout does not fit the current size.
-        <Button style={{fontSize: '0.85em'}} onClick={restructureToFitDevice}>Fit to device</Button>
+        <Button style={{ fontSize: '0.85em' }} onClick={restructureToFitDevice}>Fit to device</Button>
       </div>}
       <div style={{ display: "flex" }}>
-        <div style={{ display: "flex", flexWrap: disableAdd ? 'wrap' : 'nowrap', margin: `0 ${-grid}px`, flex: '1 1 auto' }}>
+        <div style={{ display: "flex", flexWrap: disableAdd ? 'wrap' : 'wrap', margin: `0 ${-grid}px`, flex: '1 1 auto' }}>
           <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
             {state.map((column, ind) => (
               // For each group create a column
@@ -331,6 +340,7 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
                       isDraggingOver: snapshot.isDraggingOver,
                       width: 100 / Math.min(maxGroups, state.length),
                       maxGroups,
+                      groupCount: state.length,
                       index: ind,
                       deviceSize
                     })}
@@ -373,7 +383,7 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
         </div>
         <div>
           <div css={css`flex: 0 0 auto; position: sticky; top: 0; display: flex; flex-direction: column; margin-inline-start: ${grid * 2}px;`}>
-            <Button style={{marginBottom: 8}} onClick={() => {
+            <Button style={{ marginBottom: 8 }} onClick={() => {
               // first we need to decide what to share. to get that we set the 
               setState(state, true);
               // after 200ms copy the current url to the clipboard
