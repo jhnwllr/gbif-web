@@ -87,10 +87,10 @@ export const TablePresentation = ({ first, prev, next, size, from, data, total, 
       locked: fixed,
       toggle: noColumnLock ? null : () => setFixed(!fixedColumn),
       prefix: <Menu
-        aria-label="Settings_"
+        aria-label="Settings"
         trigger={<TextButton as="span" look="textHoverLinkColor" style={{ display: 'inline-flex' }}>
           <MdMoreVert style={{ fontSize: '1.5em', marginRight: '.75em' }} onClick={(e) => {
-            console.log(4);
+            // e.stopPropagation();
           }} />
         </TextButton>}
         items={menuItems}

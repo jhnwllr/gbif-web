@@ -4,7 +4,7 @@ import ThemeContext from '../../style/themes/ThemeContext';
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 // import { oneOfMany } from '../../utils/util';
-import { root as rootStyle } from './styles';
+import { root as rootStyle, appRoot as appRootStyle } from './styles';
 
 export const Root = React.forwardRef(({
   as: Rt = 'div',
@@ -14,7 +14,7 @@ export const Root = React.forwardRef(({
 }, ref) => {
   const theme = useContext(ThemeContext);
   const { cssVariables = {} } = theme;
-  return <Rt ref={ref} {...props} style={{...cssVariables, ...style}} css={rootStyle({theme, appRoot})} />
+  return <Rt ref={ref} {...props} style={{...cssVariables, ...style}} css={appRoot ? appRootStyle : rootStyle} />
 });
 
 Root.displayName = 'Root';
