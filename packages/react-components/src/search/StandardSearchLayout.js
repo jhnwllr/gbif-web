@@ -16,7 +16,7 @@ const Layout = ({
   styles = {},
   config,
   Table,
-  style,
+  style = '',
   ...props
 }) => {
   const [activeView, setActiveView] = useState('list');

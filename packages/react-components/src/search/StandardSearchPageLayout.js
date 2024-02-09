@@ -14,7 +14,7 @@ const { TabList, Tab, TabPanel } = Tabs;
 const Layout = ({
   className = '',
   styles = {},
-  style,
+  style = '',
   config,
   Table,
   ...props
