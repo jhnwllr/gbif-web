@@ -478,6 +478,18 @@ function Item({ item, index, onDelete, onUpdateItem, predicate, lockedLayout }) 
         </div>}
         {!resizable && content}
         {resizable && <Resizable
+          handleComponent={{
+            bottom: <div css={css`padding: 5px; margin: 5px;`}>
+              <div css={css`
+                height: 5px;
+                display: block;
+                background: #606060;
+                border-radius: 100px;
+                width: 30px;
+                margin: 0 auto;
+              `}></div>
+          </div>,
+          }}
           enable={canBeResized && { top: false, right: false, bottom: true, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
           size={{
             height,
