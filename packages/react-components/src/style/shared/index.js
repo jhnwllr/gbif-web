@@ -65,6 +65,7 @@ export const classification = ({ ...props }) => css`
 `;
 
 export const root = css`
+  font-family: var(--fontFamily);
   * {
     font-family: var(--fontFamily);
   }
@@ -82,7 +83,7 @@ export const root = css`
 `;
 
 export const appRoot = css`
-  background: ${appRoot ? 'var(--background)' : null};
+  background: var(--background);
   ${root}
 `;
 

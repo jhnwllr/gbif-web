@@ -13,6 +13,7 @@ const { TabList, Tab, TabPanel } = Tabs;
 
 const Layout = ({
   className = '',
+  styles = {},
   config,
   Table,
   style,
@@ -24,7 +25,7 @@ const Layout = ({
   const elementName = 'searchLayout';
 
   return <div className={`${className} ${prefix}-${elementName}`}
-    css={cssLayout({ theme })} style={style}>
+    css={cssLayout({ theme })} style={style} styles={styles}>
     <Tabs activeId={activeView} onChange={setActiveView} >
       <div css={cssNavBar({ theme })}>
         <div css={cssFilter({ theme })}>
