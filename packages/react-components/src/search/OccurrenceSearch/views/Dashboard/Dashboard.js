@@ -1,139 +1,166 @@
 import { jsx, css } from '@emotion/react';
-import React from 'react';
-import useBelow from '../../../../utils/useBelow';
+import React, { useCallback } from 'react';
 import DashboardBuilder from './DashboardBuilder';
 import { useQueryParam } from 'use-query-params';
 import Base64JsonParam from '../../../../dataManagement/state/base64JsonParam';
-import { useLocalStorage } from 'react-use';
+import useLocalStorage from "use-local-storage";
 import { Button } from '../../../../components';
 import { FormattedMessage } from 'react-intl';
+import * as charts from '../../../../widgets/dashboard';
+import Map from "../Map";
+import Table from '../Table';
+import Gallery from '../Gallery';
 
 export function Dashboard({
   predicate,
   ...props
 }) {
   const [urlLayout, setUrlLayout] = useQueryParam('layout', Base64JsonParam);
-  const [layout = [[]], setLayoutState, removeLayoutState] = useLocalStorage('occurrenceDashboardLayout', false);
+  const [layout = [[]], setLayoutState] = useLocalStorage('occurrenceDashboardLayout', [[]]);
+
+  const updateState = useCallback((value, useUrl) => {
+    if (useUrl) {
+      setUrlLayout(value);
+    } else {
+      setLayoutState(value);
+      setUrlLayout();
+    }
+  }, [setLayoutState, setUrlLayout]);
 
   const isUrlLayoutDifferent = urlLayout && JSON.stringify(urlLayout) !== JSON.stringify(layout);
-
   return <div>
     {isUrlLayoutDifferent && <div css={css`margin-bottom: 12px;`}><FormattedMessage id="dashboard.sharedLayout" /> <Button css={css`margin-inline-start: 12px;`} onClick={() => setUrlLayout()}><FormattedMessage id="phrases.discard" /></Button> <Button look="primaryOutline" css={css`margin-inline-start: 12px;`} onClick={() => {setLayoutState(urlLayout); setUrlLayout();}}><FormattedMessage id="phrases.keep" /></Button></div>}
-    <DashboardBuilder predicate={predicate} setState={(value, useUrl) => {
-      if (useUrl) {
-        setUrlLayout(value);
-      } else {
-        setLayoutState(value);
-        setUrlLayout();
-      }
-    }} state={urlLayout ?? layout} {...{lockedLayout: isUrlLayoutDifferent}}/>
-    {/* <DashBoardLayout> */}
-    {/* <charts.Months interactive predicate={predicate} defaultOption="COLUMN" {...{view, setView}} /> */}
-    {/* {sections}
-      <div>
-        <Button onClick={_ => { setItems([...items, { type: 'Taxa' }]) }}>Add new</Button>
-        <Button onClick={_ => { setItems([...items, { type: 'Taxa' }]) }}>Taxa</Button>
-        <Button onClick={_ => { setItems([...items, { type: 'Iucn' }]) }}>Iucn</Button>
-        <Button onClick={_ => { setItems([...items, { type: 'Synonyms' }]) }}>Synonyms</Button>
-        <Button onClick={_ => { setItems([...items, { type: 'IucnCounts' }]) }}>IucnCounts</Button>
-        <Button onClick={_ => { setItems([...items, { type: 'Country' }]) }}>Country</Button>
-        <Button onClick={_ => { setItems([...items, { type: 'CollectionCodes' }]) }}>CollectionCodes</Button>
-        <Button onClick={_ => { setItems([...items, { type: 'Map' }]) }}>Map</Button>
-      </div> */}
-    {/* <charts.Taxa interactive predicate={predicate} />
-      <charts.Iucn interactive predicate={predicate} />
-      <charts.Synonyms interactive predicate={predicate} />
-      <charts.IucnCounts interactive predicate={predicate} />
-
-      <charts.Country interactive predicate={predicate} defaultOption="TABLE" />
-      <charts.CollectionCodes interactive predicate={predicate} defaultOption="TABLE" />
-      <charts.InstitutionCodes interactive predicate={predicate} defaultOption="TABLE" />
-      <charts.StateProvince interactive predicate={predicate} defaultOption="TABLE" />
-      <charts.IdentifiedBy interactive predicate={predicate} defaultOption="TABLE" />
-      <charts.RecordedBy interactive predicate={predicate} defaultOption="TABLE" />
-      <charts.EstablishmentMeans interactive predicate={predicate} defaultOption="PIE" />
-      <charts.Months interactive predicate={predicate} defaultOption="COLUMN" />
-      <charts.Preparations predicate={predicate} defaultOption="PIE" />
-
-      <charts.Datasets interactive predicate={predicate} defaultOption="TABLE" />
-      <charts.Publishers interactive predicate={predicate} defaultOption="TABLE" />
-      <charts.HostingOrganizations interactive predicate={predicate} defaultOption="TABLE" />
-      <charts.Collections interactive predicate={predicate} defaultOption="TABLE" />
-      <charts.Institutions interactive predicate={predicate} defaultOption="TABLE" />
-      <charts.Networks interactive predicate={predicate} defaultOption="TABLE" />
-
-      <charts.OccurrenceIssue interactive predicate={predicate} />
-      <charts.BasisOfRecord interactive predicate={predicate} />
-      <charts.Licenses interactive predicate={predicate} />
-      <charts.OccurrenceSummary predicate={predicate} />
-      <charts.DataQuality predicate={predicate} />
-      <Resizable
-        enable={{ top: false, right: false, bottom: true, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
-        defaultSize={{
-          height: 500,
-        }}
-      >
-        <Map />
-      </Resizable>
-      <Resizable
-        enable={{ top: false, right: false, bottom: true, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
-        defaultSize={{
-          height: 500,
-        }}
-      >
-        <Table />
-      </Resizable>
-      <charts.Months interactive predicate={predicate} defaultOption="COLUMN" />
-      <div><Gallery style={{overflow:  'auto', paddingBottom: 48}} size={10} /></div> */}
-    {/* </DashBoardLayout> */}
+    <DashboardBuilder chartsTypes={chartsTypes} predicate={predicate} setState={updateState} state={urlLayout ?? layout} {...{lockedLayout: isUrlLayoutDifferent}}/>
   </div>
 };
 
-function DashboardSection({ children, ...props }) {
-  return <div css={css`margin-bottom: 12px;`} {...props}>{children}</div>
-}
-function DashBoardLayout({ children, predicate, queueUpdates = false, ...props }) {
-  const isSingleColumn = useBelow(900);
-  const isdoubleColumn = useBelow(1200);
-  const flattenedChildren = React.Children.toArray(children);
 
-  const childrenArray = (Array.isArray(flattenedChildren) ? flattenedChildren : [flattenedChildren]).map((child, index) => <DashboardSection>{child}</DashboardSection>);
-  if (isSingleColumn) {
-    return <div css={css`padding-bottom: 50px;`}>{childrenArray}</div>
-  }
+const chartsTypes = {
+  iucn: {
+    translation: 'dashboard.iucnThreatStatus',
+    component: ({ predicate, ...props }) => {
+      return <charts.Iucn predicate={predicate} interactive {...props} />;
+    },
+  },
+  license: {
+    component: ({ predicate, ...props }) => {
+      return <charts.Licenses predicate={predicate} interactive {...props} />;
+    },
+  },
+  basisOfRecord: {
+    component: ({ predicate, ...props }) => {
+      return <charts.BasisOfRecord predicate={predicate} interactive {...props} />;
+    },
+  },
+  synonyms: {
+    translation: 'dashboard.synonyms',
+    component: ({ predicate, ...props }) => {
+      return <charts.Synonyms predicate={predicate} interactive {...props} />;
+    },
+  },
+  iucnCounts: {
+    translation: 'filters.iucnRedListCategory.name',
+    component: ({ predicate, ...props }) => {
+      return <charts.IucnCounts predicate={predicate} interactive {...props} />;
+    },
+  },
+  country: {
+    translation: 'filters.occurrenceCountry.name',
+    component: ({ predicate, ...props }) => {
+      return <charts.Country predicate={predicate} interactive {...props} />;
+    },
+  },
+  collectionCode: {
+    translation: 'filters.collectionCode.name',
+    component: ({ predicate, ...props }) => {
+      return <charts.CollectionCodes predicate={predicate} interactive {...props} />;
+    },
+  },
+  institutionCode: {
+    translation: 'filters.institutionCode.name',
+    component: ({ predicate, ...props }) => {
+      return <charts.InstitutionCodes predicate={predicate} interactive {...props} />;
+    },
+  },
+  stateProvince: {
+    translation: 'filters.stateProvince.name',
+    component: ({ predicate, ...props }) => {
+      return <charts.StateProvince predicate={predicate} interactive {...props} />;
+    },
+  },
+  identifiedBy: {
+    translation: 'filters.identifiedBy.name',
+    component: ({ predicate, ...props }) => {
+      return <charts.IdentifiedBy predicate={predicate} interactive {...props} />;
+    },
+  },
+  recordedBy: {
+    translation: 'filters.recordedBy.name',
+    component: ({ predicate, ...props }) => {
+      return <charts.RecordedBy predicate={predicate} interactive {...props} />;
+    },
+  },
+  establishmentMeans: {
+    component: ({ predicate, ...props }) => {
+      return <charts.EstablishmentMeans predicate={predicate} interactive defaultOption="PIE" {...props} />;
+    },
+  },
+  month: {
+    component: ({ predicate, ...props }) => {
+      return <charts.Months predicate={predicate} interactive defaultOption="PIE" {...props} />;
+    },
+  },
+  preparations: {
+    component: ({ predicate, ...props }) => {
+      return <charts.Preparations predicate={predicate} defaultOption="PIE" {...props} />;
+    },
+  },
+  datasetKey: {
+    component: ({ predicate, ...props }) => {
+      return <charts.Datasets predicate={predicate} interactive {...props} />;
+    },
+  },
+  taxa: {
+    translation: 'dashboard.taxa',
+    component: ({ predicate, ...props }) => {
+      return <charts.Taxa predicate={predicate} interactive {...props} />;
+    },
+  },
+  occurrenceIssue: {
+    component: ({ predicate, ...props }) => {
+      return <charts.OccurrenceIssue predicate={predicate} interactive {...props} />;
+    },
+  },
+  map: {
+    translation: 'search.tabs.map',
+    r: true, // resizable
+    component: ({ predicate, ...props }) => {
+      return <Map predicate={predicate} interactive css={cardStyle} mapProps={{ style: { border: 0, borderRadius: '0 0 var(--borderRadiusPx) var(--borderRadiusPx)' } }} {...props}
+      />;
+    },
+  },
+  table: {
+    translation: 'search.tabs.table',
+    r: true, // resizable
+    component: ({ predicate, ...props }) => {
+      return <Table predicate={predicate} interactive {...props} css={cardStyle} dataTableProps={{ style: { borderWidth: '1px 0 0 0' } }} />;
+    },
+  },
+  gallery: {
+    translation: 'search.tabs.gallery',
+    r: true, // resizable
+    component: ({ predicate, ...props }) => {
+      return <Gallery predicate={predicate} size={10} interactive css={cardStyle} style={{
+        overflow: 'auto',
+        height: '100%'
+      }} {...props} />;
+    },
+  },
+};
 
-  let width = '33%';
-  if (isSingleColumn) {
-    width = '100%';
-  }
-  if (isdoubleColumn) {
-    width = '50%';
-  }
-
-
-  return <div css={css`
-    display: flex; margin: -6px; padding-bottom: 50px; flex-wrap: wrap;
-    > div {
-      flex: 0 1 calc(${width} - 12px); 
-      margin: 6px;
-      width: calc(${width} - 12px);
-    }
-  `}>
-    <div>
-      {childrenArray
-        .filter((x, i) => i % 3 === 0)
-        .map((x, i) => <React.Fragment key={i}>{x}</React.Fragment>)}
-    </div>
-    <div>
-      {childrenArray
-        .filter((x, i) => i % 3 === 1)
-        .map((x, i) => <React.Fragment key={i}>{x}</React.Fragment>)}
-    </div>
-    <div>
-      {childrenArray
-        .filter((x, i) => i % 3 === 2)
-        .map((x, i) => <React.Fragment key={i}>{x}</React.Fragment>)}
-    </div>
-  </div>
-
-}
+const cardStyle = css`
+  background: white;
+  padding-top: 8px;
+  border: 1px solid var(--paperBorderColor);
+  border-radius: var(--borderRadiusPx);
+`;

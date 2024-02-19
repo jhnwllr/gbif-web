@@ -120,6 +120,10 @@ export function useFacets({ predicate, otherVariables = {}, keys, translationTem
     });
   }, [predicate, query, from, size]);
 
+  useDeepCompareEffect(() => {
+    setFrom(0);
+  }, [predicate]);
+
   const next = useCallback(() => {
     setFrom(Math.max(0, from + size));
   });
@@ -137,9 +141,9 @@ export function useFacets({ predicate, otherVariables = {}, keys, translationTem
   let results = buckets?.map(x => {
     return {
       ...x,
-      key: x.key,
+      key: x?.key,
       title: x?.entity?.title || x?.key,
-      count: x.count ?? x.doc_count,
+      count: x?.count ?? x?.doc_count,
       description: x?.entity?.description
     }
   });

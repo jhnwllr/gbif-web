@@ -4,7 +4,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import * as charts from '../../../../widgets/dashboard';
 import { Resizable } from 're-resizable';
 import Map from "../Map";
-import { MdAddChart, MdDeleteOutline as MdClose, MdOutlineDragIndicator as MdDragHandle, MdShare } from "react-icons/md";
+import { MdAddChart, MdBrokenImage, MdDeleteOutline as MdClose, MdOutlineDragIndicator as MdDragHandle, MdShare } from "react-icons/md";
 import Table from '../Table';
 import Gallery from '../Gallery';
 import { uncontrollable } from 'uncontrollable';
@@ -14,139 +14,11 @@ import { button as buttonStyle, primary as primaryButtonStyle } from '../../../.
 import useBelow from '../../../../utils/useBelow';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-const chartsTypes = {
-  iucn: {
-    translation: 'dashboard.iucnThreatStatus',
-    component: ({ predicate, ...props }) => {
-      return <charts.Iucn predicate={predicate} interactive {...props} />;
-    },
-  },
-  synonyms: {
-    translation: 'dashboard.synonyms',
-    component: ({ predicate, ...props }) => {
-      return <charts.Synonyms predicate={predicate} interactive {...props} />;
-    },
-  },
-  iucnCounts: {
-    translation: 'filters.iucnRedListCategory.name',
-    component: ({ predicate, ...props }) => {
-      return <charts.IucnCounts predicate={predicate} interactive {...props} />;
-    },
-  },
-  country: {
-    translation: 'filters.occurrenceCountry.name',
-    component: ({ predicate, ...props }) => {
-      return <charts.Country predicate={predicate} interactive {...props} />;
-    },
-  },
-  collectionCode: {
-    translation: 'filters.collectionCode.name',
-    component: ({ predicate, ...props }) => {
-      return <charts.CollectionCodes predicate={predicate} interactive {...props} />;
-    },
-  },
-  institutionCode: {
-    translation: 'filters.institutionCode.name',
-    component: ({ predicate, ...props }) => {
-      return <charts.InstitutionCodes predicate={predicate} interactive {...props} />;
-    },
-  },
-  stateProvince: {
-    translation: 'filters.stateProvince.name',
-    component: ({ predicate, ...props }) => {
-      return <charts.StateProvince predicate={predicate} interactive {...props} />;
-    },
-  },
-  identifiedBy: {
-    translation: 'filters.identifiedBy.name',
-    component: ({ predicate, ...props }) => {
-      return <charts.IdentifiedBy predicate={predicate} interactive {...props} />;
-    },
-  },
-  recordedBy: {
-    translation: 'filters.recordedBy.name',
-    component: ({ predicate, ...props }) => {
-      return <charts.RecordedBy predicate={predicate} interactive {...props} />;
-    },
-  },
-  establishmentMeans: {
-    component: ({ predicate, ...props }) => {
-      return <charts.EstablishmentMeans predicate={predicate} interactive defaultOption="PIE" {...props} />;
-    },
-  },
-  month: {
-    component: ({ predicate, ...props }) => {
-      return <charts.Months predicate={predicate} interactive defaultOption="PIE" {...props} />;
-    },
-  },
-  preparations: {
-    component: ({ predicate, ...props }) => {
-      return <charts.Preparations predicate={predicate} defaultOption="PIE" {...props} />;
-    },
-  },
-  datasetKey: {
-    component: ({ predicate, ...props }) => {
-      return <charts.Datasets predicate={predicate} interactive {...props} />;
-    },
-  },
-  taxa: {
-    translation: 'dashboard.taxa',
-    component: ({ predicate, ...props }) => {
-      return <charts.Taxa predicate={predicate} interactive {...props} />;
-    },
-  },
-  occurrenceIssue: {
-    component: ({ predicate, ...props }) => {
-      return <charts.OccurrenceIssue predicate={predicate} interactive {...props} />;
-    },
-  },
-  map: {
-    translation: 'search.tabs.map',
-    r: true, // resizable
-    component: ({ predicate, ...props }) => {
-      return <Map predicate={predicate} interactive style={{
-        background: 'white',
-        paddingTop: 8,
-        border: '1px solid var(--paperBorderColor)',
-        borderRadius: 'var(--borderRadiusPx)'
-      }} mapProps={{ style: { border: 0, borderRadius: '0 0 var(--borderRadiusPx) var(--borderRadiusPx)' } }} {...props}
-      />;
-    },
-  },
-  table: {
-    translation: 'search.tabs.table',
-    r: true, // resizable
-    component: ({ predicate, ...props }) => {
-      return <Table predicate={predicate} interactive {...props} style={{
-        background: 'white',
-        paddingTop: 8,
-        border: '1px solid var(--paperBorderColor)',
-        borderRadius: 'var(--borderRadiusPx)'
-      }} dataTableProps={{ style: { borderWidth: '1px 0 0 0' } }} />;
-    },
-  },
-  gallery: {
-    translation: 'search.tabs.gallery',
-    r: true, // resizable
-    component: ({ predicate, ...props }) => {
-      return <Gallery predicate={predicate} size={10} interactive style={{
-        overflow: 'auto',
-        height: '100%',
-        background: 'white',
-        paddingTop: 8,
-        border: '1px solid var(--paperBorderColor)',
-        borderRadius: 'var(--borderRadiusPx)'
-      }} {...props} />;
-    },
-  },
-};
-
-
 function generateRandomId() {
   return Math.random().toString(36).substring(2, 7);
 }
 
-const getItem = (type) => {
+const getItem = (type, chartsTypes) => {
   const chart = chartsTypes[type];
   if (!chart) return;
   const id = generateRandomId();
@@ -214,7 +86,7 @@ const getListStyle = ({ isDraggingOver, width, index, maxGroups, groupCount }) =
   }
 };
 
-function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDifferent, lockedLayout, ...props }) {
+function DashboardBuilder({ predicate, chartsTypes, state = [[]], setState, isUrlLayoutDifferent, lockedLayout, ...props }) {
   const [isDragging, setIsDragging] = useState(false);
   const isBelow800 = useBelow(1100);
   const isBelow1200 = useBelow(1600);
@@ -227,6 +99,11 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
   //Before doing anything ensure that the state is valid and all items have a unique id
   useEffect(() => {
     // check all items have unique ids
+    if (!Array.isArray(state)) {
+      console.warn('state is not an array');
+      setState([[]]);
+      return;
+    }
     const ids = state.map(group => group.map(item => item.id)).flat();
     const uniqueIds = new Set(ids);
     if (ids.length !== uniqueIds.size) {
@@ -361,6 +238,7 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
                       isDragging,
                       disableAdd,
                       addNewGroup,
+                      chartsTypes,
                     }} items={column} onDelete={({ index }) => {
                       const newState = [...state];
                       newState[ind].splice(index, 1);
@@ -375,8 +253,8 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
                       onAdd={(type) => {
                         // add new item to this group
                         const newState = [...state];
-                        if (getItem(type)) {
-                          newState[ind].push(getItem(type));
+                        if (getItem(type, chartsTypes)) {
+                          newState[ind].push(getItem(type, chartsTypes));
                           setState(newState);
                         } else {
                           console.warn('type not found', type);
@@ -413,7 +291,7 @@ function DashboardBuilder({ predicate, state = [[]], setState, isUrlLayoutDiffer
 }
 
 
-function Column({ items: el, lockedLayout, onDelete, onAdd, onUpdateItem, isDragging, predicate, isLastGroup, disableAdd, addNewGroup, removeColumn, columnCount }) {
+function Column({ items: el, lockedLayout, onDelete, onAdd, onUpdateItem, chartsTypes, isDragging, predicate, disableAdd, removeColumn }) {
   return <>{el.map((item, index) => (
     <Item {...{
       lockedLayout,
@@ -421,21 +299,22 @@ function Column({ items: el, lockedLayout, onDelete, onAdd, onUpdateItem, isDrag
       item,
       index,
       onDelete,
-      onUpdateItem
+      onUpdateItem,
+      chartsTypes,
     }} key={item.id} />
   ))}
 
     <div style={{ visibility: (isDragging || lockedLayout) ? 'hidden' : 'visible' }}>
-      {el.length === 0 && <EmptyColumn {...{ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount }} />}
-      {(el.length > 0 && !disableAdd) && <ColumnOptions {...{ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount }} />}
+      {el.length === 0 && <EmptyColumn {...{ onAdd, chartsTypes, removeColumn }} />}
+      {(el.length > 0 && !disableAdd) && <ColumnOptions {...{ onAdd, chartsTypes, removeColumn }} />}
     </div>
   </>
 }
 
-function Item({ item, index, onDelete, onUpdateItem, predicate, lockedLayout }) {
+function Item({ item, index, onDelete, onUpdateItem, predicate, lockedLayout, chartsTypes = {} }) {
   const { t: type, r: resizable = false, p: params = {} } = item;
   const { h: height = 500, ...componentProps } = params;
-  const Component = chartsTypes[type]?.component ?? (() => <div>not defined</div>);
+  const Component = chartsTypes[type]?.component ?? (() => <div css={css`text-align: center; background: white;`}><MdBrokenImage css={css`font-size: 80px; margin: auto;`}/><div>Broken. Please delete at recreate</div></div>);
   const content = <Component predicate={predicate} {...componentProps} setView={view => onUpdateItem({ ...item, p: { view } }, index)} />
 
   const canBeResized = resizable && !lockedLayout;
@@ -505,19 +384,19 @@ function Item({ item, index, onDelete, onUpdateItem, predicate, lockedLayout }) 
   </Draggable>
 }
 
-function EmptyColumn({ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount }) {
+function EmptyColumn({ onAdd, removeColumn, chartsTypes }) {
   // if the columns is empty, then show a larger card with a placeholder graph and provide the user 3 options: add chart, delete column or add additional column.
   return <Card>
     <CardTitle></CardTitle>
     <div style={{ textAlign: 'center' }}>
       <MdAddChart style={{ fontSize: 100, color: 'var(--color200)' }} />
-      <ColumnOptions {...{ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount, isEmpty: true }} />
+      <ColumnOptions {...{ onAdd, chartsTypes, removeColumn, isEmpty: true }} />
     </div>
   </Card>
 
 }
 
-function ColumnOptions({ onAdd, isLastGroup, addNewGroup, removeColumn, columnCount, isEmpty }) {
+function ColumnOptions({ onAdd, chartsTypes, removeColumn, isEmpty }) {
   const intl = useIntl();
   const messageRemove = intl.formatMessage({ id: 'dashboard.removeEmptyGroup' });
 
@@ -531,14 +410,13 @@ function ColumnOptions({ onAdd, isLastGroup, addNewGroup, removeColumn, columnCo
         margin: 0 4px;
       }
     `}>
-      <CreateOptions onAdd={onAdd} />
+      <CreateOptions onAdd={onAdd} chartsTypes={chartsTypes}/>
       {isEmpty && <Button look="primaryOutline" onClick={removeColumn}>{messageRemove}</Button>}
-      {/* {isLastGroup && <Button look="primaryOutline" onClick={addNewGroup}>Add column</Button>} */}
     </div>
   );
 }
 
-function CreateOptions({ onAdd }) {
+function CreateOptions({ onAdd, chartsTypes }) {
   const intl = useIntl();
   const messageNew = intl.formatMessage({ id: 'dashboard.addNew' });
   const [selectedOption, setSelectedOption] = useState('');
