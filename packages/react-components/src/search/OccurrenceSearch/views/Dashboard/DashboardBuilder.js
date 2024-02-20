@@ -314,7 +314,7 @@ function Column({ items: el, lockedLayout, onDelete, onAdd, onUpdateItem, charts
 function Item({ item, index, onDelete, onUpdateItem, predicate, lockedLayout, chartsTypes = {} }) {
   const { t: type, r: resizable = false, p: params = {} } = item;
   const { h: height = 500, ...componentProps } = params;
-  const Component = chartsTypes[type]?.component ?? (() => <div css={css`text-align: center; background: white;`}><MdBrokenImage css={css`font-size: 80px; margin: auto;`}/><div>Broken. Please delete at recreate</div></div>);
+  const Component = chartsTypes[type]?.component ?? (() => <div css={css`text-align: center; background: white;`}><MdBrokenImage css={css`font-size: 80px; margin: auto;`} /><div>Broken. Please delete at recreate</div></div>);
   const content = <Component predicate={predicate} {...componentProps} setView={view => onUpdateItem({ ...item, p: { view } }, index)} />
 
   const canBeResized = resizable && !lockedLayout;
@@ -367,7 +367,7 @@ function Item({ item, index, onDelete, onUpdateItem, predicate, lockedLayout, ch
                 width: 30px;
                 margin: 0 auto;
               `}></div>
-          </div>,
+            </div>,
           }}
           enable={canBeResized && { top: false, right: false, bottom: true, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
           size={{
@@ -410,11 +410,140 @@ function ColumnOptions({ onAdd, chartsTypes, removeColumn, isEmpty }) {
         margin: 0 4px;
       }
     `}>
-      <CreateOptions onAdd={onAdd} chartsTypes={chartsTypes}/>
+      <CreateOptions onAdd={onAdd} chartsTypes={chartsTypes} />
       {isEmpty && <Button look="primaryOutline" onClick={removeColumn}>{messageRemove}</Button>}
     </div>
   );
 }
+
+const chartGroups = {
+  views: {
+    values: ['map', 'table', 'gallery']
+  },
+  "record": {
+    "values": [
+      "licence",
+      "license",
+      "institutionCode",
+      "institution",
+      "collectionCode",
+      "collection",
+      "basisOfRecord"
+    ]
+  },
+  "occurrence": {
+    "values": [
+      "occurrenceStatus",
+      "occurrenceId",
+      "catalogueNumber",
+      "recordNumber",
+      "recordedBy",
+      "recordedById",
+      "organismQuantity",
+      "organismQuantityType",
+      "relativeOrganismQuantity",
+      "sex",
+      "lifeStage",
+      "establishmentMeans",
+      "degreeOfEstablishment",
+      "pathway",
+      "mediaType",
+      "gbifId"
+    ]
+  },
+  "organism": {
+    "values": [
+      "organismId",
+      "previousIdentifications"
+    ]
+  },
+  "materialEntity": {
+    "values": [
+      "preparations",
+      "associatedSequences",
+      "isSequenced"
+    ]
+  },
+  "event": {
+    "values": [
+      "eventId",
+      "fieldNumber",
+      "eventDate",
+      "startDayOfYear",
+      "endDayOfYear",
+      "year",
+      "month",
+      "samplingProtocol",
+      "sampleSizeValue",
+      "sampleSizeUnit"
+    ]
+  },
+  "location": {
+    "values": [
+      "higherGeography",
+      "continent",
+      "waterBody",
+      "islandGroup",
+      "island",
+      "country",
+      "stateProvince",
+      "locality",
+      "elevation",
+      "depth",
+      "location",
+      "coordinateUncertaintyInMetres",
+      "georeferencedBy",
+      "administrativeAreas",
+      "gbifRegion"
+    ]
+  },
+  "geologicalContext": {
+    "values": [
+      "earliestEonOrLowestEonothem",
+      "latestEonOrHighestEonothem",
+      "earliestEraOrLowestErathem",
+      "latestEraOrHighestErathem",
+      "earliestPeriodOrLowestSystem",
+      "latestPeriodOrHighestSystem",
+      "earliestEpochOrLowestSeries",
+      "latestEpochOrHighestSeries",
+      "earliestAgeOrLowestStage",
+      "latestAgeOrHighestStage",
+      "lowestBiostratigraphicZone",
+      "highestBiostratigraphicZone",
+      "group",
+      "formation",
+      "member",
+      "bed"
+    ]
+  },
+  "identification": {
+    "values": [
+      "typeStatus",
+      "identifiedBy",
+      "identifiedById",
+      "taxon",
+      "verbatimTaxonId",
+      "scientificName",
+      "verbatimScientificName",
+      "iucnGlobalRedListCategory"
+    ]
+  },
+  "provenance": {
+    "values": [
+      "dataset",
+      "publisher",
+      "publishingCountryOrArea",
+      "publishedByGbifRegion",
+      "hostingOrganization",
+      "dataNetwork",
+      "protocol",
+      "project",
+      "programme"
+    ]
+  },
+  other: { values: [] }
+};
 
 function CreateOptions({ onAdd, chartsTypes }) {
   const intl = useIntl();
@@ -433,9 +562,45 @@ function CreateOptions({ onAdd, chartsTypes }) {
     onAdd(selectedValue);
   };
 
+  const groupOrdering = {
+    views: [],
+    record: [],
+    occurrence: [],
+    organism: [],
+    materialEntity: [],
+    event: [],
+    location: [],
+    geologicalContext: [],
+    identification: [],
+    provenance: [],
+    other: []
+  }
+
+  // try the other way around and only use the chart types. And values that aren't belonging to a chartGroup should go into other
+  const groupedCharts = Object.keys(chartsTypes).reduce((acc, type) => {
+    const group = Object.keys(chartGroups).find(group => chartGroups[group].values.includes(type));
+    if (!group) {
+      acc.other.push({ value: type, label: dashboardTitles[type] });
+    } else {
+      acc[group] = acc[group] || [];
+      acc[group].push({ value: type, label: dashboardTitles[type] });
+    }
+    return acc;
+  }, groupOrdering);
+
+  // remove empty groups
+  Object.keys(groupedCharts).forEach(group => {
+    if (groupedCharts[group].length === 0) {
+      delete groupedCharts[group];
+    }
+  });
+
+
   return <select value={selectedOption} onChange={handleSelectChange} css={css`${buttonStyle}; ${primaryButtonStyle}; max-width: 100px; font-size: 12px;`}>
     <option value="">{messageNew}</option>
-    {Object.keys(chartsTypes).map(type => <option value={type} key={type}>{dashboardTitles[type]}</option>)}
+    {Object.keys(groupedCharts).map(group => <optgroup label={intl.formatMessage({ id: `dashboard.group.${group}` })} key={group}>
+      {groupedCharts[group].map(option => <option value={option.value} key={option.value}>{option.label}</option>)}
+    </optgroup>)}
   </select>
 };
 

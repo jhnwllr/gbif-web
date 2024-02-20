@@ -1,5 +1,5 @@
 import { jsx, css } from '@emotion/react';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import DashboardBuilder from './DashboardBuilder';
 import { useQueryParam } from 'use-query-params';
 import Base64JsonParam from '../../../../dataManagement/state/base64JsonParam';
@@ -13,10 +13,23 @@ import Gallery from '../Gallery';
 
 export function Dashboard({
   predicate,
+  chartsTypes: chartsTypesProp,
   ...props
 }) {
   const [urlLayout, setUrlLayout] = useQueryParam('layout', Base64JsonParam);
   const [layout = [[]], setLayoutState] = useLocalStorage('occurrenceDashboardLayout', [[]]);
+  const [chartsTypes, setChartsTypes] = useState([]);
+
+  useEffect(() => {
+    const charts = {...preconfiguredCharts};
+    // delete charts that are not in the chartsTypesProp array
+    Object.keys(charts).forEach(key => {
+      if (!chartsTypesProp.includes(key)) {
+        delete charts[key];
+      }
+    });
+    setChartsTypes(charts);
+  }, [chartsTypesProp]);
 
   const updateState = useCallback((value, useUrl) => {
     if (useUrl) {
@@ -35,7 +48,7 @@ export function Dashboard({
 };
 
 
-const chartsTypes = {
+const preconfiguredCharts = {
   iucn: {
     translation: 'dashboard.iucnThreatStatus',
     component: ({ predicate, ...props }) => {
@@ -50,6 +63,11 @@ const chartsTypes = {
   basisOfRecord: {
     component: ({ predicate, ...props }) => {
       return <charts.BasisOfRecord predicate={predicate} interactive {...props} />;
+    },
+  },
+  year: {
+    component: ({ predicate, ...props }) => {
+      return <charts.EventDate options={['TIME']}  predicate={predicate} {...props} />;
     },
   },
   synonyms: {
@@ -143,7 +161,7 @@ const chartsTypes = {
     translation: 'search.tabs.table',
     r: true, // resizable
     component: ({ predicate, ...props }) => {
-      return <Table predicate={predicate} interactive {...props} css={cardStyle} dataTableProps={{ style: { borderWidth: '1px 0 0 0' } }} />;
+      return <Table predicate={predicate} interactive {...props} css={cardStyle} dataTableProps={{ style: { borderWidth: '1px 0 0 0', overflow: 'hidden' } }} />;
     },
   },
   gallery: {

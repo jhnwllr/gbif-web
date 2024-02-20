@@ -67,6 +67,14 @@ export function Months(props) {
   }} />
 }
 
+// export function MediaType(props) {
+//   return <StandardEnumChart {...{
+//     facetSize: 10,
+//     ...props,
+//     fieldName: 'mediaType',
+//   }} />
+// }
+
 export function OccurrenceIssue(props) {
   return <StandardEnumChart {...{
     ...props,
