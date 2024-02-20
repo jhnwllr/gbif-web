@@ -1,6 +1,4 @@
-import { LoaderArgs } from '@/types';
-import { ProjectAboutQuery, ProjectAboutQueryVariables } from '@/gql/graphql';
-import { createGraphQLHelpers } from '@/utils/createGraphQLHelpers';
+import { ProjectQuery } from '@/gql/graphql';
 import { ArticleBanner } from '@/routes/resource/key/components/ArticleBanner';
 import { ArticleTextContainer } from '../components/ArticleTextContainer';
 import { ArticleBody } from '../components/ArticleBody';
@@ -12,66 +10,52 @@ import { Documents } from '../components/Documents';
 import { KeyValuePair } from '../components/KeyValuePair';
 import { FormattedDate, FormattedMessage, FormattedNumber } from 'react-intl';
 import { DynamicLink } from '@/components/DynamicLink';
+import { RouteId, useParentRouteLoaderData } from '@/hooks/useParentRouteLoaderData';
+import { fragmentManager } from '@/services/FragmentManager';
 
-const { load, useTypedLoaderData } = createGraphQLHelpers<
-  ProjectAboutQuery,
-  ProjectAboutQueryVariables
->(/* GraphQL */ `
-  query ProjectAbout($key: String!) {
-    gbifProject(id: $key) {
-      summary
-      body
-      fundsAllocated
-      matchingFunds
-      grantType
-      start
-      end
-      programme {
-        id
-        title
-      }
-      projectId
-      primaryImage {
-        file {
-          url
-          normal: thumbor(width: 1200, height: 500)
-          mobile: thumbor(width: 800, height: 400)
-        }
-        description
-        title
-      }
-      secondaryLinks {
-        label
-        url
-      }
-      documents {
-        file {
-          url
-          fileName
-          contentType
-          volatile_documentType
-          details {
-            size
-          }
-        }
-        title
-      }
-      purposes
-      status
-      createdAt
+fragmentManager.register(/* GraphQL */ `
+  fragment ProjectAboutTab on GbifProject {
+    projectId
+    id
+    title
+    body
+    start
+    end
+    status
+    fundsAllocated
+    matchingFunds
+    grantType
+    purposes
+    programme {
+      id
+      title
+    }
+    primaryImage {
+      ...ArticleBanner
+    }
+    primaryLink {
+      label
+      url
+    }
+    secondaryLinks {
+      label
+      url
+    }
+    documents {
+      ...DocumentPreview
     }
   }
 `);
 
-export function AboutTab() {
-  const { data } = useTypedLoaderData();
+export function ProjectAboutTab() {
+  const { data } = useParentRouteLoaderData(RouteId.Project) as { data: ProjectQuery };
 
   if (data.gbifProject == null) throw new Error('404');
   const resource = data.gbifProject;
 
   return (
     <>
-      <ArticleBanner className="mt-8 mb-6" image={resource?.primaryImage ?? null} />
+      <ArticleBanner className="mt-8 mb-6" image={resource?.primaryImage} />
 
       <ArticleTextContainer>
         {resource.body && (
@@ -84,14 +68,22 @@ export function AboutTab() {
           label={<FormattedMessage id="cms.project.status" />}
           value={<FormattedMessage id={`enums.cms.projectStatus.${resource.status}`} />}
         />
-        {resource.fundsAllocated && <KeyValuePair
-          label={<FormattedMessage id="cms.project.funding" />}
-          value={<FormattedNumber value={resource.fundsAllocated} style="currency" currency="EUR" />}
-        />}
-        {resource.matchingFunds && <KeyValuePair
-          label={<FormattedMessage id="cms.project.coFunding" />}
-          value={<FormattedNumber value={resource.matchingFunds} style="currency" currency="EUR" />}
-        />}
+        {resource.fundsAllocated && (
+          <KeyValuePair
+            label={<FormattedMessage id="cms.project.funding" />}
+            value={
+              <FormattedNumber value={resource.fundsAllocated} style="currency" currency="EUR" />
+            }
+          />
+        )}
+        {resource.matchingFunds && (
+          <KeyValuePair
+            label={<FormattedMessage id="cms.project.coFunding" />}
+            value={
+              <FormattedNumber value={resource.matchingFunds} style="currency" currency="EUR" />
+            }
+          />
+        )}
         <KeyValuePair
           label={<FormattedMessage id="cms.project.typeOfGrant" />}
           value={<FormattedMessage id={`enums.cms.projectGrantType.${resource.grantType}`} />}
@@ -129,6 +121,7 @@ export function AboutTab() {
             }
           />
         )}
+
         <KeyValuePair
           label={<FormattedMessage id="cms.project.projectIdentifier" />}
           value={resource.projectId}
@@ -152,16 +145,6 @@ export function AboutTab() {
   );
 }
 
-export async function projectAboutLoader({ request, params, config, locale }: LoaderArgs) {
-  const key = params.key;
-  if (key == null) throw new Error('No key provided in the url');
-
-  return load({
-    endpoint: config.graphqlEndpoint,
-    signal: request.signal,
-    variables: {
-      key,
-    },
-    locale: locale.cmsLocale || locale.code,
-  });
+export function ProjectAboutTabSkeleton() {
+  return <p>Loading...</p>;
 }

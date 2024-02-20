@@ -1,14 +1,20 @@
 import { RouteObject } from 'react-router-dom';
 import { Config } from '@/contexts/config/config';
+import { GraphQLService } from './services/GraphQLService';
+import { RouteId } from './hooks/useParentRouteLoaderData';
 
 export type LoaderArgs = {
   request: Request;
   config: Config;
   locale: Config['languages'][number];
+  graphql: GraphQLService;
   params: Record<string, string | undefined>;
 };
 
-export type SourceRouteObject = Omit<RouteObject, 'loader' | 'children' | 'lazy'> & {
+export type SourceRouteObject = Omit<RouteObject, 'loader' | 'children' | 'lazy' | 'id'> & {
+  // 'id' is a unique identifier for the route, used for example to identify the route in the useParentRouteLoaderData hook.
+  id?: RouteId;
+
   // 'key' is optionally used to activate or deactivate the route in the global configuration.
   key?: string;
 

@@ -1,7 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { LoaderArgs } from '@/types';
 import { NewsQuery, NewsQueryVariables } from '@/gql/graphql';
-import { createGraphQLHelpers } from '@/utils/createGraphQLHelpers';
 import { ArticleContainer } from '@/routes/resource/key/components/ArticleContainer';
 import {
   ArticleBanner,
@@ -15,11 +14,10 @@ import { ArticleTextContainer } from '../components/ArticleTextContainer';
 import { ArticleBody, ArticleBodySkeleton } from '../components/ArticleBody';
 import { ArticleTags } from '../components/ArticleTags';
 import { FormattedMessage } from 'react-intl';
+import { required } from '@/utils/required';
+import { useLoaderData } from 'react-router-dom';
 
-const { load, useTypedLoaderData } = createGraphQLHelpers<
-  NewsQuery,
-  NewsQueryVariables
->(/* GraphQL */ `
+const NEWS_QUERY = /* GraphQL */ `
   query News($key: String!) {
     news(id: $key) {
       id
@@ -27,13 +25,7 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
       summary
       body
       primaryImage {
-        file {
-          url
-          normal: thumbor(width: 1200, height: 500)
-          mobile: thumbor(width: 800, height: 400)
-        }
-        description
-        title
+        ...ArticleBanner
       }
       primaryLink {
         label
@@ -51,10 +43,16 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
       createdAt
     }
   }
-`);
+`;
 
-export function News() {
-  const { data } = useTypedLoaderData();
+export async function newsPageLoader({ params, graphql }: LoaderArgs) {
+  const key = required(params.key, 'No key provided in the url');
+
+  return graphql.query<NewsQuery, NewsQueryVariables>(NEWS_QUERY, { key });
+}
+
+export function NewsPage() {
+  const { data } = useLoaderData() as { data: NewsQuery };
 
   if (data.news == null) throw new Error('404');
   const resource = data.news;
@@ -67,7 +65,9 @@ export function News() {
 
       <ArticleContainer>
         <ArticleTextContainer>
-          <ArticlePreTitle><FormattedMessage id="cms.contentType.news" /></ArticlePreTitle>
+          <ArticlePreTitle>
+            <FormattedMessage id="cms.contentType.news" />
+          </ArticlePreTitle>
 
           <ArticleTitle>{resource.title}</ArticleTitle>
 
@@ -78,7 +78,7 @@ export function News() {
           )}
         </ArticleTextContainer>
 
-        <ArticleBanner className="mt-8 mb-6" image={resource?.primaryImage ?? null} />
+        <ArticleBanner className="mt-8 mb-6" image={resource?.primaryImage} />
 
         <ArticleTextContainer>
           {resource.body && (
@@ -94,21 +94,7 @@ export function News() {
   );
 }
 
-export async function newsLoader({ request, params, config, locale }: LoaderArgs) {
-  const key = params.key;
-  if (key == null) throw new Error('No key provided in the url');
-
-  return load({
-    endpoint: config.graphqlEndpoint,
-    signal: request.signal,
-    variables: {
-      key,
-    },
-    locale: locale.cmsLocale || locale.code,
-  });
-}
-
-export function NewsSkeleton() {
+export function NewsPageSkeleton() {
   return (
     <ArticleContainer>
       <ArticleTextContainer>

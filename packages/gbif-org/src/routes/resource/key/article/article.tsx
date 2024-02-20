@@ -1,7 +1,8 @@
 import { Helmet } from 'react-helmet-async';
+import { useLoaderData } from 'react-router-dom';
 import { LoaderArgs } from '@/types';
 import { ArticleQuery, ArticleQueryVariables } from '@/gql/graphql';
-import { createGraphQLHelpers } from '@/utils/createGraphQLHelpers';
+import { required } from '@/utils/required';
 import { ArticleContainer } from '@/routes/resource/key/components/ArticleContainer';
 import { ArticleBanner } from '@/routes/resource/key/components/ArticleBanner';
 import { ArticleTitle } from '../components/ArticleTitle';
@@ -13,11 +14,9 @@ import { ArticleAuxiliary } from '../components/ArticleAuxiliary';
 
 import { SecondaryLinks } from '../components/SecondaryLinks';
 import { Documents } from '../components/Documents';
+import { ArticleSkeleton } from '../components/ArticleSkeleton';
 
-const { load, useTypedLoaderData } = createGraphQLHelpers<
-  ArticleQuery,
-  ArticleQueryVariables
->(/* GraphQL */ `
+const ARTICLE_QUERY = /* GraphQL */ `
   query Article($key: String!) {
     article(id: $key) {
       id
@@ -25,29 +24,14 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
       summary
       body
       primaryImage {
-        file {
-          url
-          normal: thumbor(width: 1200, height: 500)
-          mobile: thumbor(width: 800, height: 400)
-        }
-        description
-        title
+        ...ArticleBanner
       }
       secondaryLinks {
         label
         url
       }
       documents {
-        file {
-          url
-          fileName
-          contentType
-          volatile_documentType
-          details {
-            size
-          }
-        }
-        title
+        ...DocumentPreview
       }
       topics
       purposes
@@ -56,10 +40,16 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
       createdAt
     }
   }
-`);
+`;
 
-export function Article() {
-  const { data } = useTypedLoaderData();
+export function articlePageLoader({ params, graphql }: LoaderArgs) {
+  const key = required(params.key, 'No key provided in the url');
+
+  return graphql.query<ArticleQuery, ArticleQueryVariables>(ARTICLE_QUERY, { key });
+}
+
+export function ArticlePage() {
+  const { data } = useLoaderData() as { data: ArticleQuery };
 
   if (data.article == null) throw new Error('404');
   const resource = data.article;
@@ -81,7 +71,7 @@ export function Article() {
           )}
         </ArticleTextContainer>
 
-        <ArticleBanner className="mt-8 mb-6" image={resource?.primaryImage ?? null} />
+        <ArticleBanner className="mt-8 mb-6" image={resource?.primaryImage} />
 
         <ArticleTextContainer>
           {resource.body && (
@@ -121,16 +111,6 @@ export function Article() {
   );
 }
 
-export async function articleLoader({ request, params, config, locale }: LoaderArgs) {
-  const key = params.key;
-  if (key == null) throw new Error('No key provided in the url');
-
-  return load({
-    endpoint: config.graphqlEndpoint,
-    signal: request.signal,
-    variables: {
-      key,
-    },
-    locale: locale.cmsLocale || locale.code,
-  });
+export function ArticlePageSkeleton() {
+  return <ArticleSkeleton />;
 }

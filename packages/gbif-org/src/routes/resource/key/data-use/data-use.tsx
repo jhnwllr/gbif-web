@@ -1,6 +1,5 @@
 import { Helmet } from 'react-helmet-async';
 import { LoaderArgs } from '@/types';
-import { createGraphQLHelpers } from '@/utils/createGraphQLHelpers';
 import { ArticleContainer } from '@/routes/resource/key/components/ArticleContainer';
 import { ArticleBanner } from '@/routes/resource/key/components/ArticleBanner';
 import { ArticlePreTitle } from '../components/ArticlePreTitle';
@@ -13,11 +12,11 @@ import { DataUseQuery, DataUseQueryVariables } from '@/gql/graphql';
 import { ArticleAuxiliary } from '../components/ArticleAuxiliary';
 import { ArticleTags } from '../components/ArticleTags';
 import { FormattedMessage } from 'react-intl';
+import { useLoaderData } from 'react-router-dom';
+import { required } from '@/utils/required';
+import { ArticleSkeleton } from '../components/ArticleSkeleton';
 
-const { load, useTypedLoaderData } = createGraphQLHelpers<
-  DataUseQuery,
-  DataUseQueryVariables
->(/* GraphQL */ `
+const DATA_USE_QUERY = /* GraphQL */ `
   query DataUse($key: String!) {
     dataUse(id: $key) {
       id
@@ -26,13 +25,7 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
       resourceUsed
       body
       primaryImage {
-        file {
-          url
-          normal: thumbor(width: 1200, height: 500)
-          mobile: thumbor(width: 800, height: 400)
-        }
-        description
-        title
+        ...ArticleBanner
       }
       primaryLink {
         label
@@ -50,10 +43,16 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
       createdAt
     }
   }
-`);
+`;
 
-export function DataUse() {
-  const { data } = useTypedLoaderData();
+export function dataUsePageLoader({ params, graphql }: LoaderArgs) {
+  const key = required(params.key, 'No key provided in the url');
+
+  return graphql.query<DataUseQuery, DataUseQueryVariables>(DATA_USE_QUERY, { key });
+}
+
+export function DataUsePage() {
+  const { data } = useLoaderData() as { data: DataUseQuery };
 
   if (data.dataUse == null) throw new Error('404');
   const resource = data.dataUse;
@@ -66,7 +65,9 @@ export function DataUse() {
 
       <ArticleContainer>
         <ArticleTextContainer className="mb-10">
-          <ArticlePreTitle><FormattedMessage id="cms.contentType.dataUse" /></ArticlePreTitle>
+          <ArticlePreTitle>
+            <FormattedMessage id="cms.contentType.dataUse" />
+          </ArticlePreTitle>
           <ArticleTitle>{resource.title}</ArticleTitle>
           <PublishedDate className="mt-2" date={resource.createdAt} />
 
@@ -83,7 +84,7 @@ export function DataUse() {
           </p> */}
         </ArticleTextContainer>
 
-        <ArticleBanner className="mt-8 mb-6" image={resource?.primaryImage ?? null} />
+        <ArticleBanner className="mt-8 mb-6" image={resource?.primaryImage} />
 
         <ArticleTextContainer>
           {resource.body && (
@@ -105,16 +106,6 @@ export function DataUse() {
   );
 }
 
-export async function dataUseLoader({ request, params, config, locale }: LoaderArgs) {
-  const key = params.key;
-  if (key == null) throw new Error('No key provided in the url');
-
-  return load({
-    endpoint: config.graphqlEndpoint,
-    signal: request.signal,
-    variables: {
-      key,
-    },
-    locale: locale.cmsLocale || locale.code,
-  });
+export function DataUsePageSkeleton() {
+  return <ArticleSkeleton />;
 }

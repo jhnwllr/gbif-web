@@ -6,6 +6,8 @@ import { SourceRouteObject, RouteMetadata } from '@/types';
 import { LoadingElementWrapper } from '@/components/LoadingElementWrapper';
 import { v4 as uuid } from 'uuid';
 import { StartLoadingEvent } from '@/contexts/loadingElement';
+import { GraphQLService } from '@/services/GraphQLService';
+import { createLocalizedRouteId } from './createLocalizedRouteId';
 
 type ConfigureRoutesResult = {
   routes: RouteObject[];
@@ -22,27 +24,29 @@ export function configureRoutes(
   config: Config
 ): ConfigureRoutesResult {
   // Create the routes used by react-router-dom
-  const routes: RouteObject[] = config.languages.map((locale) => ({
-    path: locale.default ? '/' : locale.code,
-    element: (
-      <I18nProvider locale={locale}>
-        <Helmet>
-          <html lang={locale.code} dir={locale.textDirection} />
-        </Helmet>
-        <Outlet />
-      </I18nProvider>
-    ),
-    children: createRoutesRecursively(baseRoutes, config, locale),
-    loader: async () => {
-      // fetch the entry translation file
-      const translations = await fetch(config.translationsEntryEndpoint).then((r) => r.json());
-      // now get the actual messages for the locale
-      const messages = await fetch(
-        translations?.[locale.code]?.messages ?? translations?.en?.messages
-      ).then((r) => r.json());
-      return { messages };
-    },
-  }));
+  const routes: RouteObject[] = config.languages.map((locale) => {
+    return {
+      path: locale.default ? '/' : locale.code,
+      element: (
+        <I18nProvider locale={locale}>
+          <Helmet>
+            <html lang={locale.code} dir={locale.textDirection} />
+          </Helmet>
+          <Outlet />
+        </I18nProvider>
+      ),
+      children: createRoutesRecursively(baseRoutes, config, locale),
+      loader: async () => {
+        // fetch the entry translation file
+        const translations = await fetch(config.translationsEntryEndpoint).then((r) => r.json());
+        // now get the actual messages for the locale
+        const messages = await fetch(
+          translations?.[locale.code]?.messages ?? translations?.en?.messages
+        ).then((r) => r.json());
+        return { messages };
+      },
+    };
+  });
 
   // Create the routes metadata injected into a context to help with navigation
   const nestedTargetRoutesMetadata = createRouteMetadataRecursively(baseRoutes, config);
@@ -92,6 +96,9 @@ function createRoutesRecursively(
     .map((route) => {
       const clone = { ...route } as RouteObject;
 
+      // Add the lang to the route id as it must be unique
+      if (typeof clone.id === 'string') clone.id = createLocalizedRouteId(clone.id, locale.code);
+
       // Generate a unique id for the loading element
       const id = uuid();
 
@@ -139,7 +146,13 @@ function createRoutesRecursively(
             );
           }
 
-          return loader({ ...args, config, locale });
+          const graphql = new GraphQLService({
+            endpoint: config.graphqlEndpoint,
+            abortSignal: args.request.signal,
+            locale: locale.cmsLocale || locale.code,
+          });
+
+          return loader({ ...args, config, locale, graphql });
         };
       }
 

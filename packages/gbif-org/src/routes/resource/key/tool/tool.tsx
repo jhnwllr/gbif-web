@@ -1,7 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { LoaderArgs } from '@/types';
 import { ToolQuery, ToolQueryVariables } from '@/gql/graphql';
-import { createGraphQLHelpers } from '@/utils/createGraphQLHelpers';
 import { ArticleContainer } from '@/routes/resource/key/components/ArticleContainer';
 import { ArticleBanner } from '@/routes/resource/key/components/ArticleBanner';
 import { ArticlePreTitle } from '../components/ArticlePreTitle';
@@ -14,11 +13,11 @@ import { SecondaryLinks } from '../components/SecondaryLinks';
 import { ArticleAuxiliary } from '../components/ArticleAuxiliary';
 import styles from './tool.module.css';
 import { FormattedMessage } from 'react-intl';
+import { useLoaderData } from 'react-router-dom';
+import { required } from '@/utils/required';
+import { ArticleSkeleton } from '../components/ArticleSkeleton';
 
-const { load, useTypedLoaderData } = createGraphQLHelpers<
-  ToolQuery,
-  ToolQueryVariables
->(/* GraphQL */ `
+const TOOL_QUERY = /* GraphQL */ `
   query Tool($key: String!) {
     tool(id: $key) {
       id
@@ -26,19 +25,7 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
       summary
       body
       primaryImage {
-        file {
-          url
-          details {
-            image {
-              width
-              height
-            }
-          }
-          normal: thumbor(width: 1200, height: 500)
-          mobile: thumbor(width: 800, height: 400)
-        }
-        description
-        title
+        ...ArticleBanner
       }
       primaryLink {
         label
@@ -56,10 +43,16 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
       publicationDate
     }
   }
-`);
+`;
 
-export function Tool() {
-  const { data } = useTypedLoaderData();
+export async function toolPageLoader({ params, graphql }: LoaderArgs) {
+  const key = required(params.key, 'No key provided in the url');
+
+  return graphql.query<ToolQuery, ToolQueryVariables>(TOOL_QUERY, { key });
+}
+
+export function ToolPage() {
+  const { data } = useLoaderData() as { data: ToolQuery };
 
   if (data.tool == null) throw new Error('404');
   const resource = data.tool;
@@ -72,7 +65,9 @@ export function Tool() {
 
       <ArticleContainer>
         <ArticleTextContainer className="mb-10">
-          <ArticlePreTitle><FormattedMessage id="cms.contentType.tool" /></ArticlePreTitle>
+          <ArticlePreTitle>
+            <FormattedMessage id="cms.contentType.tool" />
+          </ArticlePreTitle>
 
           <ArticleTitle>{resource.title}</ArticleTitle>
 
@@ -83,7 +78,7 @@ export function Tool() {
           )}
         </ArticleTextContainer>
 
-        <ArticleBanner className="mt-8 mb-6" image={resource?.primaryImage ?? null} />
+        <ArticleBanner className="mt-8 mb-6" image={resource?.primaryImage} />
 
         <ArticleTextContainer>
           {resource.body && (
@@ -130,16 +125,6 @@ export function Tool() {
   );
 }
 
-export async function toolLoader({ request, params, config, locale }: LoaderArgs) {
-  const key = params.key;
-  if (key == null) throw new Error('No key provided in the url');
-
-  return load({
-    endpoint: config.graphqlEndpoint,
-    signal: request.signal,
-    variables: {
-      key,
-    },
-    locale: locale.cmsLocale || locale.code,
-  });
+export function ToolPageSkeleton() {
+  return <ArticleSkeleton />;
 }

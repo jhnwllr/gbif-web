@@ -5,11 +5,11 @@ import { NotFound } from '@/routes/NotFound';
 import { RootErrorPage } from '@/routes/RootErrorPage';
 import {
   DetailedOccurrencePage,
-  DetailedOccurrencePageLoading,
-  loader as detailedOccurrenceLoader,
+  DetailedOccurrencePageSkeleton,
+  detailedOccurrencePageLoader,
 } from '@/routes/occurrence/key/DetailedOccurrencePage';
 import { OccurrenceSearchPage } from '@/routes/occurrence/search/OccurrenceSearchPage';
-import { InputConfig, processConfig } from '@/contexts/config/config';
+import { InputConfig, configBuilder } from '@/contexts/config/config';
 import { DatasetPage, datasetLoader } from '@/routes/dataset/key/DatasetPage';
 import { DatasetAboutTab } from '@/routes/dataset/key/AboutTab';
 import { DatasetDashboardTab } from '@/routes/dataset/key/DashboardTab';
@@ -18,7 +18,7 @@ import { DatasetDownloadTab } from '@/routes/dataset/key/DownloadTab';
 import { PublisherPage, publisherLoader } from '@/routes/publisher/key/PublisherPage';
 import { PublisherAboutTab } from '@/routes/publisher/key/AboutTab';
 import { PublisherOccurrencesTab } from '@/routes/publisher/key/OccurrencesTab';
-import { News, newsLoader } from '@/routes/resource/key/news/news';
+import { NewsPage, newsPageLoader } from '@/routes/resource/key/news/news';
 
 const baseRoutes: SourceRouteObject[] = [
   {
@@ -36,9 +36,9 @@ const baseRoutes: SourceRouteObject[] = [
       {
         key: 'occurrence-page',
         path: 'occurrence/:key',
-        loader: detailedOccurrenceLoader,
+        loader: detailedOccurrencePageLoader,
         element: <DetailedOccurrencePage />,
-        loadingElement: <DetailedOccurrencePageLoading />,
+        loadingElement: <DetailedOccurrencePageSkeleton />,
       },
       {
         key: 'dataset-page',
@@ -90,8 +90,8 @@ const baseRoutes: SourceRouteObject[] = [
       },
       {
         path: 'resource/:key',
-        loader: newsLoader,
-        element: <News />,
+        loader: newsPageLoader,
+        element: <NewsPage />,
       },
       {
         path: '*',
@@ -102,4 +102,4 @@ const baseRoutes: SourceRouteObject[] = [
 ];
 
 export const configureHostedPortalRoutes = (hostedPortalConfig: InputConfig) =>
-  configureRoutes(baseRoutes, processConfig(hostedPortalConfig));
+  configureRoutes(baseRoutes, configBuilder(hostedPortalConfig));

@@ -1,7 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { LoaderArgs } from '@/types';
 import { EventQuery, EventQueryVariables } from '@/gql/graphql';
-import { createGraphQLHelpers } from '@/utils/createGraphQLHelpers';
 import { ArticleContainer } from '@/routes/resource/key/components/ArticleContainer';
 import { ArticleBanner } from '@/routes/resource/key/components/ArticleBanner';
 import { ArticlePreTitle } from '../components/ArticlePreTitle';
@@ -16,11 +15,11 @@ import { KeyValuePair } from '../components/KeyValuePair';
 import { MdCalendarMonth } from 'react-icons/md';
 import { SecondaryLinks } from '../components/SecondaryLinks';
 import { ArticleAuxiliary } from '../components/ArticleAuxiliary';
+import { required } from '@/utils/required';
+import { useLoaderData } from 'react-router-dom';
+import { ArticleSkeleton } from '../components/ArticleSkeleton';
 
-const { load, useTypedLoaderData } = createGraphQLHelpers<
-  EventQuery,
-  EventQueryVariables
->(/* GraphQL */ `
+const EVENT_QUERY = /* GraphQL */ `
   query Event($key: String!) {
     event(id: $key) {
       id
@@ -28,13 +27,7 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
       summary
       body
       primaryImage {
-        file {
-          url
-          normal: thumbor(width: 1200, height: 500)
-          mobile: thumbor(width: 800, height: 400)
-        }
-        description
-        title
+        ...ArticleBanner
       }
       primaryLink {
         label
@@ -52,10 +45,16 @@ const { load, useTypedLoaderData } = createGraphQLHelpers<
       venue
     }
   }
-`);
+`;
 
-export function Event() {
-  const { data } = useTypedLoaderData();
+export async function eventPageLoader({ params, graphql }: LoaderArgs) {
+  const key = required(params.key, 'No key provided in the url');
+
+  return graphql.query<EventQuery, EventQueryVariables>(EVENT_QUERY, { key });
+}
+
+export function EventPage() {
+  const { data } = useLoaderData() as { data: EventQuery };
   const { locale } = useI18n();
 
   if (data.event == null) throw new Error('404');
@@ -94,7 +93,7 @@ export function Event() {
           </Button>
         </ArticleTextContainer>
 
-        <ArticleBanner className="mt-8 mb-6" image={resource?.primaryImage ?? null} />
+        <ArticleBanner className="mt-8 mb-6" image={resource?.primaryImage} />
 
         <ArticleTextContainer>
           {resource.body && (
@@ -135,18 +134,8 @@ export function Event() {
   );
 }
 
-export async function eventLoader({ request, params, config, locale }: LoaderArgs) {
-  const key = params.key;
-  if (key == null) throw new Error('No key provided in the url');
-
-  return load({
-    endpoint: config.graphqlEndpoint,
-    signal: request.signal,
-    variables: {
-      key,
-    },
-    locale: locale.cmsLocale || locale.code,
-  });
+export function EventPageSkeleton() {
+  return <ArticleSkeleton />;
 }
 
 // Examples of return value:
