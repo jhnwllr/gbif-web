@@ -542,7 +542,9 @@ const chartGroups = {
       "programme"
     ]
   },
-  other: { values: [] }
+  other: { values: [
+    'dataQuality', 'occurrenceSummary'
+  ] }
 };
 
 function CreateOptions({ onAdd, chartsTypes }) {

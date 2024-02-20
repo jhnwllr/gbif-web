@@ -149,6 +149,18 @@ const preconfiguredCharts = {
       return <charts.OccurrenceIssue predicate={predicate} interactive {...props} />;
     },
   },
+  dataQuality: {
+    translation: 'dashboard.richness',
+    component: ({ predicate, ...props }) => {
+      return <charts.DataQuality predicate={predicate} {...props} />;
+    },
+  },
+  occurrenceSummary: {
+    translation: 'dashboard.statistics',
+    component: ({ predicate, ...props }) => {
+      return <charts.OccurrenceSummary predicate={predicate} {...props} />;
+    },
+  },
   map: {
     translation: 'search.tabs.map',
     r: true, // resizable
