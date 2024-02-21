@@ -24,6 +24,7 @@ const Layout = ({
   config,
   tabs = ['TABLE', 'GALLERY', 'MAP'],
   styles = {},
+  style,
   ...props
 }) => {
   // const [activeView, setActiveView] = useUrlState({ param: 'view', defaultValue: tabs[0] || 'TABLE' });
@@ -63,7 +64,7 @@ const Layout = ({
   }
 
   return <div className={`${className} ${prefix}-${elementName}`}
-    css={cssLayout({ theme })} styles={styles}>
+    css={cssLayout({ theme })} styles={styles} style={style}>
     <Tabs activeId={activeView} onChange={setActiveView} >
       <div css={cssNavBar({ theme })}>
         <div css={cssFilter({ theme })}>
