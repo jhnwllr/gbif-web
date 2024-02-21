@@ -190,7 +190,7 @@ const preconfiguredCharts = {
 
 const cardStyle = css`
   background: white;
-  padding-top: 8px;
+  padding-top: 4px;
   border: 1px solid var(--paperBorderColor);
   border-radius: var(--borderRadiusPx);
 `;

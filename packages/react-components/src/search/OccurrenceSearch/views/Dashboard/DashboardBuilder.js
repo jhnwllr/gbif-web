@@ -213,7 +213,7 @@ function DashboardBuilder({ predicate, chartsTypes, state = [[]], setState, isUr
         <FormattedMessage id="dashboard.invalidLayoutWarning" />
         <Button css={css`margin-inline-start: 12px;`} onClick={restructureToFitDevice}><FormattedMessage id="dashboard.adaptLayout" defaultMessage="Adapt layout" /></Button>
       </div>}
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", flexDirection: maxGroups > 1 ? 'row' : 'column' }}>
         <div style={{ display: "flex", flexWrap: disableAdd ? 'wrap' : 'wrap', margin: `0 ${-grid}px`, flex: '1 1 auto' }}>
           <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
             {state.map((column, ind) => (

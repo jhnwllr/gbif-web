@@ -31,5 +31,7 @@
   "readMore": "Read more",
   "pageNotFoundDescription": "Sorry, the page you visited does not exist.",
   "download": "Download",
+  "discard": "Discard",
+  "keep": "Keep",
   "noResults": "No results"
 }
