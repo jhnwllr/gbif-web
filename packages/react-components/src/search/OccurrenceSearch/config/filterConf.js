@@ -46,7 +46,8 @@ export const filters = [
   'q',
   'iucnRedListCategory',
   'verbatimScientificName',
-  'dwcaExtension'
+  'dwcaExtension',
+  'geometry'
 ].sort();
 
 const highlighted = [
@@ -54,7 +55,7 @@ const highlighted = [
   'taxonKey',
   'year',
   'country',
-  'occurrenceIssue'
+  'coordinates'
 ];
 
 export default { filters, included: filters, highlighted };

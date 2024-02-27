@@ -8,6 +8,7 @@ import { Popover as CustomStandardPopover, FilterContent as CustomStandardConten
 import { Popover as VocabPopover, FilterContent as VocabContent } from '../../widgets/Filter/types/VocabularyFilter';
 import { Popover as SearchKeywordPopover, FilterContent as SearchKeywordContent } from '../../widgets/Filter/types/SearchKeywordsFilter';
 import { Popover as GeoDistancePopover, FilterContent as GeoDistanceContent } from '../../widgets/Filter/types/GeoDistanceFilter';
+import { Popover as GeometryPopover, FilterContent as GeometryContent } from '../../widgets/Filter/types/GeometryFilter';
 import { FilterContext } from '../../widgets/Filter/state';
 import { TriggerButton } from '../../widgets/Filter/utils/TriggerButton';
 import { FormattedMessage } from 'react-intl';
@@ -78,6 +79,8 @@ export function filterBuilder({ labelMap, suggestConfigMap, filterWidgetConfig, 
       filter = buildEnum(builderConfig);
     } else if (type === 'SIMPLE_TEXT') {
       filter = buildSimpleText(builderConfig);
+    } else if (type === 'GEOMETRY') {
+      filter = buildGeometry(builderConfig);
     } else if (type === 'CUSTOM_STANDARD') {
       filter = buildCustomStandard(builderConfig);
     } else if (type === 'VOCAB') {
@@ -177,6 +180,25 @@ function buildEnum({ widgetHandle, config, labelMap }) {
     Button: getButton(Popover, conf),
     Popover,
     Content: props => <EnumContent {...conf} {...props} />,
+    LabelFromID: config.LabelFromID,
+  };
+}
+
+function buildGeometry({ widgetHandle, config, labelMap }) {
+  const conf = {
+    filterHandle: config.std.filterHandle || widgetHandle,
+    translations: config.std.translations,
+    config: {
+      ...config.specific
+    },
+    LabelFromID: labelMap[config.std.id2labelHandle || widgetHandle] || 'unknown',
+  }
+  // if (!labelMap[config.std.id2labelHandle || widgetHandle]) console.warn(`No label handler defined for ${widgetHandle} - using fallback`)
+  const Popover = props => <GeometryPopover {...conf} {...props} />;
+  return {
+    Button: getButton(Popover, conf),
+    Popover,
+    Content: props => <GeometryContent {...conf} {...props} />,
     LabelFromID: config.LabelFromID,
   };
 }
