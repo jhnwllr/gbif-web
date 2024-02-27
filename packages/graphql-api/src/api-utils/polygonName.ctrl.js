@@ -3,7 +3,7 @@ Experimental endpoint to provide a human readable form for WKT polygons.
 The idea is to use our geocoding layers to provide results like: denmark, copenhagen area, gentofte and dragør.
 */
 import wellknown from 'wellknown';
-import { bbox, polygon, booleanPointInPolygon } from '@turf/turf';
+import { bbox, polygon, booleanPointInPolygon, area } from '@turf/turf';
 import axios from 'axios';
 import { uniq } from 'lodash';
 import { Router } from 'express';
@@ -17,9 +17,10 @@ export default (app) => {
 
 router.get('/polygon-name', async (req, res, next) => {
   const wkt = req.query.wkt;
-  const result = await getPolygonName(wkt);
+  const { list, area } = await getPolygonName(wkt);
   return res.json({
-    title: uniq(result.map(item => item.title)).join(', '),
+    title: uniq(list.map(item => item.title)).join(', '),
+    area: area
   });
 });
 
@@ -28,7 +29,9 @@ async function getPolygonName(wkt) {
   const geometry = wellknown.parse(wkt);
 
   // Step 2: Get Bounding Box
-  const boundingBox = bbox(polygon([geometry.coordinates[0]]));
+  const turfpolygon = polygon([geometry.coordinates[0]]);
+  const size = area(turfpolygon);
+  const boundingBox = bbox(turfpolygon);
 
   // Step 3: Generate 5x5 Grid of Points
   const gridSize = 5;
@@ -80,7 +83,10 @@ async function getPolygonName(wkt) {
     return sortedMetadata;
   })();
 
-  return sortedMetadata;
+  return {
+    area: size,
+    list: sortedMetadata
+  }
 }
 
 // Function to sort metadata by frequency

@@ -18,10 +18,11 @@ import labelMaker from '../../../../utils/labelMaker/labelMaker';
 
 export const FilterContent = ({ config, translations, LabelFromID, hide, labelledById, onApply, onCancel, onFilterChange, focusRef, filterHandle, initFilter }) => {
   const [id] = useState(nanoid);
+  const apiClient = useContext(ApiContext);
   const mustOptions = get(initFilter, `must.${filterHandle}`, []);
   // const [options, setOptions] = useState(mustOptions);
   const [options, setOptions] = useState(['POLYGON((16.56061 43.57267,-12.08918 25.23006,6.24729 -16.26213,51.59079 -10.77563,16.56061 43.57267))']);
-  const HelpText = getHelpTextComponent();
+  const HelpText = getHelpTextComponent({apiClient});
 
   return <Filter
     labelledById={labelledById}
@@ -104,7 +105,6 @@ export const FilterContent = ({ config, translations, LabelFromID, hide, labelle
           <GeometryInput onApply={({wkt}) => {
             const allOptions = [...new Set([...wkt, ...options])]
             setOptions(allOptions);
-            toggle(filterHandle, value, !isNegated);
             toggle(filterHandle, wkt);
           }} initialValue="POLYGON((16.56061 43.57267,-12.08918 25.23006,6.24729 -16.26213,51.59079 -10.77563,16.56061 43.57267))" />
         </FilterBody>
@@ -153,8 +153,7 @@ function CopyToClipboard({ text }) {
   </Tooltip>
 }
 
-function getHelpTextComponent() {
-  const apiClient = useContext(ApiContext);
+function getHelpTextComponent({apiClient}) {
   const fetchFunction = ({ id }) => apiClient
     .get(`${apiClient.utils.endpoint}/polygon-name`, { params: { wkt: id } })
     .promise
