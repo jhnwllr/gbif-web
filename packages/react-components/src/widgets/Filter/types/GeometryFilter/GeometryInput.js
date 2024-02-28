@@ -78,6 +78,7 @@ export const GeometryInput = ({ onApply, initialValue, ...props }) => {
       Promise.all(promises)
         .then(res => {
           onApply({ wkt: result.geometry });
+          setValue('');
         })
         .catch(err => {
           toast.error(err?.response?.data?.toString());
@@ -126,9 +127,9 @@ export const GeometryInput = ({ onApply, initialValue, ...props }) => {
     padding: 6px;
     font-size: 0.85em;
   `}>
-      {offerSimplification && <Button look="primaryOutline" onClick={_ => simplify(inputValue)}>Simplify</Button>}
+      {offerSimplification && <Button look="primaryOutline" onClick={_ => simplify(inputValue)} css={css`margin-inline-end: 6px;`}>Simplify</Button>}
       {offerSimplification && <Button look="primaryOutline" onClick={_ => bbox(inputValue)}>Use bounding box</Button>}
-      <Button look="primaryOutline" onClick={_ => handleAdd(inputValue)}>Add</Button>
+      {!offerSimplification && <Button look="primaryOutline" onClick={_ => handleAdd(inputValue)}>Add</Button>}
     </div>
   </div>
 };

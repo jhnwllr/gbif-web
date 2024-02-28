@@ -13,6 +13,8 @@ import { GeometryInput } from './GeometryInput';
 import { HiOutlineClipboardCopy as CopyToClipboardIcon } from "react-icons/hi";
 import { ApiContext } from '../../../../dataManagement/api';
 import labelMaker from '../../../../utils/labelMaker/labelMaker';
+import { srOnly } from '../../../../style/shared';
+import { RangeInput } from './RangeInput';
 
 
 
@@ -22,7 +24,7 @@ export const FilterContent = ({ config, translations, LabelFromID, hide, labelle
   const mustOptions = get(initFilter, `must.${filterHandle}`, []);
   // const [options, setOptions] = useState(mustOptions);
   const [options, setOptions] = useState(['POLYGON((16.56061 43.57267,-12.08918 25.23006,6.24729 -16.26213,51.59079 -10.77563,16.56061 43.57267))']);
-  const HelpText = getHelpTextComponent({apiClient});
+  const HelpText = getHelpTextComponent({ apiClient });
 
   return <Filter
     labelledById={labelledById}
@@ -44,46 +46,62 @@ export const FilterContent = ({ config, translations, LabelFromID, hide, labelle
     defaultHelpVisible={config.showOptionHelp}
   >
     {({ helpVisible, toggle, setFullField, filter, checkedMap, formId, summaryProps, footerProps }) => {
+      const hasCoordinateValue = get(filter, `must.hasCoordinate[0]`);
+      const hasGeospatialIssue = get(filter, `must.hasGeospatialIssue[0]`);
       return <>
         <SummaryBar {...summaryProps} />
         <FilterBody css={css`max-height: none;`}
           onKeyPress={e => {
             if (e.shiftKey && e.which === keyCodes.ENTER) onApply({ filter, hide });
           }}>
-          Has coordinates:
+
+          <div>Has coordinates</div>
           <div>
-            <Option isRadio label="Yes" checked={filter?.must?.hasCoordinate?.[0] === 'true'}
-              onChange={() => {
-                setFullField('hasCoordinate', ['true'])
-              }}
-            />
-            <Option isRadio label="No" checked={filter?.must?.hasCoordinate?.[0] === 'false'}
-              onChange={() => {
-                setFullField('hasCoordinate', ['false'])
-              }}
-            />
-            <Option isRadio label="Either" checked={(filter?.must?.hasCoordinate ?? []).length === 0}
-              onChange={() => {
-                setFullField('hasCoordinate', [])
-              }}
-            />
+            <ButtonGroup style={{ fontSize: 13 }}>
+              <Button look={hasCoordinateValue === 'true' ? 'primary' : 'primaryOutline'} as="label" >
+                <input css={srOnly} type="radio" name="hasCoordinate" value="true" checked={hasCoordinateValue === 'true'} onChange={() => {
+                  setFullField('hasCoordinate', ['true'])
+                }} />
+                Yes
+              </Button>
+              <Button look={hasCoordinateValue === 'false' ? 'primary' : 'primaryOutline'} as="label">
+                <input css={srOnly} type="radio" name="hasCoordinate" value="false" checked={hasCoordinateValue === 'false'} onChange={() => {
+                  setFullField('hasCoordinate', ['false'])
+                }} />
+                No
+              </Button>
+              <Button look={hasCoordinateValue === undefined ? 'primary' : 'primaryOutline'} as="label">
+                <input css={srOnly} type="radio" name="hasCoordinate" value="" checked={hasCoordinateValue === undefined} onChange={() => {
+                  setFullField('hasCoordinate', [])
+                }} />
+                Either
+              </Button>
+            </ButtonGroup>
           </div>
 
-          <label>Has coordinates<br />
-            <ButtonGroup style={{ fontSize: 13 }}>
-              <Button look="primaryOutline">Yes</Button>
-              <Button look="primary">No</Button>
-              <Button look="primaryOutline">Either</Button>
-            </ButtonGroup>
-          </label>
+          <div>Has geospatial issues</div>
           <div>
-            <label htmlFor="hasGeospatialIssue">Has geospatial issues
-              <select value={filter?.must?.hasGeospatialIssue?.[0]} onChange={(event) => setFullField('hasGeospatialIssue', [event.target.value])}>
-                <option value="">No preference</option>
-                <option value="true">Yes, must have issues</option>
-                <option value="false">No, discard issues</option>
-              </select>
-            </label>
+            <ButtonGroup style={{ fontSize: 13 }}>
+              <Button look={hasGeospatialIssue === 'true' ? 'primary' : 'primaryOutline'} as="label" >
+                <input css={srOnly} type="radio" name="hasGeospatialIssue" value="true" checked={hasGeospatialIssue === 'true'} onChange={() => {
+                  setFullField('hasGeospatialIssue', ['true']);
+                  // setFullField('hasCoordinate', ['true']);
+                }} />
+                Yes
+              </Button>
+              <Button look={hasGeospatialIssue === 'false' ? 'primary' : 'primaryOutline'} as="label">
+                <input css={srOnly} type="radio" name="hasGeospatialIssue" value="false" checked={hasGeospatialIssue === 'false'} onChange={() => {
+                  setFullField('hasGeospatialIssue', ['false'])
+                }} />
+                No
+              </Button>
+              <Button look={hasGeospatialIssue === undefined ? 'primary' : 'primaryOutline'} as="label">
+                <input css={srOnly} type="radio" name="hasGeospatialIssue" value="" checked={hasGeospatialIssue === undefined} onChange={() => {
+                  setFullField('hasGeospatialIssue', [])
+                }} />
+                Either
+              </Button>
+            </ButtonGroup>
           </div>
 
           <div>
@@ -102,11 +120,17 @@ export const FilterContent = ({ config, translations, LabelFromID, hide, labelle
             })}
           </div>
 
-          <GeometryInput onApply={({wkt}) => {
+          <RangeInput onApply={({ wkt }) => {
             const allOptions = [...new Set([...wkt, ...options])]
             setOptions(allOptions);
             toggle(filterHandle, wkt);
-          }} initialValue="POLYGON((16.56061 43.57267,-12.08918 25.23006,6.24729 -16.26213,51.59079 -10.77563,16.56061 43.57267))" />
+          }} />
+
+          <GeometryInput onApply={({ wkt }) => {
+            const allOptions = [...new Set([...wkt, ...options])]
+            setOptions(allOptions);
+            toggle(filterHandle, wkt);
+          }} />
         </FilterBody>
         <Footer {...footerProps}
           onApply={() => onApply({ filter, hide })}
@@ -153,7 +177,7 @@ function CopyToClipboard({ text }) {
   </Tooltip>
 }
 
-function getHelpTextComponent({apiClient}) {
+function getHelpTextComponent({ apiClient }) {
   const fetchFunction = ({ id }) => apiClient
     .get(`${apiClient.utils.endpoint}/polygon-name`, { params: { wkt: id } })
     .promise
