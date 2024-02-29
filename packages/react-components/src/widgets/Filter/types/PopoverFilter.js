@@ -63,7 +63,7 @@ function Popover({ content, placement, modal, children, className, style, ...pro
   return (
     <BasePopover
       onClickOutside={popover => { currentFilterContext.setFilter(tmpFilter); popover.hide() }}
-      style={{ width: '22em', maxWidth: '100%', ...style }}
+      style={{ width: '26em', maxWidth: '100%', ...style }}
       aria-labelledby={labelledById}
       placement={placement}
       trigger={child}

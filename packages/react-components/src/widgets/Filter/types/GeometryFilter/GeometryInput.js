@@ -24,7 +24,7 @@ export const GeometryInput = ({ onApply, initialValue, ...props }) => {
 
   // if initialValue changes, then update inputValue. This could be useful if we allow the user to edit an existing geoemtry as text
   useEffect(() => {
-    setValue(JSON.stringify(exampleGeojson));
+    setValue(initialValue);
   }, [initialValue]);
 
   const checkWktAgainstAPI = async (wkt) => {
@@ -102,19 +102,18 @@ export const GeometryInput = ({ onApply, initialValue, ...props }) => {
     }
   }
 
-  return <div css={css`
-    border: 1px solid #ccc;
-  `}>
+  return <div>
     <textarea
       css={css`
       font-size: 13px;
       resize: none;
       width: 100%;
-      height: 156px;
+      height: 125px;
       border: none;
       background: 0 0;
       padding: 6px;
     `}
+    placeholder="WKT or GeoJSON"
       value={inputValue}
       onChange={e => {
         setValue(e.target.value);
@@ -122,14 +121,12 @@ export const GeometryInput = ({ onApply, initialValue, ...props }) => {
       }}
     />
     <div css={css`
-    display: flex;
-    justify-content: flex-end;
-    padding: 6px;
+    padding: 6;
     font-size: 0.85em;
   `}>
-      {offerSimplification && <Button look="primaryOutline" onClick={_ => simplify(inputValue)} css={css`margin-inline-end: 6px;`}>Simplify</Button>}
-      {offerSimplification && <Button look="primaryOutline" onClick={_ => bbox(inputValue)}>Use bounding box</Button>}
-      {!offerSimplification && <Button look="primaryOutline" onClick={_ => handleAdd(inputValue)}>Add</Button>}
+      {offerSimplification && <Button look="primary" onClick={_ => simplify(inputValue)} css={css`margin-inline-end: 6px;`}>Simplify</Button>}
+      {offerSimplification && <Button look="primaryOutline" onClick={_ => bbox(inputValue)} css={css`margin-inline-end: 6px;`}>Use bounding box</Button>}
+      {!offerSimplification && <Button look="primary" onClick={_ => handleAdd(inputValue)}>Add</Button>}
     </div>
   </div>
 };
@@ -305,37 +302,4 @@ function useBBox(str) {
   var bboxPolygon = turfBboxPolygon(bbox);
   var wkt = parseGeometry.stringify(bboxPolygon);
   return wkt;
-};
-
-const exampleGeojson = {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "coordinates": [
-          [
-            [
-              11.983220547726518,
-              56.982198626840045
-            ],
-            [
-              4.904981655508237,
-              51.624842726001305
-            ],
-            [
-              17.879151214288527,
-              49.326293052019565
-            ],
-            [
-              11.983220547726518,
-              56.982198626840045
-            ]
-          ]
-        ],
-        "type": "Polygon"
-      }
-    }
-  ]
 };

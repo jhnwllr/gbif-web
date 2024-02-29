@@ -1,9 +1,9 @@
 
 import { jsx, css } from '@emotion/react';
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import { Button } from '../../../../components';
+import { Button, Input } from '../../../../components';
 import { toast } from 'react-toast';
 import { ApiContext } from '../../../../dataManagement/api';
 
@@ -12,7 +12,7 @@ export const RangeInput = ({ onApply, initialValue, ...props }) => {
   const [maxLatitude, setMaxLatitude] = useState(50);
   const [minLongitude, setMinLongitude] = useState(-150);
   const [maxLongitude, setMaxLongitude] = useState(150);
-  const apiClient = useContext(ApiContext);
+
 
   const handleAdd = () => {
     try {
@@ -70,23 +70,36 @@ export const RangeInput = ({ onApply, initialValue, ...props }) => {
 
   // provide 2 rows. one with latitude from-to and one with longitude from-to. And then an add button
   return <div css={css`
-    border: 1px solid #ccc;
+    
   `}>
-    <div>
+    <div css={css`
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+      input {
+        margin-top: 4px;
+      }
+      /* font-size: 0.85em; */
+    `}>
       <label>
-        <FormattedMessage id="latitude" defaultMessage="Latitude" />
+        <FormattedMessage id="filters.location.north" defaultMessage="North" />
+        <Input type="number" value={maxLatitude} onChange={event => setMaxLatitude(event.target.value)} placeholder="90" />
       </label>
-      <input type="number" value={minLatitude} onChange={event => setMinLatitude(event.target.value)} placeholder="-90" />
-      <input type="number" value={maxLatitude} onChange={event => setMaxLatitude(event.target.value)} placeholder="90" />
-    </div>
-    <div>
       <label>
-        <FormattedMessage id="longitude" defaultMessage="Longitude" />
+        <FormattedMessage id="south" defaultMessage="South" />
+        <Input type="number" value={minLatitude} onChange={event => setMinLatitude(event.target.value)} placeholder="-90" />
       </label>
-      <input type="number" value={minLongitude} onChange={event => setMinLongitude(event.target.value)} placeholder="-180" />
-      <input type="number" value={maxLongitude} onChange={event => setMaxLongitude(event.target.value)} placeholder="180" />
+      <label>
+        <FormattedMessage id="filters.location.east" defaultMessage="East" />
+        <Input type="number" value={maxLongitude} onChange={event => setMaxLongitude(event.target.value)} placeholder="180" />
+      </label>
+      <label>
+        <FormattedMessage id="filters.location.west" defaultMessage="West" />
+        <Input type="number" value={minLongitude} onChange={event => setMinLongitude(event.target.value)} placeholder="-180" />
+      </label>
     </div>
-    <Button onClick={handleAdd}>
+    <Button onClick={handleAdd} css={css`font-size: 0.85em;`}>
       <FormattedMessage id="add" defaultMessage="Add" />
     </Button>
 

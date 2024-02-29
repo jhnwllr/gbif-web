@@ -217,7 +217,8 @@ export const StandaloneExample = () => <Standalone siteConfig={{
     mapSettings: {
       userLocationEnabled: true,
     },
-    rootPredicate
+    rootPredicate,
+    highlightedFilters: ['geometry']
   },
   availableCatalogues: ['INSTITUTION', 'COLLECTION', 'OCCURRENCE', 'DATASET'],
 }} style={{ minHeight: 'calc(100vh - 40px)' }}></Standalone>;

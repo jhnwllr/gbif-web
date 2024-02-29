@@ -32,6 +32,7 @@ export function useFilterParams({ predicateConfig } = {}) {
   // transform the filter to a string that can go into the url. 
   // Field names can change according to the configuration
   const setFilter = useCallback((nextFilter) => {
+    console.log('set filter');
     const { v1Filter, errors } = filter2v1(nextFilter, predicateConfig);
     if (errors) {
       setQuery({ ...emptyQuery, filter: nextFilter });
