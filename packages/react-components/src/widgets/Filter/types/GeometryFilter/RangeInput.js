@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Button, Input } from '../../../../components';
 import { toast } from 'react-toast';
-import { ApiContext } from '../../../../dataManagement/api';
 
 export const RangeInput = ({ onApply, initialValue, ...props }) => {
   const [minLatitude, setMinLatitude] = useState(-50);

@@ -37,7 +37,7 @@
     "simplify": "Simplify",
     "useBbox": "Use bounding box",
     "failedParsing": "Failed to parse the geometry",
-    "geometryCollectionNotSupported": "Geometry collection is not supported",
+    "onlyPolygonsSupported": "Only polygon and multipolygon supported",
     "polygonSimplifiedToFewerPoints": "Polygon simplified to fewer points",
     "simplificationCausedSelfIntersection": "Simplification caused self-intersection",
     "tooLarge": "Geometry too large",

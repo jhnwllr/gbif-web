@@ -3,7 +3,7 @@ import { jsx, css } from '@emotion/react';
 import React, { useContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import { useIntl, FormattedMessage } from 'react-intl';
-import { Button, ButtonGroup } from '../../../../components';
+import { Button } from '../../../../components';
 import { WKT, GeoJSON } from 'ol/format';
 import turfSimplify from '@turf/simplify';
 import turfBboxPolygon from '@turf/bbox-polygon';
@@ -18,7 +18,7 @@ const wktSizeLimit = 500;
 const wktFormat = new WKT();
 const geojsonFormat = new GeoJSON();
 
-export const GeometryInput = ({ onApply, initialValue = 'POLYGON ((-77.9947 1.17549, -78.00474 1.17844, -78.0114 1.17485, -78.01342 1.17086, -78.01644 1.17055, -78.02381 1.16408, -78.0243 1.15419, -78.01835 1.14472, -78.00381 1.13924, -78.01975 1.13367, -78.02896 1.13356, -78.0281 1.13201, -78.01705 1.12732, -78.01774 1.12148, -78.01038 1.11913, -78.0017 1.11958, -77.9982 1.12528, -77.99491 1.12443, -77.98173 1.12604, -77.97471 1.12787, -77.97187 1.13056, -77.92519 1.09393, -77.9309 1.10021, -77.93105 1.10578, -77.92926 1.10935, -77.93045 1.11671, -77.94068 1.12131, -77.94868 1.12767, -77.94914 1.13826, -77.95467 1.14503, -77.95234 1.1586, -77.95567 1.15964, -77.96521 1.15366, -77.96831 1.16035, -77.96181 1.16622, -77.96546 1.17221, -77.97352 1.16251, -77.973 1.15999, -77.9778 1.16698, -77.98349 1.16447, -77.988 1.16513, -77.9897 1.16676, -77.98818 1.16902, -77.98901 1.17219, -77.99105 1.17156, -77.99168 1.17482, -77.9947 1.17549))', ...props }) => {
+export const GeometryInput = ({ onApply, initialValue = 'MULTIPOLYGON(((40 40,20 45,45 30,40 40)),((20 35,10 30,10 10,30 5,45 20,20 35),(30 20,20 15,20 25,30 20)))', ...props }) => {
   const intl = useIntl();
   const [inputValue, setValue] = useState(initialValue || '');
   const [showHelp, setShowHelp] = useState(false);
@@ -28,7 +28,7 @@ export const GeometryInput = ({ onApply, initialValue = 'POLYGON ((-77.9947 1.17
   const messages = {
     'invalidWkt': intl.formatMessage({ id: 'filterSupport.location.invalidWkt', deaultValue: 'Invalid WKT geometry' }),
     'failedParsing': intl.formatMessage({ id: 'filterSupport.location.failedParsing', deaultValue: 'Failed to parse geometry' }),
-    'geometryCollectionNotSupported': intl.formatMessage({ id: 'filterSupport.location.geometryCollectionNotSupported', deaultValue: 'Geometry collection not supported' }),
+    'onlyPolygonsSupported': intl.formatMessage({ id: 'filterSupport.location.onlyPolygonsSupported', deaultValue: 'Only polygon and multipolygon supported' }),
     'polygonSimplifiedToFewerPoints': intl.formatMessage({ id: 'filterSupport.location.polygonSimplifiedToFewerPoints', deaultValue: 'Polygon simplified to fewer points' }),
     'simplificationCausedSelfIntersection': intl.formatMessage({ id: 'filterSupport.location.simplificationCausedSelfIntersection', deaultValue: 'Simplification caused self intersection' }),
     'tooLarge': intl.formatMessage({ id: 'filterSupport.location.tooLarge', deaultValue: 'Geometry is too large' }),
@@ -94,7 +94,17 @@ export const GeometryInput = ({ onApply, initialValue = 'POLYGON ((-77.9947 1.17
           setSimplificationOffer(false);
         })
         .catch(err => {
-          toast.error(err?.response?.data?.toString());
+          const unknownData = err?.response?.data;
+          try {
+            const jsonData = JSON.parse(unknownData);
+            toast.error(`The geometry was rejected by the API : ${JSON.stringify(jsonData)}`);
+          } catch(parseError) {
+            if (typeof unknownData === 'string' && unknownData.length > 0) {
+              toast.error(`Invalid geometry: ${unknownData}`);
+            } else {
+              toast.error('The geometry was rejected by the API.');
+            }
+          }
         });
     }
   };
@@ -252,11 +262,14 @@ function getAsValidWKT(testWkt, messages = {}) {
     const simplifiedWkt = formatWkt(testWkt);
     const counterClockwiseWkt = getRightHandCorrectedWKT(simplifiedWkt);
     const intersectionTest = testWktForIntersections(counterClockwiseWkt);
-    // if starting with GEOMETRYCOLLECTION then fail
-    if (counterClockwiseWkt.indexOf('GEOMETRYCOLLECTION') === 0) {
-      toast.error(messages.geometryCollectionNotSupported);
+    
+    // check if invalid type 
+    const isUnsupportedType = hasUnsupportedGeometryType(counterClockwiseWkt);
+    if (isUnsupportedType) {
+      toast.error(messages.onlyPolygonsSupported);
       return { failed: true };
     }
+
     return {
       failed: false,
       isSimplified: simplifiedWkt !== testWkt,
@@ -272,6 +285,11 @@ function getAsValidWKT(testWkt, messages = {}) {
 export function isValidWKT(testWKT) {
   try {
     testWKT = formatWkt(testWKT);
+    // check if invalid type 
+    const isUnsupportedType = hasUnsupportedGeometryType(testWKT);
+    if (isUnsupportedType) {
+      return false;
+    }
     let newWkt = getRightHandCorrectedWKT(testWKT);
     return testWKT === newWkt;
   } catch (err) {
@@ -330,3 +348,23 @@ function useBBox(str, messages = {}) {
   var wkt = parseGeometry.stringify(bboxPolygon);
   return wkt;
 };
+
+function hasUnsupportedGeometryType(wkt) {
+  if (typeof wkt !== 'string') {
+    return true;
+  }
+  return flagStringWithExclusions(wkt, ['POINT', 'LINESTRING', 'MULTIPOINT', 'MULTILINESTRING', 'GEOMETRYCOLLECTION']);
+}
+
+function flagStringWithExclusions(inputString, exclusionWords) {
+  // Convert the input string to lowercase for case-insensitive matching
+  const lowercaseInput = inputString.toLowerCase();
+
+  // Check if any exclusion word is present in the input string
+  const foundExclusion = exclusionWords.some(word =>
+      lowercaseInput.includes(word.toLowerCase())
+  );
+
+  // Return true if any exclusion word is found, indicating the string should be flagged
+  return foundExclusion;
+}
