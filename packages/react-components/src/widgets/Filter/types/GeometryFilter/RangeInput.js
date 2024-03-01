@@ -83,24 +83,24 @@ export const RangeInput = ({ onApply, initialValue, ...props }) => {
       /* font-size: 0.85em; */
     `}>
       <label>
-        <FormattedMessage id="filters.location.north" defaultMessage="North" />
+        <FormattedMessage id="filterSupport.location.north" defaultMessage="North" />
         <Input type="number" value={maxLatitude} onChange={event => setMaxLatitude(event.target.value)} placeholder="90" />
       </label>
       <label>
-        <FormattedMessage id="south" defaultMessage="South" />
+        <FormattedMessage id="filterSupport.location.south" defaultMessage="South" />
         <Input type="number" value={minLatitude} onChange={event => setMinLatitude(event.target.value)} placeholder="-90" />
       </label>
       <label>
-        <FormattedMessage id="filters.location.east" defaultMessage="East" />
+        <FormattedMessage id="filterSupport.location.east" defaultMessage="East" />
         <Input type="number" value={maxLongitude} onChange={event => setMaxLongitude(event.target.value)} placeholder="180" />
       </label>
       <label>
-        <FormattedMessage id="filters.location.west" defaultMessage="West" />
+        <FormattedMessage id="filterSupport.location.west" defaultMessage="West" />
         <Input type="number" value={minLongitude} onChange={event => setMinLongitude(event.target.value)} placeholder="-180" />
       </label>
     </div>
     <Button onClick={handleAdd} css={css`font-size: 0.85em;`}>
-      <FormattedMessage id="add" defaultMessage="Add" />
+      <FormattedMessage id="filterSupport.location.add" defaultMessage="Add" />
     </Button>
 
   </div>
