@@ -194,7 +194,7 @@ const config = {
 // const config = { labels, getSuggests, filters, rootPredicate: {type: 'equals', key: 'publishingOrganizationKey', value: '1cd669d0-80ea-11de-a9d0-f1765f95f18b'}};
 // const config = { labels, getSuggests, filters, rootPredicate: {type: 'in', key: 'datasetKey', values: inboDatasets}};
 
-export const Example = () => <Router initialEntries={[`/occurrence/search?`]}>
+export const Example = () => <Router initialEntries={[`/occurrence/search?basisOfRecord=MACHINE_OBSERVATION&basisOfRecord=MATERIAL_CITATION&geometry=MULTIPOLYGON(((40%2040,20%2045,45%2030,40%2040)),((20%2035,10%2030,10%2010,30%205,45%2020,20%2035),(30%2020,20%2015,20%2025,30%2020)))`]}>
 {/* export const Example = () => <Router initialEntries={[`/?filter=eyJtdXN0Ijp7Im9jY3VycmVuY2VJZCI6WyJlIl19LCJtdXN0X25vdCI6eyJvY2N1cnJlbmNlSXNzdWUiOlsiWkVST19DT09SRElOQVRFIl0sIm9jY3VycmVuY2VJZCI6WyIxIiwiMiJdfX0%3D`]}> */}
   <QueryParamProvider ReactRouterRoute={Route} stringifyOptions={{strict: false}}>
     <AddressBar />

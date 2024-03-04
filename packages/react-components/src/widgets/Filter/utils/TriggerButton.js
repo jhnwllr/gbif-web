@@ -111,7 +111,7 @@ export const TriggerButton = React.forwardRef(({ hideSingleValues, onClear: cust
     isActive={filterCount > 0}
     onClearRequest={onClear}
     ref={ref}
-    truncate={filterCount < 2}
+    truncate={filterCount < (hideSingleValues ? 1 : 2)}
     isNegated={isNegated}
     {...props}
   >

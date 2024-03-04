@@ -241,6 +241,7 @@ export function Popover({ filterHandle, LabelFromID, translations = {}, config, 
   return (
     <PopoverFilter
       {...props}
+      css={css`width: 32em;`}
       content={<FilterContent
         filterHandle={filterHandle}
         LabelFromID={LabelFromID}

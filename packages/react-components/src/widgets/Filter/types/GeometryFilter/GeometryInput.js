@@ -14,7 +14,7 @@ import parseGeometry from 'wellknown';
 import { ApiContext } from '../../../../dataManagement/api';
 import { MdInfoOutline } from 'react-icons/md';
 
-const wktSizeLimit = 500;
+const wktSizeLimit = 5000;
 const wktFormat = new WKT();
 const geojsonFormat = new GeoJSON();
 
@@ -270,6 +270,9 @@ function getAsValidWKT(testWkt, messages = {}) {
       return { failed: true };
     }
 
+    if (counterClockwiseWkt !== simplifiedWkt) {
+      debugger;
+    }
     return {
       failed: false,
       isSimplified: simplifiedWkt !== testWkt,
