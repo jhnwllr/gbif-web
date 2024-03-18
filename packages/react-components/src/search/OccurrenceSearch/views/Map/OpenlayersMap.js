@@ -10,7 +10,16 @@ import { VectorTile as VectorTileSource } from 'ol/source';
 import { TileImage as TileImageSource } from 'ol/source';
 import { MVT as MVTFormat } from 'ol/format';
 import TileGrid from 'ol/tilegrid/TileGrid';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import { Draw, Modify } from 'ol/interaction';
+import { Fill, Stroke, Style } from 'ol/style';
+import WKT from 'ol/format/WKT.js';
 import klokantech from './openlayers/styles/klokantech.json';
+import { toast } from "react-toast";
+import { getFeatureAsWKT } from "../../../../utils/mapHelpers";
+
+const wktFormatter = new WKT();
 
 var interactions = olInteraction.defaults({ altShiftDragRotate: false, pinchRotate: false, mouseWheelZoom: true });
 
@@ -44,6 +53,8 @@ class Map extends Component {
     this.updateMapLayers();
     this.mapLoaded = true;
     this.addLayer();
+    this.addDrawLayer();
+    this.updateFeatures();
   }
 
   componentWillUnmount() {
@@ -75,19 +86,34 @@ class Map extends Component {
         this.exploreArea();
       }
     }
-    // check if the size of the map container has changed and if so resize the map
-    if ((prevProps.height !== this.props.height || prevProps.width !== this.props.width) && this.mapLoaded) {
-      this.map.updateSize();
+
+    //watch props drawMode and start/stop interactions accordingly
+    if (prevProps.drawMode !== this.props.drawMode && this.mapLoaded) {
+      if (this.props.drawMode === true) {
+        this.startDrawInteraction();
+      } else {
+        this.stopDrawInteraction();
+      }
     }
 
-    // TODO: monitor theme and update maps accordingly
-    // if (prevProps.theme !== this.props.theme && this.mapLoaded) {
-    //   const mapStyle = this.props.theme.darkTheme ? 'dark-v9' : 'light-v9';
-    //   this.map.setStyle(`mapbox://styles/mapbox/${mapStyle}`);
-    //   this.map.on('style.load', () => {
-    //     this.updateLayer();
-    //   });
-    // }
+    //watch deletemode and start/stop interactions accordingly
+    if (prevProps.deleteMode !== this.props.deleteMode && this.mapLoaded) {
+      if (this.props.deleteMode === true) {
+        this.startDeleteInteraction();
+      } else {
+        this.stopDeleteInteraction();
+      }
+    }
+
+    // check if polygons prop has changed
+    if (prevProps.features !== this.props.features && this.mapLoaded) {
+      this.updateFeatures();
+    }
+
+    // check if the size of the map container has changed and if so resize the map
+    if ((prevProps.height !== this.props.height || prevProps.width !== this.props.width) && this.mapLoaded) {
+      this.map.updateSize();
+    }
   }
 
   getStoredMapPosition() {
@@ -127,8 +153,8 @@ class Map extends Component {
     const extent = view.calculateExtent(this.map.getSize());
     const leftTop = transform([extent[0], extent[3]], view.getProjection(), 'EPSG:4326');
     const rightBottom = transform([extent[2], extent[1]], view.getProjection(), 'EPSG:4326');
-    
-    listener({ type: 'EXPLORE_AREA', bbox: {top: leftTop[1], left: leftTop[0], bottom: rightBottom[1], right: rightBottom[0]} });
+
+    listener({ type: 'EXPLORE_AREA', bbox: { top: leftTop[1], left: leftTop[0], bottom: rightBottom[1], right: rightBottom[0] } });
   }
 
   removeLayer(name) {
@@ -235,6 +261,7 @@ class Map extends Component {
     this.map.setView(newView);
 
     this.addLayer();
+    this.addDrawLayer();
   }
 
   // async updateProjection() {
@@ -255,6 +282,143 @@ class Map extends Component {
 
   onPointClick(pointData) {
     this.props.onPointClick(pointData);
+  }
+
+  addDrawLayer() {
+    const projection = this.props.mapConfig?.projection;
+    if (projection === 'EPSG_3031' || projection === 'EPSG_3575') {
+      return;
+    }
+    const map = this.map;
+    const that = this;
+    const { listener } = this.props;
+
+    if (!this.drawLayer) {
+      console.log('create new draw layer');
+      const drawSource = new VectorSource({ wrapX: true });
+      const drawLayer = new VectorLayer({
+        source: drawSource,
+        name: 'draw',
+        style: new Style({
+          fill: new Fill({
+            color: '#f1fbff00'
+          }),
+          stroke: new Stroke({
+            color: '#0099ff',
+            width: 4
+          }),
+        }),
+      });
+      this.map.addLayer(drawLayer);
+      this.drawLayer = drawLayer;
+      drawLayer.setZIndex(1001);
+
+      let draw = new Draw({
+        source: drawSource,
+        type: 'Polygon',
+        active: false
+      });
+
+      let modify = new Modify({ source: drawSource });
+      map.addInteraction(draw);
+      map.addInteraction(modify);
+      draw.setActive(false);
+      modify.setActive(false);
+
+      const currentProjection = this.props.mapConfig?.projection;
+      modify.on('modifyend', (event) => {
+        setTimeout(() => {
+          var features = drawLayer.getSource().getFeatures();
+          const polygons = features.map(feature => {
+            return getFeatureAsWKT(feature, currentProjection);
+          });
+          listener({ type: 'FEATURES_CHANGED', features: polygons, action: 'MODIFIED'})
+        }, 0);
+      });
+
+      draw.on('drawend', function (event) {
+        var feature = event.feature;
+        var newWktPolygon = getFeatureAsWKT(feature, currentProjection);
+        const newPolygons = [...(that.props.features || []), newWktPolygon];
+        setTimeout(() => listener({ type: 'FEATURES_CHANGED', created: newWktPolygon, features: newPolygons, action: 'NEW'}), 0);
+      });
+
+      // add delete interaction for the draw layer. If the user clicks a polygon, then call the onPolygonsChanged prop with the clicked polygon removed
+      this.deleteListener = function (event) {
+        map.forEachFeatureAtPixel(event.pixel, function (feature, layer) {
+          drawSource.removeFeature(feature);
+          return feature;
+        }, {
+          layerFilter: function (layer) {
+            return layer.get('name') === 'draw';
+          }
+        });
+        setTimeout(() => {
+          var features = drawLayer.getSource().getFeatures();
+          const polygons = features.map(feature => {
+            return getFeatureAsWKT(feature, currentProjection);
+          });
+          listener({ type: 'FEATURES_CHANGED', features: polygons, action: 'DELETE'})
+        }, 0);
+        event.stopPropagation();
+        event.preventDefault();
+        return false;
+      };
+
+      this.draw = draw;
+      this.modify = modify;
+    } else {
+      const found = map.getLayers().getArray().find(layer => layer.get('name') == 'draw');
+      if (!found) {
+        console.log('Add existing drawlayer');
+        map.addLayer(this.drawLayer);
+      }
+    }
+    this.updateFeatures();
+  }
+
+  // draw polygon layer from list of WKT polygons. Do son the the draw layer
+  updateFeatures() {
+    if (!this.drawLayer) return;
+    // we do not draw polygons in polar projections
+    const projection = this.props.mapConfig?.projection;
+    if (projection === 'EPSG_3031' || projection === 'EPSG_3575') {
+      toast.warn('Drawing polygons is not supported in polar projections'); // toast will fire mutliple times, so disable it.
+      return;
+    }
+    const drawSource = this.drawLayer.getSource();
+    drawSource.clear();
+    const format = new WKT();
+    const features = (this.props.features || []).map(polygon => {
+      try {
+        const f = format.readFeature(polygon);
+        return f;
+      } catch (e) {
+        return null;
+      }
+    }).filter(x => x);
+    drawSource.addFeatures(features);
+  }
+
+  startDrawInteraction() {
+    if (!this.drawLayer) return;
+    this.draw.setActive(true);
+    this.modify.setActive(true);
+    this.stopDeleteInteraction();
+  }
+  stopDrawInteraction() {
+    if (!this.drawLayer) return;
+    this.draw.setActive(false);
+    this.modify.setActive(false);
+  }
+  startDeleteInteraction() {
+    if (!this.drawLayer) return;
+    this.stopDrawInteraction();
+    this.map.on('click', this.deleteListener);
+  }
+  stopDeleteInteraction() {
+    if (!this.drawLayer) return;
+    this.map.un('click', this.deleteListener);
   }
 
   addLayer() {

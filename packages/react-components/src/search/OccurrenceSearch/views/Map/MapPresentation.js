@@ -16,9 +16,7 @@ import { OccurrenceSidebar } from '../../../../entities';
 import ThemeContext from '../../../../style/themes/ThemeContext';
 import { useDialogState } from "reakit/Dialog";
 import ListBox from './ListBox';
-import { MdOutlineLayers, MdZoomIn, MdZoomOut, MdLanguage, MdMyLocation } from 'react-icons/md'
-import { MdOutlineFilterAlt as ExploreAreaIcon } from "react-icons/md";
-
+import { MdOutlineFilterAlt as ExploreAreaIcon, MdOutlineLayers, MdZoomIn, MdZoomOut, MdLanguage, MdMyLocation, MdDeleteOutline as DeleteIcon, MdDraw } from 'react-icons/md'
 import { ViewHeader } from '../ViewHeader';
 import MapComponentMB from './MapboxMap';
 import MapComponentOL from './OpenlayersMap';
@@ -28,6 +26,7 @@ import SiteContext from '../../../../dataManagement/SiteContext';
 import { FormattedMessage } from 'react-intl';
 import { getMapStyles } from './standardMapStyles';
 import { toast } from 'react-toast'
+import { useKeyPressEvent } from 'react-use';
 
 const pixelRatio = parseInt(window.devicePixelRatio) || 1;
 const hasGeoLocation = "geolocation" in navigator;
@@ -50,6 +49,8 @@ function Map({ labelMap, query, q, pointData, pointError, pointLoading, loading,
   const dialog = useDialogState({ animated: true, modal: false });
   const theme = useContext(ThemeContext);
   const siteContext = useContext(SiteContext);
+  const [drawActive, setDrawState] = useState(false);
+  const [deleteActive, setDeleteState] = useState(false);
   const userLocationEnabled = siteContext?.occurrence?.mapSettings?.userLocationEnabled;
 
   const styleLookup = siteContext?.maps?.styleLookup || {};
@@ -76,6 +77,11 @@ function Map({ labelMap, query, q, pointData, pointError, pointLoading, loading,
   const [activeId, setActive] = useState();
   const [activeItem, setActiveItem] = useState();
   const [listVisible, showList] = useState(false);
+
+  useKeyPressEvent('Escape', () => {
+    setDrawState(false);
+    setDeleteState(false);
+  });
 
   const items = pointData?.occurrenceSearch?.documents?.results || [];
 
@@ -118,6 +124,7 @@ function Map({ labelMap, query, q, pointData, pointError, pointLoading, loading,
   }, [items, activeId]);
 
   const eventListener = useCallback((event) => {
+    console.log(event);
     if (onFeaturesChange && event.type === 'EXPLORE_AREA') {
       if (['PLATE_CAREE', 'MERCATOR'].indexOf(projection) < 0) {
         toast.error('This action is not supported in polar projections', {
@@ -129,7 +136,10 @@ function Map({ labelMap, query, q, pointData, pointError, pointLoading, loading,
       const { bbox } = event; //top, left, right, bottom
       // create wkt from bounds, making sure that it is counter clockwise
       const wkt = `POLYGON((${bbox.left} ${bbox.top},${bbox.left} ${bbox.bottom},${bbox.right} ${bbox.bottom},${bbox.right} ${bbox.top},${bbox.left} ${bbox.top}))`;
-      onFeaturesChange({features: [wkt]});//remove existing geometries
+      onFeaturesChange({ features: [wkt] });//remove existing geometries
+    }
+    if (event.type === 'FEATURES_CHANGED') {
+      onFeaturesChange({ features: event.features });
     }
   }, [onFeaturesChange, projection]);
 
@@ -166,6 +176,8 @@ function Map({ labelMap, query, q, pointData, pointError, pointLoading, loading,
 
   const projectionMenuOptions = menuState => projectionOptions.map((proj, i) => <MenuAction key={proj} onClick={() => {
     setProjection(proj);
+    setDrawState(false);
+    setDeleteState(false);
     sessionStorage.setItem('defaultOccurrenceProjection', proj);
   }}>
     <FormattedMessage id={`map.projections.${proj}`} defaultMessage={proj} />
@@ -188,7 +200,7 @@ function Map({ labelMap, query, q, pointData, pointError, pointLoading, loading,
     <DetailsDrawer href={`https://www.gbif.org/occurrence/${activeItem?.key}`} dialog={dialog} nextItem={nextItem} previousItem={previousItem}>
       <OccurrenceSidebar id={activeItem?.key} defaultTab='details' style={{ maxWidth: '100%', width: 700, height: '100%' }} onCloseRequest={() => dialog.setVisible(false)} />
     </DetailsDrawer>
-    <div ref={ref} css={css.mapArea({ theme })} {...{style, className}}>
+    <div ref={ref} css={css.mapArea({ theme })} {...{ style, className }}>
       <ViewHeader message="counts.nResultsWithCoordinates" loading={loading} total={total} />
       <div style={{ position: 'relative', height: '200px', flex: '1 1 auto', display: 'flex', flexDirection: 'column' }}>
         {listVisible && <ListBox onCloseRequest={e => showList(false)}
@@ -215,6 +227,17 @@ function Map({ labelMap, query, q, pointData, pointError, pointLoading, loading,
             items={menuLayerOptions}
           />}
           {userLocationEnabled && <Button loading={searchingLocation} appearance="text" onClick={getUserLocation}><MdMyLocation /></Button>}
+          {notPolarProjection && <>
+            <Button look="text" style={{ color: drawActive ? 'var(--primary)' : 'inherit' }} onClick={() => {
+              setDrawState(!drawActive);
+              setDeleteState(false);
+            }}><MdDraw /></Button>
+            <Button look="text" style={{ color: deleteActive ? 'var(--primary)' : 'inherit' }} onClick={() => {
+              setDeleteState(!deleteActive);
+              setDrawState(false);
+            }}><DeleteIcon />
+            </Button>
+          </>}
         </div>
         <MapComponent
           {...mapProps}
@@ -230,9 +253,12 @@ function Map({ labelMap, query, q, pointData, pointError, pointLoading, loading,
           onPointClick={data => { showList(true); loadPointData(data) }}
           listener={eventListener}
           registerPredicate={registerPredicate}
+          features={features}
           height={height}
           width={width}
-          />
+          drawMode={drawActive}
+          deleteMode={deleteActive}
+        />
       </div>
     </div>
   </>;

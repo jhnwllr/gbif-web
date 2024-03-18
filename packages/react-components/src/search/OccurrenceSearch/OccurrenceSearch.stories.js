@@ -170,14 +170,15 @@ const rootPredicate = {
 const config = { 
   // rootPredicate, 
   // rootPredicate: {
-  //   type: 'equals',
-  //   key: 'datasetKey',
-  //   value: '7e380070-f762-11e1-a439-00145eb45e9a'
+  //   "type": "geoDistance",
+  //   "latitude": "90",
+  //   "longitude": "90",
+  //   "distance": "800km"
   // }, 
   labels, 
   getSuggests, 
   filters, 
-  occurrenceSearchTabs: ['DASHBOARD', 'CLUSTERS', 'TABLE', 'MAP', 'DATASETS', 'GALLERY'],
+  occurrenceSearchTabs: ['MAP', 'TABLE', 'DATASETS', 'GALLERY', 'DASHBOARD', 'CLUSTERS'],
   // highlightedFilters: ['establishmentMeans'],
   // excludedFilters: ['locality'],
   availableCatalogues: ['OCCURRENCE', 'LITERATURE', 'COLLECTION'],
@@ -194,7 +195,7 @@ const config = {
 // const config = { labels, getSuggests, filters, rootPredicate: {type: 'equals', key: 'publishingOrganizationKey', value: '1cd669d0-80ea-11de-a9d0-f1765f95f18b'}};
 // const config = { labels, getSuggests, filters, rootPredicate: {type: 'in', key: 'datasetKey', values: inboDatasets}};
 
-export const Example = () => <Router initialEntries={[`/occurrence/search?`]}>
+export const Example = () => <Router initialEntries={[`/occurrence/search?datasetKey=50c9509d-22c7-4a22-a47d-8c48425ef4a7&geometry=POLYGON((-53.92976423453811%2070.22588068077599%2C-53.92976423453811%2068.4037304781414%2C-47.61324567781688%2068.4037304781414%2C-47.61324567781688%2070.22588068077599%2C-53.92976423453811%2070.22588068077599))&recordedBy=mhoefft&taxonKey=6&view=DASHBOARD`]}>
 {/* export const Example = () => <Router initialEntries={[`/?filter=eyJtdXN0Ijp7Im9jY3VycmVuY2VJZCI6WyJlIl19LCJtdXN0X25vdCI6eyJvY2N1cnJlbmNlSXNzdWUiOlsiWkVST19DT09SRElOQVRFIl0sIm9jY3VycmVuY2VJZCI6WyIxIiwiMiJdfX0%3D`]}> */}
   <QueryParamProvider ReactRouterRoute={Route} stringifyOptions={{strict: false}}>
     <AddressBar />

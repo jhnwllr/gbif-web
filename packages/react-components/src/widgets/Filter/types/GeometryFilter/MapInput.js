@@ -21,6 +21,7 @@ import { useKeyPressEvent } from 'react-use';
 import { Button, ButtonGroup } from '../../../../components';
 import { MdZoomIn, MdZoomOut, MdDelete, MdEdit } from 'react-icons/md';
 import env from '../../../../../.env.json';
+import { getFeatureAsWKT } from '../../../../utils/mapHelpers';
 
 var interactionOptions = olInteraction.defaults({ altShiftDragRotate: false, pinchRotate: false, mouseWheelZoom: true });
 
@@ -163,9 +164,9 @@ const OpenLayersMap = ({ geometryList, onChange }) => {
     draw.on('drawend', (event) => {
       var geometries = [];
       source.forEachFeature(function (f) {
-        geometries.push(getFeatureAsWKT(f));
+        geometries.push(getFeatureAsWKT(f, 'EPSG:4326'));
       });
-      var latestWkt = getFeatureAsWKT(event.feature);
+      var latestWkt = getFeatureAsWKT(event.feature, 'EPSG:4326');
       geometries.push(latestWkt);
 
       onChange({ wkt: geometries });
@@ -174,7 +175,7 @@ const OpenLayersMap = ({ geometryList, onChange }) => {
       setTimeout(() => {
         var geometries = [];
         source.forEachFeature(function (f) {
-          geometries.push(getFeatureAsWKT(f));
+          geometries.push(getFeatureAsWKT(f, 'EPSG:4326'));
         });
         onChange({ wkt: geometries });
       });
@@ -187,7 +188,7 @@ const OpenLayersMap = ({ geometryList, onChange }) => {
       setTimeout(() => {
         var geometries = [];
         source.forEachFeature(function (f) {
-          geometries.push(getFeatureAsWKT(f));
+          geometries.push(getFeatureAsWKT(f, 'EPSG:4326'));
         });
         onChange({ wkt: geometries });
       });
@@ -237,18 +238,6 @@ const OpenLayersMap = ({ geometryList, onChange }) => {
     <div ref={mapRef} css={css`height: 250px; width: 100%; z-index: 1;`} />
   </div>
 };
-
-function getFeatureAsWKT(feature) {
-  const asGeoJson = geoJsonFormatter.writeFeature(feature, { rightHanded: true });
-  const rightHandCorrectedFeature = geoJsonFormatter.readFeature(asGeoJson);
-  const wkt = wktFormatter.writeFeature(rightHandCorrectedFeature, {
-    dataProjection: 'EPSG:4326',
-    featureProjection: 'EPSG:4326',
-    rightHanded: true,
-    decimals: 5
-  });
-  return wkt;
-}
 
 function getFeaturesFromWktList({ geometry }) {
   const geometries = [];

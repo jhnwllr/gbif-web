@@ -115,6 +115,8 @@ function Map({style, className, mapProps}) {
 
   const q = currentFilterContext.filter?.must?.q?.[0];
   
+  const features = currentFilterContext.filter?.must?.geometry ?? [];
+
   const options = {
     loading,
     error,
@@ -131,6 +133,7 @@ function Map({style, className, mapProps}) {
     labelMap,
     q,
     defaultMapSettings: more?.mapSettings,
+    features,
     onFeaturesChange: handleFeatureChange
   }
 
