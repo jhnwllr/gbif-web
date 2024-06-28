@@ -99,13 +99,21 @@ function AnnotationForm({ polygons, setPolygons, onClose, onCreate, ...props }) 
 
   // set geometry to first polygon in list
   useEffect(() => {
-    if (invertGeometry) {
-      setGeometry("POLYGON ((-180 -90, -90 -90, 0 -90, 90 -90, 180 -90, 180 90, 90 90, 0 90, -90 90, -180 90, -180 -90)," + 
-      polygons[0].replace(/POLYGON/g, "").
-      replace(/\(\(/g, "(").replace(/\)\)/g, ")") + ")");
-    } else {
-      setGeometry(polygons[0]);
-    } 
+    if (polygons.length > 0) { // Check if polygons is not empty
+      if (invertGeometry) {
+        // Check if the first polygon is a MultiPolygon
+        if (polygons[0].startsWith("MULTIPOLYGON")) {
+          setGeometry("POLYGON ((-180 -90, -90 -90, 0 -90, 90 -90, 180 -90, 180 90, 90 90, 0 90, -90 90, -180 90, -180 -90)," +
+            polygons[0].replace(/MULTIPOLYGON\(/g, "").replace(/\(\(/g, "(").replace(/\)\)/g, ")"));
+        } else { // Handle Polygon
+          setGeometry("POLYGON ((-180 -90, -90 -90, 0 -90, 90 -90, 180 -90, 180 90, 90 90, 0 90, -90 90, -180 90, -180 -90)," + 
+          polygons[0].replace(/POLYGON/g, "")
+          .replace(/\(\(/g, "(").replace(/\)\)/g, ")") + ")");
+        }
+      } else {
+        setGeometry(polygons[0]);
+      }
+    }
   }, [polygons, invertGeometry]);
 
 
